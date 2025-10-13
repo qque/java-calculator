@@ -1,3 +1,14 @@
+/* 
+ *  Defines the 8x6 main button area
+ *  This includes everything except the "ans" and "clear buttons" (and the side panel)
+ *  Those buttons are not defined here since they are contained in the top panel
+ *  
+ *  NOTE: Buttons labels within the grid can be easily replaced, but the behavior will
+ *        have to be modified in ButtonLogic (and possibly CalculatorEval).
+ *        Outside of the grid, new buttons will have to be created in the ui in a new class,
+ *        or in a new part of this class.
+*/
+
 package calculator.ui;
 
 import javax.swing.*;
@@ -7,16 +18,16 @@ import java.util.Map;
 
 public class ButtonPanel extends JPanel {
 
-    public interface ButtonClickListener {
+    public interface ButtonListener {
         void onButtonClick(String label);
     }
 
     private final Map<String, JButton> buttons = new HashMap<>();
 
     @SuppressWarnings("unused")
-    private final ButtonClickListener listener;
+    private final ButtonListener listener;
 
-    public ButtonPanel(ButtonClickListener listener) {
+    public ButtonPanel(ButtonListener listener) {
         this.listener = listener;
         
         setLayout(new GridBagLayout());
@@ -32,7 +43,7 @@ public class ButtonPanel extends JPanel {
             {"7", "8", "9", "÷", "^", "eˣ"},
             {"4", "5", "6", "×", "√", "log"},
             {"1", "2", "3", "-", "x²", "10ˣ"},
-            {"0", ".", "(-)", "+", "=", "="}
+            {"0", ".", "ans", "+", "=", "="}
         };
 
         for (int row = 0; row < labels.length; row++) {

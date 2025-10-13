@@ -1,12 +1,11 @@
 package calculator.ui;
 
 import javax.swing.*;
-
-import calculator.History;
-
 import java.awt.*;
 import java.awt.event.*;
 
-public class HistoryFrame {
+import calculator.Notepad;
+
+public class NotepadFrame {
     
 }
