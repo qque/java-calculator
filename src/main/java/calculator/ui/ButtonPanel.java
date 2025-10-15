@@ -3,10 +3,11 @@
  *  This includes everything except the "ans" and "clear buttons" (and the side panel)
  *  Those buttons are not defined here since they are contained in the top panel
  *  
- *  NOTE: Buttons labels within the grid can be easily replaced, but the behavior will
- *        have to be modified in ButtonLogic (and possibly CalculatorEval).
- *        Outside of the grid, new buttons will have to be created in the ui in a new class,
- *        or in a new part of this class.
+ *  NOTE: Buttons within the grid can be easily replaced just by editing `labels`, but the
+ *        behavior will have to be defined in ButtonLogic (and possibly in other classes).
+ *  
+ *        Outside of the grid, new buttons will have to be created in a new class, or in a
+ *        new part of this class.
 */
 
 package calculator.ui;

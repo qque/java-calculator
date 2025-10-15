@@ -35,7 +35,8 @@ public class CalculatorFrame extends JFrame {
         display = new JTextArea();
         display.setEditable(false);
 
-        Listener keyListener = new Listener();
+        KeyboardLogic keyListener = new KeyboardLogic();
+        KeyboardLogic.setTextArea(display);
         display.addKeyListener(keyListener); // key listener
 
         display.setFont(new Font("Consolas", Font.PLAIN, 47));
@@ -47,7 +48,7 @@ public class CalculatorFrame extends JFrame {
         // clear and ans buttons beside top display
         JPanel sideButtons = new JPanel(new GridLayout(2, 1, 5, 5));
         JButton clearButton = new JButton("clear");
-        JButton ansButton = new JButton("ans");
+        JButton ansButton = new JButton("delete");
 
         clearButton.setFont(new Font("SansSerif", Font.BOLD, 18));
         ansButton.setFont(new Font("SansSerif", Font.BOLD, 18));
@@ -73,55 +74,6 @@ public class CalculatorFrame extends JFrame {
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
         add(mainPanel);
-    }
-
-    // KeyListener implementation
-    public class Listener implements KeyListener {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            // not used
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            // not used
-        }
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-            char key = e.getKeyChar();
-            switch (key) {
-                // keys that preform a control operation
-                case 0x7F: 
-                // keys that can be directly typed
-                case '.':
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                case '+':
-                case '-':
-                case '/':
-                case '*':
-                case '^':
-                case '!':
-                case ',':
-                case '(':
-                case ')': display.setText(display.getText() + key);
-
-                // keys that will automatically type out a function/expression
-                case 's':
-
-                // everything else (does nothing)
-                default: break;
-            }
-        } 
     }
 
 }
