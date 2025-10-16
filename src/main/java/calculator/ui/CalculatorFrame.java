@@ -68,6 +68,9 @@ public class CalculatorFrame extends JFrame {
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
 
+        // setup JS parsing engine
+        ButtonLogic.setupEngine();
+
         // 8x6 button grid below top display (see ButtonPanel.java)
         ButtonPanel buttonPanel = new ButtonPanel(clickBehavior);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);

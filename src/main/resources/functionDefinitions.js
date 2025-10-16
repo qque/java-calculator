@@ -55,7 +55,7 @@ function dacot(x) { x = Math.PI * x / 180; return Math.PI - Math.atan(x); }
 
 // statistical functions
 function mean(...nums) {
-    return nums.reduce((a,b) => a + b, 0);
+    return nums.reduce((a,b) => a + b, 0) / nums.length;
 }
 
 function stdev(...nums) {
@@ -84,11 +84,51 @@ function stdevp(...nums) {
     return Math.sqrt(variance);
 }
 
-function sort(...nums) {
-    return nums.sort((a,b) => a - b);
+// approximation (from Abramowitz & Stegun 7.1.26), accurate to ~1e-9
+function erf(x) {
+    const sign = Math.sign(x);
+    const ax = Math.abs(x);
+
+    const a1 = 0.254829592;
+    const a2 = -0.284496736;
+    const a3 = 1.421413741;
+    const a4 = -1.453152027;
+    const a5 = 1.061405429;
+    const p  = 0.3275911;
+
+    const t = 1 / (1 + p * ax);
+    const y = 1 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t * Math.exp(-ax*ax);
+
+    return sign * y;
 }
 
 // other functions
+// factorial (extended to non integers as gamma function)
+function gamma(x) { // lanczos approximation
+    const p = [
+        676.5203681218851,
+        -1259.1392167224028,
+        771.32342877765313,
+        -176.61502916214059,
+        12.507343278686905,
+        -0.13857109526572012,
+        9.9843695780195716e-6,
+        1.5056327351493116e-7
+    ];
+
+    if (x < 0.5) {
+        // reflection formula
+        return Math.PI / (Math.sin(Math.PI * x) * gamma(1 - x));
+    } else {
+        x -= 1;
+        let a = 0.99999999999980993;
+        for (let i = 0; i < p.length; i++) {
+            a += p[i] / (x + i + 1);
+        }
+        const t = x + p.length - 0.5;
+        return Math.sqrt(2 * Math.PI) * Math.pow(t, x + 0.5) * Math.exp(-t) * a;
+    }
+}
 function fact(x) {
     if (Number.isInteger(x)) {
         var out = 1;
@@ -96,11 +136,8 @@ function fact(x) {
             out *= i;
         }
         return out;
-    } else { // more accurate variant of stirling's approximation
-        var a = Math.sqrt(2 * Math.PI * x) * Math.pow(x / Math.E, x);
-        var b = Math.pow(x * Math.sinh(1/x), x/2);
-        var c = Math.exp(7/324 * 1/(x*x*x*(35*x*x + 33)))
-        return a * b * c;
+    } else {
+        return gamma(x+1);
     }
 }
 

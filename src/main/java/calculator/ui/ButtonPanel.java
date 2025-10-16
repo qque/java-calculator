@@ -37,7 +37,7 @@ public class ButtonPanel extends JPanel {
         gbc.insets = new Insets(5, 5, 5, 5);
 
         String[][] labels = {
-            {"mean", "stdev", "stdevp", "sort", "π", "e"},
+            {"mean", "stdev", "stdevp", "erf", "π", "e"},
             {"sin⁻¹", "cos⁻¹", "tan⁻¹", "(hyp.)", "nPr", "nCr"},
             {"sin", "cos", "tan", "(rec.)", "(deg.)", "!"},
             {"(", ")", ",", "1/x", "|x|", "ln"},

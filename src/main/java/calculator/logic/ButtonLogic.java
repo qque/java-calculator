@@ -20,6 +20,8 @@ import calculator.History;
 
 public class ButtonLogic implements ButtonPanel.ButtonListener {
 
+    private static final int DEBUG_MODE = 1;
+
     private static JTextArea display;
 
     private static History history = History.getInstance();
@@ -28,8 +30,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
     // preprocessing using regex for more annoying conversions
     private static String preprocess(String expression) {
-        // handle whitespace (exists only for user's convenience)
-        expression = expression.replaceAll("\\s+", "");
+        if (DEBUG_MODE == 1) {
+            System.out.println("Preprocessing: " + expression);
+        }
 
         // replaces "ans" with answer value
         if (!history.isEmpty()) expression = expression.replaceAll("ans", history.getLatest().get(1));
@@ -39,10 +42,8 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             expression = expression.replaceAll("\\|([^|]+)\\|", "Math.abs($1)");
         }
 
-        // converts "(abc)^(xyz)" -> "Math.pow(abc,xyz)"
-        while (expression.contains("^")) {
-            expression = expression.replaceAll("(?:(\\([^()]+\\)|[\\w.]+))\\^(?:(\\([^()]+\\)|[\\w.]+))(?!.*\\^)", "Math.pow($1,$2)");
-        }
+        // converts "(abc)^(xyz)" -> "(abc) ** (xyz)"
+        expression = expression.replaceAll("\\^", "**");
 
         // converts "x!" -> "fact(x)"
         if (expression.contains("!")) expression = expression.replaceAll("(\\([^()]+\\)|[\\w.]+)!", "fact($1)");
@@ -74,6 +75,10 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             expression = expression.replaceAll("acosh", "dacosh");
             expression = expression.replaceAll("atanh", "datanh");
         }
+        
+        if (DEBUG_MODE == 1) {
+            System.out.println("Processed: " + expression);
+        }
 
         return expression;
     }
@@ -83,8 +88,8 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
     public static boolean isSetup = false; 
 
+    // setup javascript ScriptEngine to evaluate, done on initialization 
     public static void setupEngine() {
-        // use javascript ScriptEngine to evaluate  
         manager = new ScriptEngineManager();
         engine = manager.getEngineByName("graal.js");
 
@@ -107,9 +112,11 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             "function dcsc(t){return t=Math.PI*t/180,1/Math.sin(t)}function dsec(t){return t=Math.PI*t/180,1/Math.cos(t)}" +
             "function dcot(t){return t=Math.PI*t/180,1/Math.tan(t)}function dacsc(t){return t=Math.PI*t/180,Math.asin(1/t)}" +
             "function dasec(t){return t=Math.PI*t/180,Math.acos(1/t)}function dacot(t){return t=Math.PI*t/180,Math.PI-Math.atan(t)}" +
-            "function mean(...t){return t.reduce(((t,n)=>t+n),0)}function stdev(...t){for(var n=0,a=mean(...t),r=t.length,h=0,u=0;u<r;u++)n+=(h=t[u]-a)*h;return n/=r,Math.sqrt(n)}" +
-            "function stdevp(...t){for(var n=0,a=mean(...t),r=t.length,h=0,u=0;u<r;u++)n+=(h=t[u]-a)*h;return n/=r-1,Math.sqrt(n)}function sort(...t){return t.sort(((t,n)=>t-n))}" +
-            "function fact(t){if(Number.isInteger(t)){for(var n=1,a=2;a<=t;a++)n*=a;return n}return Math.sqrt(2*Math.PI*t)*Math.pow(t/Math.E,t)*Math.pow(t*Math.sinh(1/t),t/2)*Math.exp(7/324*1/(t*t*t*(35*t*t+33)))}" +
+            "function mean(...t){return t.reduce(((t,n)=>t+n),0)/t.length}function stdev(...t){for(var n=0,a=mean(...t),r=t.length,h=0,u=0;u<r;u++)n+=(h=t[u]-a)*h;return n/=r,Math.sqrt(n)}" +
+            "function stdevp(...t){for(var n=0,a=mean(...t),r=t.length,h=0,u=0;u<r;u++)n+=(h=t[u]-a)*h;return n/=r-1,Math.sqrt(n)}" +
+            "function erf(t){const n=Math.sign(t),a=Math.abs(t),e=1/(1+.3275911*a);return n*(1-((((1.061405429*e-1.453152027)*e+1.421413741)*e-.284496736)*e+.254829592)*e*Math.exp(-a*a))}" +
+            "function gamma(x){const a=[676.5203681218851,-1259.1392167224028,771.3234287776531,-176.6150291621406,12.507343278686905,-.13857109526572012,9984369578019572e-21,1.5056327351493116e-7];if(x<.5)return Math.PI/(Math.sin(Math.PI*x)*gamma(1-x));{x-=1;let t=.9999999999998099;for(let e=0;e<a.length;e++)t+=a[e]/(x+e+1);const e=x+a.length-.5;return Math.sqrt(2*Math.PI)*Math.pow(e,x+.5)*Math.exp(-e)*t}}" +
+            "function fact(t){if(Number.isInteger(t)){for(var a=1,e=2;e<=t;e++)a*=e;return a}return gamma(t+1)}" +
             "function nPr(t,n){for(var a=1,r=t-n+1;r<=t;r++)a*=r;return a}function nCr(t,n){for(var a=1,r=t-n+1;r<=t;r++)a*=r,a/=t+1-r;return a};");
         } catch (ScriptException e) {
             System.out.println(e);
@@ -132,6 +139,10 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
         if (Math.abs(result - roundedResult) < 0.00000001) result = roundedResult;
 
+        if (DEBUG_MODE == 1) {
+            System.out.println(expression + "=" + result);
+        }
+
         return result;
     }
 
@@ -142,6 +153,11 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         try {
             String expression = display.getText();
             String output = null;
+
+            if (DEBUG_MODE == 1) {
+                System.out.println(label + ";    " + expression);
+            }
+
             switch (label) {
                 case "clear":
                     display.setText(null);
@@ -154,7 +170,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                     break;
                 case "ans":
                     // `ans` will display "ans" to the user, and is dealt with in parsing
-                    display.setText(display.getText() + label);
+                    display.setText(expression + label);
                     break;
                 case "=":
                     String result = compute(expression) + "";
@@ -204,16 +220,16 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                 case "mean": output = "mean("; break;
                 case "stdev": output = "stdev("; break;
                 case "stdevp": output = "stdevp("; break;
-                case "sort": output = "sort("; break;
+                case "erf": output = "erf("; break;
 
                 // input normally
                 default:
-                    display.setText(display.getText() + label);
+                    display.setText(expression + label);
                     break;
             }
 
             if (output != null) {
-                display.setText(display.getText() + output);
+                display.setText(expression + output);
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -221,7 +237,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             // show generic error message to user
             JOptionPane.showMessageDialog(
                 display,
-                "An unexpected error occurred. Please try again.",
+                "An unexpected error occurred. Please check the syntax of your expression.",
                 "Error",
                 JOptionPane.ERROR_MESSAGE
             );
