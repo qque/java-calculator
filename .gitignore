@@ -1,5 +1,11 @@
+# build
 .vscode/
 target/
+
+# for debugging
+minify_js.py
+minifiedJS.txt
+
 
 # Compiled class file
 *.class

@@ -1,5 +1,5 @@
 /*
- *  Defines the behavior of buttons, including computation for "="
+ *  Defines the parsing and behavior of buttons, including computation for "="
  *  Accepts any generic JTextArea using the setTextArea method
  */
 
@@ -8,32 +8,142 @@ package calculator.logic;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
-import calculator.ui.ButtonPanel.ButtonListener;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import calculator.ui.ButtonPanel;
 import calculator.History;
 
-public class ButtonLogic implements ButtonListener {
+public class ButtonLogic implements ButtonPanel.ButtonListener {
 
     private static JTextArea display;
 
+    private static History history = History.getInstance();
+
     public static void setTextArea(JTextArea area) { display = area; }
 
-    // defines parsing and computation for "=" button
-    public static double compute(String text) {
-        
+    // preprocessing using regex for more annoying conversions
+    private static String preprocess(String expression) {
+        // handle whitespace (exists only for user's convenience)
+        expression = expression.replaceAll("\\s+", "");
 
-        return Double.NaN; // fail case, returns error on display side
+        // replaces "ans" with answer value
+        if (!history.isEmpty()) expression = expression.replaceAll("ans", history.getLatest().get(1));
+
+        // converts "|xyz|" -> "Math.abs(xyz)"
+        while (expression.contains("|")) {
+            expression = expression.replaceAll("\\|([^|]+)\\|", "Math.abs($1)");
+        }
+
+        // converts "(abc)^(xyz)" -> "Math.pow(abc,xyz)"
+        while (expression.contains("^")) {
+            expression = expression.replaceAll("(?:(\\([^()]+\\)|[\\w.]+))\\^(?:(\\([^()]+\\)|[\\w.]+))(?!.*\\^)", "Math.pow($1,$2)");
+        }
+
+        // converts "x!" -> "fact(x)"
+        if (expression.contains("!")) expression = expression.replaceAll("(\\([^()]+\\)|[\\w.]+)!", "fact($1)");
+
+        // converts "π" & "pi" -> "Math.PI" and "e" -> "Math.E"
+        expression = expression.replaceAll("π", "Math.PI");
+        expression = expression.replaceAll("pi", "Math.PI");
+        expression = expression.replaceAll("(?<![a-zA-Z0-9_])e(?![a-zA-Z0-9_])", "Math.E");
+
+        // check if degree mode is on. if so, use degree versions of math functions
+        // patterns with negative lookbehind are making sure inverse versions dont double convert inverse trig functions
+        if (ButtonPanel.isDegree) {
+            expression = expression.replaceAll("(?<!a)sin", "dsin");
+            expression = expression.replaceAll("(?<!a)cos", "dcos");
+            expression = expression.replaceAll("(?<!a)tan", "dtan");
+            expression = expression.replaceAll("asin", "dasin");
+            expression = expression.replaceAll("acos", "dacos");
+            expression = expression.replaceAll("atan", "datan");
+            expression = expression.replaceAll("(?<!a)csc", "dcsc");
+            expression = expression.replaceAll("(?<!a)sec", "dsec");
+            expression = expression.replaceAll("(?<!a)cot", "dcot");
+            expression = expression.replaceAll("acsc", "dacsc");
+            expression = expression.replaceAll("asec", "dasec");
+            expression = expression.replaceAll("acot", "dacot");
+            expression = expression.replaceAll("(?<!a)sinh", "dsinh");
+            expression = expression.replaceAll("(?<!a)cosh", "dcosh");
+            expression = expression.replaceAll("(?<!a)tanh", "dtanh");
+            expression = expression.replaceAll("asinh", "dasinh");
+            expression = expression.replaceAll("acosh", "dacosh");
+            expression = expression.replaceAll("atanh", "datanh");
+        }
+
+        return expression;
+    }
+
+    private static ScriptEngineManager manager;
+    private static ScriptEngine engine;
+
+    public static boolean isSetup = false; 
+
+    public static void setupEngine() {
+        // use javascript ScriptEngine to evaluate  
+        manager = new ScriptEngineManager();
+        engine = manager.getEngineByName("graal.js");
+
+        // functions that need to be defined for computation (stdev, nCr, etc.)
+        // see ../../../resources/functionDefinitions.js for a readable version of the code with comments
+        try {
+            engine.eval("function sin(t){return Math.sin(t)}function cos(t){return Math.cos(t)}function tan(t){return Math.tan(t)}" +
+            "function asin(t){return Math.asin(t)}function acos(t){return Math.acos(t)}function atan(t){return Math.atan(t)}" +
+            "function sinh(t){return Math.sinh(t)}function cosh(t){return Math.cosh(t)}function tanh(t){return Math.tanh(t)}" +
+            "function asinh(t){return Math.asinh(t)}function acosh(t){return Math.acosh(t)}function atanh(t){return Math.atanh(t)}" +
+            "function sqrt(t){return Math.sqrt(t)}function ln(t){return Math.log(t)}function csc(t){return 1/Math.sin(t)}" +
+            "function sec(t){return 1/Math.cos(t)}function cot(t){return 1/Math.tan(t)}function acsc(t){return Math.asin(1/t)}" +
+            "function asec(t){return Math.acos(1/t)}function acot(t){return Math.PI-Math.atan(t)}function log(t,n){return Math.log(n)/Math.log(t)}" +
+            "function dsin(t){return t=Math.PI*t/180,Math.sin(t)}function dcos(t){return t=Math.PI*t/180,Math.cos(t)}" +
+            "function dtan(t){return t=Math.PI*t/180,Math.tan(t)}function dasin(t){return t=Math.PI*t/180,Math.asin(t)}" +
+            "function dacos(t){return t=Math.PI*t/180,Math.acos(t)}function datan(t){return t=Math.PI*t/180,Math.atan(t)}" +
+            "function dsinh(t){return t=Math.PI*t/180,Math.sinh(t)}function dcosh(t){return t=Math.PI*t/180,Math.cosh(t)}" +
+            "function dtanh(t){return t=Math.PI*t/180,Math.tanh(t)}function dasinh(t){return t=Math.PI*t/180,Math.asinh(t)}" +
+            "function dacosh(t){return t=Math.PI*t/180,Math.acosh(t)}function datanh(t){return t=Math.PI*t/180,Math.atanh(t)}" +
+            "function dcsc(t){return t=Math.PI*t/180,1/Math.sin(t)}function dsec(t){return t=Math.PI*t/180,1/Math.cos(t)}" +
+            "function dcot(t){return t=Math.PI*t/180,1/Math.tan(t)}function dacsc(t){return t=Math.PI*t/180,Math.asin(1/t)}" +
+            "function dasec(t){return t=Math.PI*t/180,Math.acos(1/t)}function dacot(t){return t=Math.PI*t/180,Math.PI-Math.atan(t)}" +
+            "function mean(...t){return t.reduce(((t,n)=>t+n),0)}function stdev(...t){for(var n=0,a=mean(...t),r=t.length,h=0,u=0;u<r;u++)n+=(h=t[u]-a)*h;return n/=r,Math.sqrt(n)}" +
+            "function stdevp(...t){for(var n=0,a=mean(...t),r=t.length,h=0,u=0;u<r;u++)n+=(h=t[u]-a)*h;return n/=r-1,Math.sqrt(n)}function sort(...t){return t.sort(((t,n)=>t-n))}" +
+            "function fact(t){if(Number.isInteger(t)){for(var n=1,a=2;a<=t;a++)n*=a;return n}return Math.sqrt(2*Math.PI*t)*Math.pow(t/Math.E,t)*Math.pow(t*Math.sinh(1/t),t/2)*Math.exp(7/324*1/(t*t*t*(35*t*t+33)))}" +
+            "function nPr(t,n){for(var a=1,r=t-n+1;r<=t;r++)a*=r;return a}function nCr(t,n){for(var a=1,r=t-n+1;r<=t;r++)a*=r,a/=t+1-r;return a};");
+        } catch (ScriptException e) {
+            System.out.println(e);
+            System.exit(0);
+        }
+
+        isSetup = true;
+    }
+
+    // defines parsing and computation for "=" button
+    public static double compute(String expression) throws ScriptException {
+        expression = preprocess(expression);
+
+        double result = Double.parseDouble(engine.eval(expression).toString());
+
+        // check if floating point messed up a decimal
+        BigDecimal bd = new BigDecimal(Double.toString(result));
+        bd = bd.setScale(4, RoundingMode.HALF_UP);
+        double roundedResult = bd.doubleValue();
+
+        if (Math.abs(result - roundedResult) < 0.00000001) result = roundedResult;
+
+        return result;
     }
 
     // static implementation of onButtonClick behavior
     public static void runButton(String label) { 
-        History history = History.getInstance();
+        if (!isSetup) setupEngine();
 
         try {
             String expression = display.getText();
             String output = null;
             switch (label) {
                 case "clear":
-                    history.add(expression + " = " + compute(expression)); // send display to history
                     display.setText(null);
                     break;
                 case "delete":
@@ -47,10 +157,9 @@ public class ButtonLogic implements ButtonListener {
                     display.setText(display.getText() + label);
                     break;
                 case "=":
-                    double result = compute(expression);
-                    if (Double.isNaN(result)) display.setText("ERROR");
-                    else display.setText(result + "");
-                    history.add(expression + " = " + result);
+                    String result = compute(expression) + "";
+                    display.setText(result);
+                    history.add(expression, result);
                     break;
 
                 // input nothing
@@ -107,6 +216,9 @@ public class ButtonLogic implements ButtonListener {
                 display.setText(display.getText() + output);
             }
         } catch (Exception e) {
+            System.out.println(e);
+
+            // show generic error message to user
             JOptionPane.showMessageDialog(
                 display,
                 "An unexpected error occurred. Please try again.",

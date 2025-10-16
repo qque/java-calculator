@@ -36,6 +36,9 @@ public class KeyboardLogic implements KeyListener {
                 button = "delete"; break;
             case KeyEvent.VK_ENTER:             // 'Enter' -- `=`
                 button = "="; break;
+            case KeyEvent.VK_SPACE:             // N/A; Allows user to input whitespace if they want
+                display.setText(display.getText() + " ");
+                break;
 
             // direct input
             case KeyEvent.VK_2:                 // '2' -- `2`
@@ -48,8 +51,7 @@ public class KeyboardLogic implements KeyListener {
             case KeyEvent.VK_MINUS:             // '-' -- `-`
             case KeyEvent.VK_SLASH:             // '/' -- `÷`
             case KeyEvent.VK_COMMA:             // ',' -- `,`
-            case KeyEvent.VK_E:                 // 'e' -- `e`
-                display.setText(display.getText() + (char)(key + 32)); // use key + 32 to get 'e' instead of 'E'
+                display.setText(display.getText() + (char)(key));
                 break;
 
             // direct input (checking for special characters)
@@ -77,35 +79,39 @@ public class KeyboardLogic implements KeyListener {
                 if (e.isShiftDown()) button = "|x|";
                 break;
 
-            // keys that will automatically type out a function/expression
-            case KeyEvent.VK_S:                 // 's' -- `sin`
-                button = "sin"; break;
-            case KeyEvent.VK_C:                 // 'c' -- `cos`
-                button = "cos"; break;
-            case KeyEvent.VK_T:                 // 't' -- `tan`
-                button = "tan"; break;
-            case KeyEvent.VK_A:                 // 'a' -- `sin⁻¹`
-                button = "sin⁻¹"; break;
-            case KeyEvent.VK_X:                 // 'x' -- `cos⁻¹`
-                button = "cos⁻¹"; break;
-            case KeyEvent.VK_R:                 // 'r' -- `tan⁻¹`
-                button = "tan⁻¹"; break;
-            case KeyEvent.VK_M:                 // 'm' -- `mean`
-                button = "mean"; break;
-            case KeyEvent.VK_D:                 // 'd' -- `stdev`
-                button = "stdev"; break;
-            case KeyEvent.VK_V:                 // 'v' -- `stdevp`
-                button = "stdevp"; break;
-            case KeyEvent.VK_O:                 // 'o' -- `sort`
-                button = "sort"; break;
-            case KeyEvent.VK_P:                 // 'p' -- `π`
-                button = "π"; break;
-            case KeyEvent.VK_Q:                 // 'q' -- `√`
-                button = "√"; break;
-            case KeyEvent.VK_L:                 // 'l' -- `log`
-                button = "log"; break;
-            case KeyEvent.VK_N:                 // 'n' -- `ln`
-                button = "ln"; break;
+            case KeyEvent.VK_H:
+                if (e.isControlDown()); // enter history menu
+                else if (e.isShiftDown()) display.setText(display.getText() + (char)(key));
+                else display.setText(display.getText() + (char)(key + 32));
+                break;
+            case KeyEvent.VK_A: 
+            case KeyEvent.VK_B: 
+            case KeyEvent.VK_C: 
+            case KeyEvent.VK_D: 
+            case KeyEvent.VK_E:                 // 'e' -- `e`
+            case KeyEvent.VK_F: 
+            case KeyEvent.VK_G:  
+            case KeyEvent.VK_I: 
+            case KeyEvent.VK_J: 
+            case KeyEvent.VK_K: 
+            case KeyEvent.VK_L: 
+            case KeyEvent.VK_M: 
+            case KeyEvent.VK_N: 
+            case KeyEvent.VK_O: 
+            case KeyEvent.VK_P: 
+            case KeyEvent.VK_Q: 
+            case KeyEvent.VK_R: 
+            case KeyEvent.VK_S: 
+            case KeyEvent.VK_T: 
+            case KeyEvent.VK_U: 
+            case KeyEvent.VK_V: 
+            case KeyEvent.VK_W: 
+            case KeyEvent.VK_X: 
+            case KeyEvent.VK_Y: 
+            case KeyEvent.VK_Z: 
+                if (e.isShiftDown()) display.setText(display.getText() + (char)(key));
+                else display.setText(display.getText() + (char)(key + 32)); // use key + 32 to get lowercase
+                break;
 
             // everything else (key press does nothing)
             default: break;

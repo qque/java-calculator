@@ -86,9 +86,9 @@ public class ButtonPanel extends JPanel {
         buttons.get("(deg.)").addActionListener(e -> toggleDegree());
     }
 
-    public boolean isHyperbolic = false;
-    public boolean isReciprocal = false;
-    public boolean isDegree = false;
+    public static boolean isHyperbolic = false;
+    public static boolean isReciprocal = false;
+    public static boolean isDegree = false;
 
     private void toggleHyperbolic() {
         isHyperbolic = !isHyperbolic;
