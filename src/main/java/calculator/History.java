@@ -1,6 +1,6 @@
 /*
  *  Manages history of computations, stored as a 2-d ArrayList
- *  e.g. history = {{"computation", "result"}, {"2+2","4"}, ""}
+ *  history = {{"computation", "result"}, {"7!","5040"}, etc.}
  */
 
 package calculator;
@@ -23,32 +23,18 @@ public class History {
         return instance;
     }
 
-    public void add(ArrayList<String> entry) {
-        history.add(entry);
-    }
+    public void add(ArrayList<String> entry) { history.add(entry); }
 
-    public void add(String computation, String result) {
-        history.add(new ArrayList<>(List.of(computation,result)));
-    }
+    public void add(String computation, String result) { history.add(new ArrayList<>(List.of(computation,result))); }
 
-    public ArrayList<String> get(int index) {
-        return history.get(index);
-    }
+    public ArrayList<String> get(int index) { return history.get(index); }
 
-    public ArrayList<String> getLatest() {
-        return history.get(history.size() - 1);
-    }
+    public ArrayList<String> getLatest() { return history.get(history.size() - 1); }
 
-    public boolean isEmpty() {
-        return history.size() == 0;
-    }
+    public boolean isEmpty() { return history.size() == 0; }
 
-    public void clear() {
-        history.clear();
-    }
+    public void clear() { history.clear(); }
 
-    public void clearLatest() {
-        history.remove(history.size() - 1);
-    }
+    public void clearLatest() { history.remove(history.size() - 1); }
 
 }

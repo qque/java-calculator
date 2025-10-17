@@ -1,6 +1,6 @@
 /*
  *  Defines the parsing and behavior of buttons, including computation for "="
- *  Accepts any generic JTextArea using the setTextArea method
+ *  Accepts any generic JTextArea
  */
 
 package calculator.logic;
@@ -18,9 +18,11 @@ import java.math.RoundingMode;
 import calculator.ui.ButtonPanel;
 import calculator.History;
 
+import calculator.Main;
+
 public class ButtonLogic implements ButtonPanel.ButtonListener {
 
-    private static final int DEBUG_MODE = 1;
+    private static final int DEBUG_MODE = Main.DEBUG_MODE;
 
     private static JTextArea display;
 
@@ -127,7 +129,8 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
     }
 
     // defines parsing and computation for "=" button
-    public static double compute(String expression) throws ScriptException {
+    // uses generic Output type to handle double, int, boolean, etc.
+    public static Output compute(String expression) throws ScriptException {
         expression = preprocess(expression);
 
         String eval = engine.eval(expression).toString();
@@ -136,28 +139,35 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             System.out.println("Evaluated: " + eval);
         }
 
-        if (eval == "NaN") {
-            return Double.NaN;
-        } else if (eval == "Infinity") {
-            return Double.POSITIVE_INFINITY;
-        } else if (eval == "-Infinity") {
-            return Double.NEGATIVE_INFINITY;
+        Output output;
+
+        if (eval == "false" || eval == "true") {
+            output = new Output(Boolean.parseBoolean(eval), Boolean.class);
         } else {
-            double result = Double.parseDouble(eval);
-        
-            // check if floating point messed up a decimal
+            // valueOf used instead of 
+            double result = Double.valueOf(eval);
+
+            // note that, if the result was an integer before rounding (e.g. evaluating "2 + 2"), it will display as an int (e.g. "4")
+            // if it was rounded (e.g. evaluating "erf(5)"), it will display as a double (e.g. "1.0")
+            if ((long)result == result) output = new Output((long)result, Long.class);
+            
+            // check if floating point messed up a decimal, rounds up if so
             BigDecimal bd = new BigDecimal(Double.toString(result));
             bd = bd.setScale(4, RoundingMode.HALF_UP);
             double roundedResult = bd.doubleValue();
 
-            if (Math.abs(result - roundedResult) < 0.00000001) result = roundedResult;
-
-            if (DEBUG_MODE == 1) {
-                System.out.println(expression + "=" + result);
+            if (Math.abs(result - roundedResult) < 0.00000001) {
+                result = roundedResult;
             }
 
-            return result;
+            output = new Output(result, Double.class);
         }
+
+        if (DEBUG_MODE == 1) {
+            System.out.println(expression + "=" + output.toString());
+        }
+
+        return output;
     }
 
     // static implementation of onButtonClick behavior
@@ -173,6 +183,11 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             }
 
             switch (label) {
+            case "=":
+                String result = compute(expression) + "";
+                display.setText(result);
+                history.add(expression, result);
+                break;
             case "clear":
                 display.setText(null);
                 break;
@@ -181,15 +196,6 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                 if (caretPosition > 0) {
                     display.getDocument().remove(caretPosition - 1, 1);
                 }
-                break;
-            case "ans":
-                // `ans` will display "ans" to the user, and is dealt with in parsing
-                display.setText(expression + label);
-                break;
-            case "=":
-                String result = compute(expression) + "";
-                display.setText(result);
-                history.add(expression, result);
                 break;
 
             // input nothing
@@ -236,7 +242,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             case "stdevp": output = "stdevp("; break;
             case "erf": output = "erf("; break;
 
-            // input plain label
+            // input plain label (includes `ans`, which is converted in preprocessing)
             default:
                 display.setText(expression + label);
                 break;
@@ -249,6 +255,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             System.out.println(e);
 
             // show generic error message to user
+            // this is done since failure here should be the fault of the user
             JOptionPane.showMessageDialog(
                 display,
                 "An unexpected error occurred. Please check the syntax of your expression.",

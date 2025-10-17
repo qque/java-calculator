@@ -4,7 +4,7 @@
     This is used for most buttons, except for exponentiation (which is parsed into Math.pow beforehand)
     and basic arithmetic operators that already get parsed correctly (including parentheses)
 
-    Within ../java/calculator/logic/ButtonLogic.java, this code is comp
+    This code is evaluated by the engine when the application is opened
 */
 
 // simple copies of Math library functions
@@ -84,7 +84,8 @@ function stdevp(...nums) {
     return Math.sqrt(variance);
 }
 
-// approximation (from Abramowitz & Stegun 7.1.26), accurate to ~1e-9
+
+// error function; approximation (from Abramowitz & Stegun 7.1.26), accurate to ~1e-9
 function erf(x) {
     const sign = Math.sign(x);
     const ax = Math.abs(x);
@@ -102,8 +103,8 @@ function erf(x) {
     return sign * y;
 }
 
-// other functions
-// factorial (extended to non integers as gamma function)
+
+// gamma, factorial, npr, and ncr
 function gamma(x) { // lanczos approximation
     const p = [
         676.5203681218851,
@@ -129,6 +130,7 @@ function gamma(x) { // lanczos approximation
         return Math.sqrt(2 * Math.PI) * Math.pow(t, x + 0.5) * Math.exp(-t) * a;
     }
 }
+
 function fact(x) {
     if (Number.isInteger(x)) {
         var out = 1;

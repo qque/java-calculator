@@ -1,7 +1,7 @@
 /*
  *  Defines the behavior of keyboard input
  *  All operations except ones that are directly input run through ButtonLogic.runButton
- *  Accepts any generic JTextArea using the setTextArea method
+ *  Accepts any generic JTextArea
  */
 
 package calculator.logic;
@@ -31,7 +31,7 @@ public class KeyboardLogic implements KeyListener {
         boolean ctrl = e.isControlDown();
         String button = null;
 
-        switch (key) {                      // '[button name on (my) keyboard]' -- `[button on calculator]
+        switch (key) {                      // '[key name on (my) keyboard]' -- `[button on calculator]
         // control operation
         case KeyEvent.VK_DELETE:            // 'Del' -- `clear`
             button = "clear"; break;
@@ -52,11 +52,9 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_4:                 // '4' -- `4`
         case KeyEvent.VK_5:                 // '5' -- `5`
         case KeyEvent.VK_7:                 // '7' -- `7`
-        case KeyEvent.VK_PERIOD:            // '.' -- `.`
         case KeyEvent.VK_PLUS:              // '+' -- `+`
         case KeyEvent.VK_MINUS:             // '-' -- `-`
         case KeyEvent.VK_SLASH:             // '/' -- `÷`
-        case KeyEvent.VK_COMMA:             // ',' -- `,`
             display.setText(display.getText() + (char)(key));
             break;
 
@@ -80,6 +78,14 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_9:                 // '9' -- `9`
             if (shift) button = "(";
             else button = "9";
+            break;
+        case KeyEvent.VK_PERIOD:            // '.' -- `.`
+            if (shift) button = ">";
+            else button = ".";
+            break;
+        case KeyEvent.VK_COMMA:             // ',' -- `,`
+            if (shift) button = "<";
+            else button = ",";
             break;
         case KeyEvent.VK_BACK_SLASH:        // '|' -- `|x|`
             if (shift) button = "|x|";

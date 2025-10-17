@@ -44,6 +44,7 @@ public class CalculatorFrame extends JFrame {
         display.setPreferredSize(new Dimension(400, 80));
         topPanel.add(display, BorderLayout.CENTER);
 
+
         // clear and ans buttons beside top display
         JPanel sideButtons = new JPanel(new GridLayout(2, 1, 5, 5));
         JButton clearButton = new JButton("clear");
@@ -52,11 +53,10 @@ public class CalculatorFrame extends JFrame {
         clearButton.setFont(new Font("SansSerif", Font.BOLD, 18));
         ansButton.setFont(new Font("SansSerif", Font.BOLD, 18));
         
-        // class defining button behavior
-        ButtonLogic clickBehavior = new ButtonLogic();
+        ButtonLogic clickBehavior = new ButtonLogic(); // class defining button behavior
         ButtonLogic.setTextArea(display);
-        // connect clear and ans buttons to listener
-        clearButton.addActionListener(e -> clickBehavior.onButtonClick("clear"));
+        
+        clearButton.addActionListener(e -> clickBehavior.onButtonClick("clear")); // connect clear and ans buttons to listener manually
         ansButton.addActionListener(e -> clickBehavior.onButtonClick("delete"));
 
         clearButton.setPreferredSize(new Dimension(100, 80));
@@ -68,9 +68,11 @@ public class CalculatorFrame extends JFrame {
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
 
-        // setup JS parsing engine
+
+        // setup JS parsing engine (preloads js functions)
         ButtonLogic.setupEngine();
 
+    
         // 8x6 button grid below top display (see ButtonPanel.java)
         ButtonPanel buttonPanel = new ButtonPanel(clickBehavior);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
