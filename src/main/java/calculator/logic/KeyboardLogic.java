@@ -43,6 +43,7 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_EQUALS:
             if (shift) button = "+";        // '+' -- `+`
             else button = "=";              // '=' -- `=`
+            break;
         case KeyEvent.VK_SPACE:             // N/A; Allows user to input whitespace if they want
             display.setText(display.getText() + " ");
             break;

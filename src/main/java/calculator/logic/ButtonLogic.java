@@ -146,8 +146,11 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         if (eval == "false" || eval == "true") {
             output = new Output(Boolean.parseBoolean(eval), Boolean.class);
         } else {
-            // valueOf used instead of 
-            double result = Double.valueOf(eval);
+            double result;
+            if (eval == "NaN") result = Double.NaN;
+            else if (eval == "Infinity") result = Double.POSITIVE_INFINITY;
+            else if (eval == "-Infinity") result = Double.NEGATIVE_INFINITY;
+            else result = Double.valueOf(eval);
 
             // note that, if the result was an integer before rounding (e.g. evaluating "2 + 2"), it will display as an int (e.g. "4")
             // if it was rounded (e.g. evaluating "erf(5)"), it will display as a double (e.g. "1.0")
