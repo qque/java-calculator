@@ -173,73 +173,73 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             }
 
             switch (label) {
-                case "clear":
-                    display.setText(null);
-                    break;
-                case "delete":
-                    int caretPosition = display.getCaretPosition();
-                    if (caretPosition > 0) {
-                        display.getDocument().remove(caretPosition - 1, 1);
-                    }
-                    break;
-                case "ans":
-                    // `ans` will display "ans" to the user, and is dealt with in parsing
-                    display.setText(expression + label);
-                    break;
-                case "=":
-                    String result = compute(expression) + "";
-                    display.setText(result);
-                    history.add(expression, result);
-                    break;
+            case "clear":
+                display.setText(null);
+                break;
+            case "delete":
+                int caretPosition = display.getCaretPosition();
+                if (caretPosition > 0) {
+                    display.getDocument().remove(caretPosition - 1, 1);
+                }
+                break;
+            case "ans":
+                // `ans` will display "ans" to the user, and is dealt with in parsing
+                display.setText(expression + label);
+                break;
+            case "=":
+                String result = compute(expression) + "";
+                display.setText(result);
+                history.add(expression, result);
+                break;
 
-                // input nothing
-                case "(hyp.)":
-                case "(rec.)":
-                case "(deg.)":
-                case "(rad.)": break;
-                
-                // input with modified symbol
-                case "×": output = "*"; break;
-                case "÷": output = "/"; break;
-                case "1/x": output = "1/"; break;
-                case "|x|": output = "|"; break;
-                case "x²": output = "^2"; break;
-                case "10ˣ": output = "10^"; break;
-                case "eˣ": output = "e^"; break;
-                
-                // input with parenthesis (inverse trig & sqrt have modified symbol as well)
-                case "sin": output = "sin("; break;
-                case "cos": output = "cos("; break;
-                case "tan": output = "tan("; break;
-                case "sin⁻¹": output = "asin("; break;
-                case "cos⁻¹": output = "acos("; break;
-                case "tan⁻¹": output = "atan("; break;
-                case "csc": output = "csc("; break;
-                case "sec": output = "sec("; break;
-                case "cot": output = "cot("; break;
-                case "csc⁻¹": output = "acsc("; break;
-                case "sec⁻¹": output = "asec("; break;
-                case "cot⁻¹": output = "acot("; break;
-                case "sinh": output = "sinh("; break;
-                case "cosh": output = "cosh("; break;
-                case "tanh": output = "tanh("; break;
-                case "sinh⁻¹": output = "asinh("; break;
-                case "cosh⁻¹": output = "acosh("; break;
-                case "tanh⁻¹": output = "atanh("; break;
-                case "√": output = "sqrt("; break;
-                case "log": output = "log("; break;
-                case "ln": output = "ln("; break;
-                case "nPr": output = "nPr("; break;
-                case "nCr": output = "nCr("; break;
-                case "mean": output = "mean("; break;
-                case "stdev": output = "stdev("; break;
-                case "stdevp": output = "stdevp("; break;
-                case "erf": output = "erf("; break;
+            // input nothing
+            case "(hyp.)":
+            case "(rec.)":
+            case "(deg.)":
+            case "(rad.)": break;
+            
+            // input modified label
+            case "×": output = "*"; break;
+            case "÷": output = "/"; break;
+            case "1/x": output = "1/"; break;
+            case "|x|": output = "|"; break;
+            case "x²": output = "^2"; break;
+            case "10ˣ": output = "10^"; break;
+            case "eˣ": output = "e^"; break;
+            
+            // input label with parenthesis (inverse trig & sqrt have modified label as well)
+            case "sin": output = "sin("; break;
+            case "cos": output = "cos("; break;
+            case "tan": output = "tan("; break;
+            case "sin⁻¹": output = "asin("; break;
+            case "cos⁻¹": output = "acos("; break;
+            case "tan⁻¹": output = "atan("; break;
+            case "csc": output = "csc("; break;
+            case "sec": output = "sec("; break;
+            case "cot": output = "cot("; break;
+            case "csc⁻¹": output = "acsc("; break;
+            case "sec⁻¹": output = "asec("; break;
+            case "cot⁻¹": output = "acot("; break;
+            case "sinh": output = "sinh("; break;
+            case "cosh": output = "cosh("; break;
+            case "tanh": output = "tanh("; break;
+            case "sinh⁻¹": output = "asinh("; break;
+            case "cosh⁻¹": output = "acosh("; break;
+            case "tanh⁻¹": output = "atanh("; break;
+            case "√": output = "sqrt("; break;
+            case "log": output = "log("; break;
+            case "ln": output = "ln("; break;
+            case "nPr": output = "nPr("; break;
+            case "nCr": output = "nCr("; break;
+            case "mean": output = "mean("; break;
+            case "stdev": output = "stdev("; break;
+            case "stdevp": output = "stdevp("; break;
+            case "erf": output = "erf("; break;
 
-                // input normally
-                default:
-                    display.setText(expression + label);
-                    break;
+            // input plain label
+            default:
+                display.setText(expression + label);
+                break;
             }
 
             if (output != null) {
