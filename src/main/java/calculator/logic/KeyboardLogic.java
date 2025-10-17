@@ -28,6 +28,8 @@ public class KeyboardLogic implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         String button = null;
+        boolean shift = e.isShiftDown();
+        boolean ctrl = e.isControlDown();
         switch (key) {                          // '[button name on (my) keyboard]' -- `[button on calculator]
             // control operation
             case KeyEvent.VK_DELETE:            // 'Del' -- `clear`
@@ -36,6 +38,9 @@ public class KeyboardLogic implements KeyListener {
                 button = "delete"; break;
             case KeyEvent.VK_ENTER:             // 'Enter' -- `=`
                 button = "="; break;
+            case KeyEvent.VK_EQUALS:
+                if (shift) button = "+";        // '+' -- `+`
+                else button = "=";              // '=' -- `=`
             case KeyEvent.VK_SPACE:             // N/A; Allows user to input whitespace if they want
                 display.setText(display.getText() + " ");
                 break;
@@ -56,41 +61,37 @@ public class KeyboardLogic implements KeyListener {
 
             // direct input (checking for special characters)
             case KeyEvent.VK_0:                 // '0' -- `0`
-                if (e.isShiftDown()) button = ")";
+                if (shift) button = ")";
                 else button = "0";
                 break;
             case KeyEvent.VK_1:                 // '1' -- `1`
-                if (e.isShiftDown()) button = "!";
+                if (shift) button = "!";
                 else button = "1";
                 break;
             case KeyEvent.VK_6:                 // '6' -- `6`
-                if (e.isShiftDown()) button = "^";
+                if (shift) button = "^";
                 else button = "6";
                 break;
             case KeyEvent.VK_8:                 // '8' -- `8`
-                if (e.isShiftDown()) button = "*";
+                if (shift) button = "*";
                 else button = "8";
                 break;
             case KeyEvent.VK_9:                 // '9' -- `9`
-                if (e.isShiftDown()) button = "(";
+                if (shift) button = "(";
                 else button = "9";
                 break;
             case KeyEvent.VK_BACK_SLASH:        // '|' -- `|x|`
-                if (e.isShiftDown()) button = "|x|";
+                if (shift) button = "|x|";
                 break;
 
-            case KeyEvent.VK_H:
-                if (e.isControlDown()); // enter history menu
-                else if (e.isShiftDown()) display.setText(display.getText() + (char)(key));
-                else display.setText(display.getText() + (char)(key + 32));
-                break;
             case KeyEvent.VK_A: 
             case KeyEvent.VK_B: 
             case KeyEvent.VK_C: 
             case KeyEvent.VK_D: 
             case KeyEvent.VK_E:                 // 'e' -- `e`
             case KeyEvent.VK_F: 
-            case KeyEvent.VK_G:  
+            case KeyEvent.VK_G: 
+            case KeyEvent.VK_H: 
             case KeyEvent.VK_I: 
             case KeyEvent.VK_J: 
             case KeyEvent.VK_K: 
@@ -109,7 +110,9 @@ public class KeyboardLogic implements KeyListener {
             case KeyEvent.VK_X: 
             case KeyEvent.VK_Y: 
             case KeyEvent.VK_Z: 
-                if (e.isShiftDown()) display.setText(display.getText() + (char)(key));
+                if (ctrl && key == KeyEvent.VK_H); // open history menu
+                else if (ctrl && key == KeyEvent.VK_N); // open notepad
+                else if (shift) display.setText(display.getText() + (char)(key));
                 else display.setText(display.getText() + (char)(key + 32)); // use key + 32 to get lowercase
                 break;
 

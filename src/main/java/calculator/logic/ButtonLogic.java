@@ -130,20 +130,34 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
     public static double compute(String expression) throws ScriptException {
         expression = preprocess(expression);
 
-        double result = Double.parseDouble(engine.eval(expression).toString());
-
-        // check if floating point messed up a decimal
-        BigDecimal bd = new BigDecimal(Double.toString(result));
-        bd = bd.setScale(4, RoundingMode.HALF_UP);
-        double roundedResult = bd.doubleValue();
-
-        if (Math.abs(result - roundedResult) < 0.00000001) result = roundedResult;
+        String eval = engine.eval(expression).toString();
 
         if (DEBUG_MODE == 1) {
-            System.out.println(expression + "=" + result);
+            System.out.println("Evaluated: " + eval);
         }
 
-        return result;
+        if (eval == "NaN") {
+            return Double.NaN;
+        } else if (eval == "Infinity") {
+            return Double.POSITIVE_INFINITY;
+        } else if (eval == "-Infinity") {
+            return Double.NEGATIVE_INFINITY;
+        } else {
+            double result = Double.parseDouble(eval);
+        
+            // check if floating point messed up a decimal
+            BigDecimal bd = new BigDecimal(Double.toString(result));
+            bd = bd.setScale(4, RoundingMode.HALF_UP);
+            double roundedResult = bd.doubleValue();
+
+            if (Math.abs(result - roundedResult) < 0.00000001) result = roundedResult;
+
+            if (DEBUG_MODE == 1) {
+                System.out.println(expression + "=" + result);
+            }
+
+            return result;
+        }
     }
 
     // static implementation of onButtonClick behavior
