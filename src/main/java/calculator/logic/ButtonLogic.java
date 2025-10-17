@@ -12,6 +12,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import java.awt.Color;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -149,14 +151,17 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
             // note that, if the result was an integer before rounding (e.g. evaluating "2 + 2"), it will display as an int (e.g. "4")
             // if it was rounded (e.g. evaluating "erf(5)"), it will display as a double (e.g. "1.0")
-            if ((long)result == result) output = new Output((long)result, Long.class);
+            if ((long)result == result) {
+                return new Output((long)result, Long.class);
+            }
             
-            // check if floating point messed up a decimal, rounds up if so
+            // check if floating point messed up a decimal, rounds up if so.
+            // unfortunately, this gets rid of valid precision in cases where the result is close to an integer (e.g. "erf(5)")
             BigDecimal bd = new BigDecimal(Double.toString(result));
             bd = bd.setScale(4, RoundingMode.HALF_UP);
             double roundedResult = bd.doubleValue();
 
-            if (Math.abs(result - roundedResult) < 0.00000001) {
+            if (Math.abs(result - roundedResult) < 0.000000001) {
                 result = roundedResult;
             }
 
@@ -182,10 +187,13 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                 System.out.println(label + ";    " + expression);
             }
 
+            if (label != "=") display.setForeground(Color.BLACK);
+
             switch (label) {
             case "=":
-                String result = compute(expression) + "";
+                String result = compute(expression).toString();
                 display.setText(result);
+                display.setForeground(Color.RED);
                 history.add(expression, result);
                 break;
             case "clear":
@@ -199,6 +207,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                 break;
 
             // input nothing
+            case "null": 
             case "(hyp.)":
             case "(rec.)":
             case "(deg.)":

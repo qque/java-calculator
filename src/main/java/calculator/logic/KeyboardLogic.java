@@ -1,6 +1,7 @@
 /*
  *  Defines the behavior of keyboard input
- *  All operations except ones that are directly input run through ButtonLogic.runButton
+ *  All operations are run through ButtonLogic.runButton, including keys which are directly input
+ *  For keys that are directly input, the label passed to runButton will be "null", and not do anything
  *  Accepts any generic JTextArea
  */
 
@@ -23,7 +24,7 @@ public class KeyboardLogic implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {} // not used
 
-    // defines all keyboard input, 
+    // defines all keyboard input
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
