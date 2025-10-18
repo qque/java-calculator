@@ -17,6 +17,9 @@ import java.awt.Color;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import calculator.ui.ButtonPanel;
 import calculator.History;
 
@@ -38,6 +41,8 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             System.out.println("Preprocessing: " + expression);
         }
 
+        // check for user defined function
+
         // replaces "ans" with answer value
         if (!history.isEmpty()) expression = expression.replaceAll("ans", history.getLatest().get(1));
 
@@ -50,7 +55,23 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         expression = expression.replaceAll("\\^", "**");
 
         // converts "x!" -> "fact(x)"
-        if (expression.contains("!")) expression = expression.replaceAll("(\\([^()]+\\)|[\\w.]+)!", "fact($1)");
+            while (expression.contains("!")) {
+            int i = expression.indexOf('!');
+            int start = i - 1;
+            if (start >= 0 && expression.charAt(start) == ')') {
+                int d = 0, j = start;
+                while (j >= 0) {
+                    if (expression.charAt(j) == ')') d++;
+                    else if (expression.charAt(j) == '(' && --d == 0) break;
+                    j--;
+                }
+                expression = expression.substring(0, j) + "fact(" + expression.substring(j, i) + ")" + expression.substring(i + 1);
+            } else {
+                int j = start;
+                while (j >= 0 && (Character.isLetterOrDigit(expression.charAt(j)) || expression.charAt(j) == '_')) j--;
+                expression = expression.substring(0, j + 1) + "fact(" + expression.substring(j + 1, i) + ")" + expression.substring(i + 1);
+            }
+        }
 
         // converts "π" & "pi" -> "Math.PI" and "e" -> "Math.E"
         expression = expression.replaceAll("π", "Math.PI");
@@ -143,7 +164,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
         Output output;
 
-        if (eval == "false" || eval == "true") {
+        if (eval == null) {
+            output = new Output("", Void.class);
+        } else if (eval == "false" || eval == "true") {
             output = new Output(Boolean.parseBoolean(eval), Boolean.class);
         } else {
             double result;
