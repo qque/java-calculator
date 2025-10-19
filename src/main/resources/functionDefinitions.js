@@ -31,6 +31,9 @@ function acsc(x) { return Math.asin(1/x); }
 function asec(x) { return Math.acos(1/x); }
 function acot(x) { return Math.PI - Math.atan(x); }
 function log(a,x) { return Math.log(x) / Math.log(a); }
+function abs(x) {
+    return Math.abs(x);
+}
 
 // degree variants for trig functions
 function dsin(x) { x = Math.PI * x / 180; return Math.sin(x); }

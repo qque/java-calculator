@@ -12,6 +12,10 @@ import javax.swing.JTextArea;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import calculator.ui.HistoryFrame;
+import calculator.ui.NotepadFrame;
+import calculator.ui.SettingsFrame;
+
 public class KeyboardLogic implements KeyListener {
 
     private static JTextArea display;
@@ -30,7 +34,7 @@ public class KeyboardLogic implements KeyListener {
         int key = e.getKeyCode();
         boolean shift = e.isShiftDown();
         boolean ctrl = e.isControlDown();
-        String button = null;
+        String button = "null";
 
         switch (key) {                      // '[key name on (my) keyboard]' -- `[button on calculator]
         // control operation
@@ -119,18 +123,31 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_X: 
         case KeyEvent.VK_Y: 
         case KeyEvent.VK_Z: 
-            if (ctrl && key == KeyEvent.VK_H); // open history menu
-            else if (ctrl && key == KeyEvent.VK_N); // open notepad
-            else if (shift) display.setText(display.getText() + (char)(key));
-            else display.setText(display.getText() + (char)(key + 32)); // use key + 32 to get lowercase
+            if (ctrl && key == KeyEvent.VK_H) { // open history
+                HistoryFrame historyFrame = new HistoryFrame();
+                historyFrame.setVisible(true);
+            } else if (ctrl && key == KeyEvent.VK_N) { // open notepad
+                NotepadFrame notepadFrame = new NotepadFrame();
+                notepadFrame.setVisible(true);
+            } else if (ctrl && key == KeyEvent.VK_S) { // open settings
+                SettingsFrame settingsFrame = new SettingsFrame();
+                settingsFrame.setVisible(true);
+            } else if (shift) {
+                display.setText(display.getText() + (char)(key));
+            } else {
+                display.setText(display.getText() + (char)(key + 32)); // use key + 32 to get lowercase
+            }
             break;
 
         // everything else (key press does nothing)
         default: break;
         }
 
-        if (button != null) {
-            ButtonLogic.runButton(button);
-        }
+        // runButton is always ran here, even when it is "null", since we want the baseline
+        // behavior of runButton (setting display text to black, setting cursor, etc.) to occur
+
+        // popupMenu is always null, since popup menus can only be opened via button presses
+        // of course, you can access functions within these popup menus, though
+        ButtonLogic.runButton(button);
     } 
 }

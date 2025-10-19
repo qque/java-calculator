@@ -4,12 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import calculator.History;
+public class SettingsFrame extends JFrame {
 
-public class HistoryFrame extends JFrame {
-
-    public HistoryFrame() {
-        super("History");
+    public SettingsFrame() {
+        super("Settings");
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         

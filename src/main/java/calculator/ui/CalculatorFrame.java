@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import calculator.logic.*;
+import calculator.Settings;
 
 public class CalculatorFrame extends JFrame {
 
@@ -18,7 +19,7 @@ public class CalculatorFrame extends JFrame {
     public CalculatorFrame() {
         super("Calculator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(685, 635);
+        setSize(685, 685);
         setLocationRelativeTo(null);
         initUI();
         setVisible(true);
@@ -34,36 +35,40 @@ public class CalculatorFrame extends JFrame {
         display = new JTextArea();
         display.setEditable(false);
 
+        JScrollPane scrollPane = new JScrollPane(display);
+
         KeyboardLogic keyListener = new KeyboardLogic();
         KeyboardLogic.setTextArea(display);
         display.addKeyListener(keyListener); // key listener
 
-        display.setFont(new Font("Consolas", Font.PLAIN, 47));
+        display.setFont(new Font("Consolas", Font.PLAIN, Settings.consoleFontSize));
         display.setLineWrap(true); // wrap text
         display.setWrapStyleWord(true);
         display.setPreferredSize(new Dimension(400, 80));
+        topPanel.add(scrollPane, BorderLayout.CENTER);
         topPanel.add(display, BorderLayout.CENTER);
 
 
         // clear and ans buttons beside top display
         JPanel sideButtons = new JPanel(new GridLayout(2, 1, 5, 5));
         JButton clearButton = new JButton("clear");
-        JButton ansButton = new JButton("delete");
+        JButton deleteButton = new JButton("delete");
 
         clearButton.setFont(new Font("SansSerif", Font.BOLD, 18));
-        ansButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+        deleteButton.setFont(new Font("SansSerif", Font.BOLD, 18));
         
         ButtonLogic clickBehavior = new ButtonLogic(); // class defining button behavior
         ButtonLogic.setTextArea(display);
         
-        clearButton.addActionListener(e -> clickBehavior.onButtonClick("clear")); // connect clear and ans buttons to listener manually
-        ansButton.addActionListener(e -> clickBehavior.onButtonClick("delete"));
+        // connect clear and ans buttons to listener manually
+        clearButton.addActionListener(e -> clickBehavior.onButtonClick("clear"));
+        deleteButton.addActionListener(e -> clickBehavior.onButtonClick("delete"));
 
         clearButton.setPreferredSize(new Dimension(100, 80));
-        ansButton.setPreferredSize(new Dimension(100, 80));
+        deleteButton.setPreferredSize(new Dimension(100, 80));
 
         sideButtons.add(clearButton);
-        sideButtons.add(ansButton);
+        sideButtons.add(deleteButton);
         topPanel.add(sideButtons, BorderLayout.EAST);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
@@ -73,7 +78,7 @@ public class CalculatorFrame extends JFrame {
         ButtonLogic.setupEngine();
 
     
-        // 8x6 button grid below top display (see ButtonPanel.java)
+        // 9x6 button grid below top display (see ButtonPanel.java)
         ButtonPanel buttonPanel = new ButtonPanel(clickBehavior);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
 

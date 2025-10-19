@@ -6,6 +6,7 @@
 package calculator.logic;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 
 import javax.script.ScriptEngineManager;
@@ -13,12 +14,12 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import java.awt.Color;
-
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import calculator.ui.ButtonPanel;
 import calculator.History;
@@ -48,7 +49,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
         // converts "|xyz|" -> "Math.abs(xyz)"
         while (expression.contains("|")) {
-            expression = expression.replaceAll("\\|([^|]+)\\|", "Math.abs($1)");
+            expression = expression.replaceAll("\\|([^|]+)\\|", "abs($1)");
         }
 
         // converts "(abc)^(xyz)" -> "(abc) ** (xyz)"
@@ -121,29 +122,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         // functions that need to be defined for computation (stdev, nCr, etc.)
         // see ../../../resources/functionDefinitions.js for a readable version of the code with comments
         try {
-            engine.eval("function sin(t){return Math.sin(t)}function cos(t){return Math.cos(t)}function tan(t){return Math.tan(t)}" +
-            "function asin(t){return Math.asin(t)}function acos(t){return Math.acos(t)}function atan(t){return Math.atan(t)}" +
-            "function sinh(t){return Math.sinh(t)}function cosh(t){return Math.cosh(t)}function tanh(t){return Math.tanh(t)}" +
-            "function asinh(t){return Math.asinh(t)}function acosh(t){return Math.acosh(t)}function atanh(t){return Math.atanh(t)}" +
-            "function sqrt(t){return Math.sqrt(t)}function ln(t){return Math.log(t)}function csc(t){return 1/Math.sin(t)}" +
-            "function sec(t){return 1/Math.cos(t)}function cot(t){return 1/Math.tan(t)}function acsc(t){return Math.asin(1/t)}" +
-            "function asec(t){return Math.acos(1/t)}function acot(t){return Math.PI-Math.atan(t)}function log(t,n){return Math.log(n)/Math.log(t)}" +
-            "function dsin(t){return t=Math.PI*t/180,Math.sin(t)}function dcos(t){return t=Math.PI*t/180,Math.cos(t)}" +
-            "function dtan(t){return t=Math.PI*t/180,Math.tan(t)}function dasin(t){return t=Math.PI*t/180,Math.asin(t)}" +
-            "function dacos(t){return t=Math.PI*t/180,Math.acos(t)}function datan(t){return t=Math.PI*t/180,Math.atan(t)}" +
-            "function dsinh(t){return t=Math.PI*t/180,Math.sinh(t)}function dcosh(t){return t=Math.PI*t/180,Math.cosh(t)}" +
-            "function dtanh(t){return t=Math.PI*t/180,Math.tanh(t)}function dasinh(t){return t=Math.PI*t/180,Math.asinh(t)}" +
-            "function dacosh(t){return t=Math.PI*t/180,Math.acosh(t)}function datanh(t){return t=Math.PI*t/180,Math.atanh(t)}" +
-            "function dcsc(t){return t=Math.PI*t/180,1/Math.sin(t)}function dsec(t){return t=Math.PI*t/180,1/Math.cos(t)}" +
-            "function dcot(t){return t=Math.PI*t/180,1/Math.tan(t)}function dacsc(t){return t=Math.PI*t/180,Math.asin(1/t)}" +
-            "function dasec(t){return t=Math.PI*t/180,Math.acos(1/t)}function dacot(t){return t=Math.PI*t/180,Math.PI-Math.atan(t)}" +
-            "function mean(...t){return t.reduce(((t,n)=>t+n),0)/t.length}function stdev(...t){for(var n=0,a=mean(...t),r=t.length,h=0,u=0;u<r;u++)n+=(h=t[u]-a)*h;return n/=r,Math.sqrt(n)}" +
-            "function stdevp(...t){for(var n=0,a=mean(...t),r=t.length,h=0,u=0;u<r;u++)n+=(h=t[u]-a)*h;return n/=r-1,Math.sqrt(n)}" +
-            "function erf(t){const n=Math.sign(t),a=Math.abs(t),e=1/(1+.3275911*a);return n*(1-((((1.061405429*e-1.453152027)*e+1.421413741)*e-.284496736)*e+.254829592)*e*Math.exp(-a*a))}" +
-            "function gamma(x){const a=[676.5203681218851,-1259.1392167224028,771.3234287776531,-176.6150291621406,12.507343278686905,-.13857109526572012,9984369578019572e-21,1.5056327351493116e-7];if(x<.5)return Math.PI/(Math.sin(Math.PI*x)*gamma(1-x));{x-=1;let t=.9999999999998099;for(let e=0;e<a.length;e++)t+=a[e]/(x+e+1);const e=x+a.length-.5;return Math.sqrt(2*Math.PI)*Math.pow(e,x+.5)*Math.exp(-e)*t}}" +
-            "function fact(t){if(Number.isInteger(t)){for(var a=1,e=2;e<=t;e++)a*=e;return a}return gamma(t+1)}" +
-            "function nPr(t,n){for(var a=1,r=t-n+1;r<=t;r++)a*=r;return a}function nCr(t,n){for(var a=1,r=t-n+1;r<=t;r++)a*=r,a/=t+1-r;return a};");
-        } catch (ScriptException e) {
+            String content = Files.readString(Path.of("src/main/resources/minified.js"), StandardCharsets.UTF_8);
+            engine.eval(content);
+        } catch (ScriptException | IOException e) {
             System.out.println(e);
             System.exit(0);
         }
@@ -170,25 +151,30 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             output = new Output(Boolean.parseBoolean(eval), Boolean.class);
         } else {
             double result;
-            if (eval == "NaN") result = Double.NaN;
-            else if (eval == "Infinity") result = Double.POSITIVE_INFINITY;
-            else if (eval == "-Infinity") result = Double.NEGATIVE_INFINITY;
-            else result = Double.valueOf(eval);
+            if (eval == "NaN") {
+                result = Double.NaN;
+            } else if (eval == "Infinity") {
+                result = Double.POSITIVE_INFINITY;
+            } else if (eval == "-Infinity") {
+                result = Double.NEGATIVE_INFINITY;
+            } else {
+                result = Double.valueOf(eval);
 
-            // note that, if the result was an integer before rounding (e.g. evaluating "2 + 2"), it will display as an int (e.g. "4")
-            // if it was rounded (e.g. evaluating "erf(5)"), it will display as a double (e.g. "1.0")
-            if ((long)result == result) {
-                return new Output((long)result, Long.class);
-            }
-            
-            // check if floating point messed up a decimal, rounds up if so.
-            // unfortunately, this gets rid of valid precision in cases where the result is close to an integer (e.g. "erf(5)")
-            BigDecimal bd = new BigDecimal(Double.toString(result));
-            bd = bd.setScale(4, RoundingMode.HALF_UP);
-            double roundedResult = bd.doubleValue();
+                // note that, if the result was an integer before rounding (e.g. evaluating "2 + 2"), it will display as an int (e.g. "4")
+                // if it was rounded (e.g. evaluating "erf(5)"), it will display as a double (e.g. "1.0")
+                if ((long)result == result) {
+                    return new Output((long)result, Long.class);
+                }
+                
+                // check if floating point messed up a decimal, rounds up if so.
+                // unfortunately, this gets rid of valid precision in cases where the result is close to an integer (e.g. "erf(5)")
+                BigDecimal bd = new BigDecimal(Double.toString(result));
+                bd = bd.setScale(4, RoundingMode.HALF_UP);
+                double roundedResult = bd.doubleValue();
 
-            if (Math.abs(result - roundedResult) < 0.000000001) {
-                result = roundedResult;
+                if (Math.abs(result - roundedResult) < 0.000000001) {
+                    result = roundedResult;
+                }
             }
 
             output = new Output(result, Double.class);
@@ -232,12 +218,21 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                 }
                 break;
 
-            // input nothing
-            case "null": 
+            // do nothing
             case "(hyp.)":
             case "(rec.)":
             case "(deg.)":
-            case "(rad.)": break;
+            case "(rad.)":
+            // case for null keyboard input
+            case "null": break;
+            // popup buttons (menu opening is dealt with before coming here)
+            case "list":
+            case "matrix":
+            case "special":
+            case "cmplx":
+            case "solve":
+            case "stat":
+            case "test": break;
             
             // input modified label
             case "×": output = "*"; break;
@@ -272,10 +267,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             case "ln": output = "ln("; break;
             case "nPr": output = "nPr("; break;
             case "nCr": output = "nCr("; break;
-            case "mean": output = "mean("; break;
-            case "stdev": output = "stdev("; break;
-            case "stdevp": output = "stdevp("; break;
-            case "erf": output = "erf("; break;
+            case "∫": output = "∫("; break;
+
+            // popup
 
             // input plain label (includes `ans`, which is converted in preprocessing)
             default:
@@ -286,6 +280,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             if (output != null) {
                 display.setText(expression + output);
             }
+
+            // makes display scroll down so new text is visible
+            display.setCaretPosition(display.getDocument().getLength());
         } catch (Exception e) {
             System.out.println(e);
 
@@ -297,6 +294,35 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                 "Error",
                 JOptionPane.ERROR_MESSAGE
             );
+        }
+    }
+
+
+    // static button switch for popups
+    public static void runPopupButton(String label, JPopupMenu popupMenu) {
+        popupMenu.setVisible(false);
+
+        String expression = display.getText();
+        String output = null;
+
+        if (DEBUG_MODE == 1) {
+            System.out.println(label + ";    " + expression);
+        }
+
+        display.setForeground(Color.BLACK);
+
+        switch (label) {
+        // `stat` popups
+        case "mean": output = "mean("; break;
+        case "stdev": output = "stdev("; break;
+        case "stdevp": output = "stdevp("; break;
+        case "erf": output = "erf("; break;
+
+        // `test` popups
+        }
+
+        if (output != null) {
+            display.setText(expression + output);
         }
     }
 
