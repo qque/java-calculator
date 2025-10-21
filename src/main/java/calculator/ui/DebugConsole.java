@@ -22,6 +22,10 @@ import javax.swing.event.*;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import calculator.logic.ButtonLogic;
 
@@ -86,11 +90,28 @@ public class DebugConsole extends JFrame implements KeyListener {
             if (e.isShiftDown()) {
                 // pass input directly
 
-
+                // check if file string
+                if (text.startsWith("#")) {
+                    try {
+                        text = Files.readString(Path.of(text.substring(1)), StandardCharsets.UTF_8);
+                    } catch (IOException err) {
+                        System.out.println(err);
+                    }
+                }
 
                 ButtonLogic.engineEval(text);
             } else if (e.isControlDown()) {
                 // pass input indirectly
+
+                // check if file string
+                if (text.startsWith("#")) {
+                    try {
+                        text = Files.readString(Path.of(text.substring(1)), StandardCharsets.UTF_8);
+                    } catch (IOException err) {
+                        System.out.println(err);
+                    }
+                }
+
                 try {
                     String result = ButtonLogic.compute(text).toString();
 
