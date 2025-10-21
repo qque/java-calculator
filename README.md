@@ -1,10 +1,10 @@
 # java-calculator
 
-This is a basic calculator app built in Java Swing. It feat
+This is a basic calculator app built in Java Swing. It features...
 
 ## Functionality
 
-This calculator features a full 
+TODO
 
 ## Install
 
