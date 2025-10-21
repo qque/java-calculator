@@ -55,58 +55,6 @@ function dacsc(x) { x = Math.PI * x / 180; return Math.asin(1/x); }
 function dasec(x) { x = Math.PI * x / 180; return Math.acos(1/x); }
 function dacot(x) { x = Math.PI * x / 180; return Math.PI - Math.atan(x); }
 
-
-// statistical functions
-function mean(...nums) {
-    return nums.reduce((a,b) => a + b, 0) / nums.length;
-}
-
-function stdev(...nums) {
-    var variance = 0;
-    var mu = mean(...nums);
-    var len = nums.length;
-    var im = 0;
-    for (var i = 0; i < len; i++) {
-        im = nums[i] - mu;
-        variance += im * im;
-    }
-    variance /= len;
-    return Math.sqrt(variance);
-}
-
-function stdevp(...nums) {
-    var variance = 0;
-    var mu = mean(...nums);
-    var len = nums.length;
-    var im = 0;
-    for (var i = 0; i < len; i++) {
-        im = nums[i] - mu;
-        variance += im * im;
-    }
-    variance /= (len - 1);
-    return Math.sqrt(variance);
-}
-
-
-// error function; approximation (from Abramowitz & Stegun 7.1.26), accurate to ~1e-9
-function erf(x) {
-    const sign = Math.sign(x);
-    const ax = Math.abs(x);
-
-    const a1 = 0.254829592;
-    const a2 = -0.284496736;
-    const a3 = 1.421413741;
-    const a4 = -1.453152027;
-    const a5 = 1.061405429;
-    const p  = 0.3275911;
-
-    const t = 1 / (1 + p * ax);
-    const y = 1 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t * Math.exp(-ax*ax);
-
-    return sign * y;
-}
-
-
 // gamma, factorial, npr, and ncr
 function gamma(x) { // lanczos approximation
     const p = [
@@ -162,3 +110,57 @@ function nCr(n,r) {
     }
     return out;
 }
+
+
+// statistical functions
+function mean(...nums) {
+    return nums.reduce((a,b) => a + b, 0) / nums.length;
+}
+
+function stdev(...nums) {
+    var variance = 0;
+    var mu = mean(...nums);
+    var len = nums.length;
+    var im = 0;
+    for (var i = 0; i < len; i++) {
+        im = nums[i] - mu;
+        variance += im * im;
+    }
+    variance /= len;
+    return Math.sqrt(variance);
+}
+
+function stdevp(...nums) {
+    var variance = 0;
+    var mu = mean(...nums);
+    var len = nums.length;
+    var im = 0;
+    for (var i = 0; i < len; i++) {
+        im = nums[i] - mu;
+        variance += im * im;
+    }
+    variance /= (len - 1);
+    return Math.sqrt(variance);
+}
+
+
+// error function; approximation (from Abramowitz & Stegun 7.1.26), accurate to ~1e-9
+function erf(x) {
+    const sign = Math.sign(x);
+    const ax = Math.abs(x);
+
+    const a1 = 0.254829592;
+    const a2 = -0.284496736;
+    const a3 = 1.421413741;
+    const a4 = -1.453152027;
+    const a5 = 1.061405429;
+    const p  = 0.3275911;
+
+    const t = 1 / (1 + p * ax);
+    const y = 1 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t * Math.exp(-ax*ax);
+
+    return sign * y;
+}
+
+
+// test functions

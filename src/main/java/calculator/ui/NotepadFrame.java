@@ -10,12 +10,17 @@ public class NotepadFrame extends JFrame {
 
     public NotepadFrame() {
         super("Notepad");
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
+        setSize(300, 300); // remove when pack() is used
+        setLocationRelativeTo(null);
         setLayout(new FlowLayout());
+        initUI();
+        // uncomment when initUI is implemented
+        //pack();
+    }
 
-        pack(); 
+    private void initUI() {
+        // todo
     }
 
 }

@@ -3,6 +3,9 @@
  *  All operations are run through ButtonLogic.runButton, including keys which are directly input
  *  For keys that are directly input, the label passed to runButton will be "null", and not do anything
  *  Accepts any generic JTextArea
+ *  
+ *  Though letters, numbers, and most special symbols can be input, everything else has no effect
+ *  If you want more direct access 
  */
 
 package calculator.logic;
@@ -12,6 +15,7 @@ import javax.swing.JTextArea;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import calculator.ui.DebugConsole;
 import calculator.ui.HistoryFrame;
 import calculator.ui.NotepadFrame;
 import calculator.ui.SettingsFrame;
@@ -43,7 +47,12 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_BACK_SPACE:        // 'Backspace' -- `delete`
             button = "delete"; break;
         case KeyEvent.VK_ENTER:             // 'Enter' -- `=`
-            button = "="; break;
+            if (shift) display.setText(display.getText() + '\n');
+            else button = "=";
+            break;
+        case KeyEvent.VK_TAB:
+            display.setText(display.getText() + '\t');
+            break;
         case KeyEvent.VK_EQUALS:
             if (shift) button = "+";        // '+' -- `+`
             else button = "=";              // '=' -- `=`
@@ -53,12 +62,6 @@ public class KeyboardLogic implements KeyListener {
             break;
 
         // direct input
-        case KeyEvent.VK_2:                 // '2' -- `2`
-        case KeyEvent.VK_3:                 // '3' -- `3`
-        case KeyEvent.VK_4:                 // '4' -- `4`
-        case KeyEvent.VK_5:                 // '5' -- `5`
-        case KeyEvent.VK_7:                 // '7' -- `7`
-        case KeyEvent.VK_PLUS:              // '+' -- `+`
         case KeyEvent.VK_MINUS:             // '-' -- `-`
         case KeyEvent.VK_SLASH:             // '/' -- `÷`
             display.setText(display.getText() + (char)(key));
@@ -73,10 +76,27 @@ public class KeyboardLogic implements KeyListener {
             if (shift) button = "!";
             else button = "1";
             break;
+        case KeyEvent.VK_2:                 // '2' -- `2`
+            if (shift) button = "@";
+            else button = "2";
+            break;
+        case KeyEvent.VK_3:                 // '3' -- `3`
+            if (shift) button = "#";
+            else button = "3";
+            break;
+        case KeyEvent.VK_4:                 // '4' -- `4`
+            if (shift) button = "$";
+            else button = "4";
+            break;
+        case KeyEvent.VK_5:                 // '5' -- `5`
+            if (shift) button = "%";
+            else button = "5";
+            break;
         case KeyEvent.VK_6:                 // '6' -- `6`
             if (shift) button = "^";
             else button = "6";
             break;
+        case KeyEvent.VK_7:                 // '7' -- `7`
         case KeyEvent.VK_8:                 // '8' -- `8`
             if (shift) button = "*";
             else button = "8";
@@ -96,7 +116,7 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_BACK_SLASH:        // '|' -- `|x|`
             if (shift) button = "|x|";
             break;
-        // though text (except for 'e') has no meaning unless it corresponds to a function, this is included for user convenience
+
         case KeyEvent.VK_A: 
         case KeyEvent.VK_B: 
         case KeyEvent.VK_C: 
@@ -104,7 +124,7 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_E:                 // 'e' -- `e`
         case KeyEvent.VK_F: 
         case KeyEvent.VK_G: 
-        case KeyEvent.VK_H: 
+        case KeyEvent.VK_H:
         case KeyEvent.VK_I: 
         case KeyEvent.VK_J: 
         case KeyEvent.VK_K: 
@@ -122,20 +142,24 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_W: 
         case KeyEvent.VK_X: 
         case KeyEvent.VK_Y: 
-        case KeyEvent.VK_Z: 
-            if (ctrl && key == KeyEvent.VK_H) { // open history
+        case KeyEvent.VK_Z:
+            if (ctrl && key == KeyEvent.VK_H) {
                 HistoryFrame historyFrame = new HistoryFrame();
                 historyFrame.setVisible(true);
-            } else if (ctrl && key == KeyEvent.VK_N) { // open notepad
+            } else if (ctrl && key == KeyEvent.VK_N) {
                 NotepadFrame notepadFrame = new NotepadFrame();
                 notepadFrame.setVisible(true);
-            } else if (ctrl && key == KeyEvent.VK_S) { // open settings
+            } else if (ctrl && key == KeyEvent.VK_S) {
                 SettingsFrame settingsFrame = new SettingsFrame();
                 settingsFrame.setVisible(true);
+            } else if (ctrl && key == KeyEvent.VK_D) {
+                DebugConsole debugConsole = new DebugConsole();
+                debugConsole.setVisible(true);
             } else if (shift) {
                 display.setText(display.getText() + (char)(key));
             } else {
-                display.setText(display.getText() + (char)(key + 32)); // use key + 32 to get lowercase
+                // use key + 32 to get lowercase
+                display.setText(display.getText() + (char)(key + 32));
             }
             break;
 

@@ -20,11 +20,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import calculator.Main;
-
 public class ButtonPanel extends JPanel {
-
-    private static final int DEBUG_MODE = Main.DEBUG_MODE;
 
     public interface ButtonListener {
         void onButtonClick(String label);
@@ -37,28 +33,21 @@ public class ButtonPanel extends JPanel {
     
     // main 9x6 grid labels
     public static String[][] labels = {
-        {"list", "matrix", "special", "cmplx", "solve", "->"},
-        {"stat", "test", "∫", "i", "π", "e"},
-        {"sin⁻¹", "cos⁻¹", "tan⁻¹", "(hyp.)", "nPr", "nCr"},
-        {"sin", "cos", "tan", "(rec.)", "(deg.)", "!"},
-        {"(", ")", ",", "1/x", "|x|", "ln"},
-        {"7", "8", "9", "÷", "^", "eˣ"},
-        {"4", "5", "6", "×", "√", "log"},
-        {"1", "2", "3", "-", "x²", "10ˣ"},
-        {"0", ".", "ans", "+", "=", "="}
+        {"list" , "matrix", "test"  , "solve"  , "graph" , "->"},
+        {"stat" , "calc"  , "signal", "special", "cmplx" , "MENUS"},
+        {"sin⁻¹", "cos⁻¹" , "tan⁻¹" , "(hyp.)" , "i"     , "π"},
+        {"sin"  , "cos"   , "tan"   , "(rec.)" , "(deg.)", "e"},
+        {"("    , ")"     , ","     , "1/x"    , "|x|"   , "ln"},
+        {"7"    , "8"     , "9"     , "÷"      , "^"     , "eˣ"},
+        {"4"    , "5"     , "6"     , "×"      , "√"     , "log"},
+        {"1"    , "2"     , "3"     , "-"      , "x²"    , "10ˣ"},
+        {"0"    , "."     , "ans"   , "+"      , "="     , "="}
     };
 
     // sub-labels for the popup menus
-    public static String[][] statPopupLabels = {
-        {"mean", "stdev", "stdevp"},
-        {"erf", "example", "example2"}
-    };
-
-    public static String[][] testPopupLabels = {
-        {"mean", "stdev", "stdevp"},
-        {"erf", "example", "example2"}
-    };
-
+    // will generally be n-by-6, n ranging from 2 to 7
+    
+    // list editing & operations, similar to 
     public static String[][] listPopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
@@ -69,18 +58,62 @@ public class ButtonPanel extends JPanel {
         {"erf", "example", "example2"}
     };
 
+    public static String[][] testPopupLabels = {
+        {"==", ">", "<", ">=", "<=", "∈"},
+        {"AND", "OR", "XOR", "NOT", "IF", ""},
+        {"ALL", "ANY", "PIECEWISE", "sgn", "dirac", ""}
+    };
+
+    public static String[][] solvePopupLabels = {
+        {"mean", "stdev", "stdevp"},
+        {"erf", "example", "example2"}
+    };
+
+    // graphing
+    public static String[][] graphPopupLabels = {
+        {"mean", "stdev", "stdevp"},
+        {"erf", "example", "example2"}
+    };
+
+    // functions for probability and statistics
+    public static String[][] statPopupLabels = {
+        // descriptive stats
+        {"mean", "stdev", "stdevp", "var", "varp", "cov"},
+        {"sort", "median", "q1", "q3", "iqr", "quartile"},
+
+        // probability
+        {"nCr", "nPr", "!", "", "", ""},
+    };
+
+    // calculus & differential equations
+    public static String[][] calcPopupLabels = {
+        {"mean", "stdev", "stdevp"},
+        {"erf", "example", "example2"}
+    };
+
+    // fast fourier transform and related operations
+    // some functions are not necessarily related to signals processing,
+    // more broadly this is for any kind of engineering/physics 
+    public static String[][] signalPopupLabels = {
+        {"mean", "stdev", "stdevp"},
+        {"erf", "example", "example2"}
+    };
+
+    // special functions (gamma, bessel, etc.)
     public static String[][] specialPopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
     };
 
+    // complex number functions & utilities
     public static String[][] cmplxPopupLabels = {
-        {"mean", "stdev", "stdevp"},
-        {"erf", "example", "example2"}
+        {"imag", "real", "conj"},
     };
 
-    public static String[][] solvePopupLabels = {
-        {"mean", "stdev", "stdevp"},
+    // separate ui windows
+    // typically opened with ctrl+h, ctrl+s, etc., but also accessable here
+    public static String[][] menusPopupLabels = {
+        {"history", "notepad", "settings"},
         {"erf", "example", "example2"}
     };
 
@@ -144,7 +177,7 @@ public class ButtonPanel extends JPanel {
                 buttons.put(label, button);
 
                 // merge last two "=" buttons into one wide cell
-                if (row == 9 && col == 4) {
+                if (row == 8 && col == 4) {
                     gbc.gridwidth = 2;
                     add(button, gbc);
                     col++;
@@ -155,13 +188,17 @@ public class ButtonPanel extends JPanel {
 
                 // popup menu for certain buttons
                 // createPopup is used both to create the popup and to pass it along to onButtonClick
-                if (row == 1 && col == 0) createPopup(listener, button, statPopupLabels);
-                else if (row == 1 && col == 1) createPopup(listener, button, testPopupLabels);
-                else if (row == 0 && col == 0) createPopup(listener, button, listPopupLabels);
+                if (row == 0 && col == 0) createPopup(listener, button, listPopupLabels);
                 else if (row == 0 && col == 1) createPopup(listener, button, matrixPopupLabels);
-                else if (row == 0 && col == 2) createPopup(listener, button, specialPopupLabels);
-                else if (row == 0 && col == 3) createPopup(listener, button, cmplxPopupLabels);
-                else if (row == 0 && col == 4) createPopup(listener, button, solvePopupLabels);
+                else if (row == 0 && col == 2) createPopup(listener, button, testPopupLabels);
+                else if (row == 0 && col == 3) createPopup(listener, button, solvePopupLabels);
+                else if (row == 0 && col == 4) createPopup(listener, button, graphPopupLabels);
+                else if (row == 1 && col == 0) createPopup(listener, button, statPopupLabels);
+                else if (row == 1 && col == 1) createPopup(listener, button, calcPopupLabels);
+                else if (row == 1 && col == 2) createPopup(listener, button, signalPopupLabels);
+                else if (row == 1 && col == 3) createPopup(listener, button, specialPopupLabels);
+                else if (row == 1 && col == 4) createPopup(listener, button, cmplxPopupLabels);
+                else if (row == 1 && col == 5) createPopup(listener, button, menusPopupLabels);
 
                 // listener for button clicks
                 button.addActionListener(e -> {

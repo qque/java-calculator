@@ -1,34 +1,36 @@
 /*
  *  Defines the parsing and behavior of buttons, including computation for "="
  *  Accepts any generic JTextArea
+ *  
+ *  NOTE: As this directly passes JS code to ScriptEngine, this code is unsafe.
  */
 
 package calculator.logic;
 
+import java.awt.Color;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
-import java.awt.Color;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.io.IOException;
 
 import calculator.ui.ButtonPanel;
 import calculator.History;
 
-import calculator.Main;
+import calculator.Settings;
 
 public class ButtonLogic implements ButtonPanel.ButtonListener {
 
-    private static final int DEBUG_MODE = Main.DEBUG_MODE;
+    private static final boolean DEBUG_MODE = Settings.DEBUG_MODE;
 
     private static JTextArea display;
 
@@ -38,7 +40,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
     // preprocessing using regex for more annoying conversions
     private static String preprocess(String expression) {
-        if (DEBUG_MODE == 1) {
+        if (DEBUG_MODE) {
             System.out.println("Preprocessing: " + expression);
         }
 
@@ -102,7 +104,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             expression = expression.replaceAll("atanh", "datanh");
         }
         
-        if (DEBUG_MODE == 1) {
+        if (DEBUG_MODE) {
             System.out.println("Processed: " + expression);
         }
 
@@ -125,11 +127,24 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             String content = Files.readString(Path.of("src/main/resources/minified.js"), StandardCharsets.UTF_8);
             engine.eval(content);
         } catch (ScriptException | IOException e) {
+            // critical exception, must exit program
             System.out.println(e);
             System.exit(0);
+        } catch (Exception e) {
+            System.out.println(e);
         }
 
         isSetup = true;
+    }
+
+    // string evaluator for debug console
+    public static Object engineEval(String code) {
+        try {
+            return engine.eval(code);
+        } catch (ScriptException e) {
+            System.out.println(e);
+            return 0;
+        }
     }
 
     // defines parsing and computation for "=" button
@@ -139,7 +154,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
         String eval = engine.eval(expression).toString();
 
-        if (DEBUG_MODE == 1) {
+        if (DEBUG_MODE) {
             System.out.println("Evaluated: " + eval);
         }
 
@@ -150,15 +165,14 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         } else if (eval == "false" || eval == "true") {
             output = new Output(Boolean.parseBoolean(eval), Boolean.class);
         } else {
-            double result;
             if (eval == "NaN") {
-                result = Double.NaN;
+                return new Output(Double.NaN, Double.class);
             } else if (eval == "Infinity") {
-                result = Double.POSITIVE_INFINITY;
+                return new Output("∞", String.class);
             } else if (eval == "-Infinity") {
-                result = Double.NEGATIVE_INFINITY;
+                return new Output("-∞", String.class);
             } else {
-                result = Double.valueOf(eval);
+                double result = Double.valueOf(eval);
 
                 // note that, if the result was an integer before rounding (e.g. evaluating "2 + 2"), it will display as an int (e.g. "4")
                 // if it was rounded (e.g. evaluating "erf(5)"), it will display as a double (e.g. "1.0")
@@ -175,12 +189,12 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                 if (Math.abs(result - roundedResult) < 0.000000001) {
                     result = roundedResult;
                 }
-            }
 
-            output = new Output(result, Double.class);
+                output = new Output(result, Double.class);
+            }
         }
 
-        if (DEBUG_MODE == 1) {
+        if (DEBUG_MODE) {
             System.out.println(expression + "=" + output.toString());
         }
 
@@ -195,7 +209,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             String expression = display.getText();
             String output = null;
 
-            if (DEBUG_MODE == 1) {
+            if (DEBUG_MODE) {
                 System.out.println(label + ";    " + expression);
             }
 
@@ -206,6 +220,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                 String result = compute(expression).toString();
                 display.setText(result);
                 display.setForeground(Color.RED);
+                System.out.println(expression + ",   " + result);
                 history.add(expression, result);
                 break;
             case "clear":
@@ -228,11 +243,15 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             // popup buttons (menu opening is dealt with before coming here)
             case "list":
             case "matrix":
+            case "test":
+            case "solve":
+            case "graph":
+            case "stat":
+            case "calc":
+            case "signal":
             case "special":
             case "cmplx":
-            case "solve":
-            case "stat":
-            case "test": break;
+            case "MENUS": break;
             
             // input modified label
             case "×": output = "*"; break;
@@ -269,7 +288,10 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             case "nCr": output = "nCr("; break;
             case "∫": output = "∫("; break;
 
-            // popup
+
+            // buttons in popup menu
+            
+
 
             // input plain label (includes `ans`, which is converted in preprocessing)
             default:
@@ -294,35 +316,6 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                 "Error",
                 JOptionPane.ERROR_MESSAGE
             );
-        }
-    }
-
-
-    // static button switch for popups
-    public static void runPopupButton(String label, JPopupMenu popupMenu) {
-        popupMenu.setVisible(false);
-
-        String expression = display.getText();
-        String output = null;
-
-        if (DEBUG_MODE == 1) {
-            System.out.println(label + ";    " + expression);
-        }
-
-        display.setForeground(Color.BLACK);
-
-        switch (label) {
-        // `stat` popups
-        case "mean": output = "mean("; break;
-        case "stdev": output = "stdev("; break;
-        case "stdevp": output = "stdevp("; break;
-        case "erf": output = "erf("; break;
-
-        // `test` popups
-        }
-
-        if (output != null) {
-            display.setText(expression + output);
         }
     }
 

@@ -41,7 +41,7 @@ public class CalculatorFrame extends JFrame {
         KeyboardLogic.setTextArea(display);
         display.addKeyListener(keyListener); // key listener
 
-        display.setFont(new Font("Consolas", Font.PLAIN, Settings.consoleFontSize));
+        display.setFont(new Font(Settings.consoleFontName, Settings.consoleFontStyle, Settings.consoleFontSize));
         display.setLineWrap(true); // wrap text
         display.setWrapStyleWord(true);
         display.setPreferredSize(new Dimension(400, 80));
