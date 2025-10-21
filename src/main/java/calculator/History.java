@@ -23,18 +23,37 @@ public class History {
         return instance;
     }
 
-    public void add(ArrayList<String> entry) { history.add(entry); }
+    public void add(ArrayList<String> entry) {
+        history.add(entry); 
+    }
 
-    public void add(String computation, String result) { history.add(new ArrayList<>(List.of(computation,result))); }
+    public void add(String computation, String result) {
+        history.add(new ArrayList<>(List.of(computation,result))); 
+    }
 
-    public ArrayList<String> get(int index) { return history.get(index); }
+    public ArrayList<String> get(int index) {
+        return history.get(index); 
+    }
 
-    public ArrayList<String> getLatest() { return history.get(history.size() - 1); }
+    public ArrayList<String> getLatest() {
+        return history.get(history.size() - 1); 
+    }
 
-    public boolean isEmpty() { return history.size() == 0; }
+    public String getLatestToString() {
+        ArrayList<String> latest = getLatest();
+        return latest.get(0) + " = " + latest.get(1);
+    }
 
-    public void clear() { history.clear(); }
+    public boolean isEmpty() {
+        return history.size() == 0; 
+    }
 
-    public void clearLatest() { history.remove(history.size() - 1); }
+    public void clear() {
+        history.clear(); 
+    }
+
+    public void clearLatest() {
+        history.remove(history.size() - 1); 
+    }
 
 }

@@ -30,8 +30,6 @@ import calculator.Settings;
 
 public class ButtonLogic implements ButtonPanel.ButtonListener {
 
-    private static final boolean DEBUG_MODE = Settings.DEBUG_MODE;
-
     private static JTextArea display;
 
     private static History history = History.getInstance();
@@ -40,17 +38,22 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
     // preprocessing using regex for more annoying conversions
     private static String preprocess(String expression) {
-        if (DEBUG_MODE) {
+        if (Settings.DEBUG_MODE) {
             System.out.println("Preprocessing: " + expression);
         }
+
+        int safety = 0;
 
         // check for user defined function
 
         // replaces "ans" with answer value
-        if (!history.isEmpty()) expression = expression.replaceAll("ans", history.getLatest().get(1));
+        if (!history.isEmpty()) {
+            if (Settings.DEBUG_MODE) System.out.println("Accessed output from history");
+            expression = expression.replaceAll("ans", history.getLatest().get(1));
+        }
 
         // converts "|xyz|" -> "Math.abs(xyz)"
-        while (expression.contains("|")) {
+        while (expression.contains("|") && ++safety < 20) {
             expression = expression.replaceAll("\\|([^|]+)\\|", "abs($1)");
         }
 
@@ -58,7 +61,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         expression = expression.replaceAll("\\^", "**");
 
         // converts "x!" -> "fact(x)"
-            while (expression.contains("!")) {
+        while (expression.contains("!") && ++safety < 20) {
             int i = expression.indexOf('!');
             int start = i - 1;
             if (start >= 0 && expression.charAt(start) == ')') {
@@ -104,8 +107,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             expression = expression.replaceAll("atanh", "datanh");
         }
         
-        if (DEBUG_MODE) {
-            System.out.println("Processed: " + expression);
+        if (Settings.DEBUG_MODE) {
+            // fail message if preprocessing stalled on factorial or absolute value
+            System.out.println((safety < 20) ? "Processed: " + expression : "Preprocessing failed, moving to computation");
         }
 
         return expression;
@@ -154,7 +158,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
         String eval = engine.eval(expression).toString();
 
-        if (DEBUG_MODE) {
+        if (Settings.DEBUG_MODE) {
             System.out.println("Evaluated: " + eval);
         }
 
@@ -194,7 +198,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             }
         }
 
-        if (DEBUG_MODE) {
+        if (Settings.DEBUG_MODE) {
             System.out.println(expression + "=" + output.toString());
         }
 
@@ -209,11 +213,11 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             String expression = display.getText();
             String output = null;
 
-            if (DEBUG_MODE) {
+            if (label != "=") display.setForeground(Color.BLACK);
+
+            if (Settings.DEBUG_MODE) {
                 System.out.println(label + ";    " + expression);
             }
-
-            if (label != "=") display.setForeground(Color.BLACK);
 
             switch (label) {
             case "=":
@@ -238,8 +242,12 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             case "(rec.)":
             case "(deg.)":
             case "(rad.)":
-            // case for null keyboard input
-            case "null": break;
+            // for degenerate keyboard input
+            case "null":
+            case "^H":
+            case "^N":
+            case "^S":
+            case "^D":
             // popup buttons (menu opening is dealt with before coming here)
             case "list":
             case "matrix":
@@ -290,7 +298,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
 
             // buttons in popup menu
-            
+            //...
 
 
             // input plain label (includes `ans`, which is converted in preprocessing)

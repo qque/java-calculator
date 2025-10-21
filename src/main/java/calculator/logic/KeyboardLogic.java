@@ -38,7 +38,7 @@ public class KeyboardLogic implements KeyListener {
         int key = e.getKeyCode();
         boolean shift = e.isShiftDown();
         boolean ctrl = e.isControlDown();
-        String button = "null";
+        String button = null;
 
         switch (key) {                      // '[key name on (my) keyboard]' -- `[button on calculator]
         // control operation
@@ -56,15 +56,6 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_EQUALS:
             if (shift) button = "+";        // '+' -- `+`
             else button = "=";              // '=' -- `=`
-            break;
-        case KeyEvent.VK_SPACE:             // N/A; Allows user to input whitespace if they want
-            display.setText(display.getText() + " ");
-            break;
-
-        // direct input
-        case KeyEvent.VK_MINUS:             // '-' -- `-`
-        case KeyEvent.VK_SLASH:             // '/' -- `÷`
-            display.setText(display.getText() + (char)(key));
             break;
 
         // direct input (checking for special characters)
@@ -97,6 +88,9 @@ public class KeyboardLogic implements KeyListener {
             else button = "6";
             break;
         case KeyEvent.VK_7:                 // '7' -- `7`
+            if (shift) button = "&";
+            else button = "7";
+            break;
         case KeyEvent.VK_8:                 // '8' -- `8`
             if (shift) button = "*";
             else button = "8";
@@ -104,6 +98,14 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_9:                 // '9' -- `9`
             if (shift) button = "(";
             else button = "9";
+            break;
+        case KeyEvent.VK_MINUS:             // '-' -- `-`
+            if (shift) button = "_";
+            else button = "-";
+            break;
+        case KeyEvent.VK_SLASH:             // '/' -- `÷`
+            if (shift) button = "?";
+            else button = "/";
             break;
         case KeyEvent.VK_PERIOD:            // '.' -- `.`
             if (shift) button = ">";
@@ -117,6 +119,7 @@ public class KeyboardLogic implements KeyListener {
             if (shift) button = "|x|";
             break;
 
+        case KeyEvent.VK_SPACE:
         case KeyEvent.VK_A: 
         case KeyEvent.VK_B: 
         case KeyEvent.VK_C: 
@@ -144,22 +147,23 @@ public class KeyboardLogic implements KeyListener {
         case KeyEvent.VK_Y: 
         case KeyEvent.VK_Z:
             if (ctrl && key == KeyEvent.VK_H) {
+                button = "^H";
                 HistoryFrame historyFrame = new HistoryFrame();
                 historyFrame.setVisible(true);
             } else if (ctrl && key == KeyEvent.VK_N) {
+                button = "^N";
                 NotepadFrame notepadFrame = new NotepadFrame();
                 notepadFrame.setVisible(true);
             } else if (ctrl && key == KeyEvent.VK_S) {
+                button = "^S";
                 SettingsFrame settingsFrame = new SettingsFrame();
                 settingsFrame.setVisible(true);
             } else if (ctrl && key == KeyEvent.VK_D) {
+                button = "^D";
                 DebugConsole debugConsole = new DebugConsole();
                 debugConsole.setVisible(true);
-            } else if (shift) {
-                display.setText(display.getText() + (char)(key));
             } else {
-                // use key + 32 to get lowercase
-                display.setText(display.getText() + (char)(key + 32));
+                button = e.getKeyChar() + "";
             }
             break;
 
@@ -172,6 +176,8 @@ public class KeyboardLogic implements KeyListener {
 
         // popupMenu is always null, since popup menus can only be opened via button presses
         // of course, you can access functions within these popup menus, though
-        ButtonLogic.runButton(button);
+        if (button != null) {
+            ButtonLogic.runButton(button);
+        }
     } 
 }

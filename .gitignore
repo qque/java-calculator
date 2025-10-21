@@ -2,6 +2,9 @@
 .vscode/
 target/
 
+# Debugging
+logs/
+
 # Compiled class file
 *.class
 

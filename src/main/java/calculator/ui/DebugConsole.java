@@ -14,9 +14,9 @@
 
 package calculator.ui;
 
-import java.awt.*;
-
 import javax.script.ScriptException;
+
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -34,12 +34,12 @@ import calculator.Settings;
 
 public class DebugConsole extends JFrame implements KeyListener {
 
+    private static History history = History.getInstance();
+
     private JTextArea textArea;
 
     @SuppressWarnings("unused")
     private volatile String text;
-
-    private static History history = History.getInstance();
 
     public DebugConsole() {
         super("Debug Console");
@@ -53,9 +53,12 @@ public class DebugConsole extends JFrame implements KeyListener {
 
     private void initUI() {
         textArea = new JTextArea();
+        textArea.setBounds(getBounds());
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+        
+        getContentPane().setLayout(new BorderLayout());
 
         // update when content changes
         textArea.getDocument().addDocumentListener(new DocumentListener() {

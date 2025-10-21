@@ -4,17 +4,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import calculator.History;
+import calculator.Settings;
+
 public class SettingsFrame extends JFrame {
+
+    private static History history = History.getInstance();
 
     public SettingsFrame() {
         super("Settings");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(300, 300); // remove when pack() is used
+        setSize(300, 300);
         setLocationRelativeTo(null);
         setLayout(new FlowLayout());
         initUI();
-        // uncomment when initUI is implemented
-        //pack();
+        Settings.ensureConsistent();
     }
 
     private void initUI() {

@@ -13,6 +13,8 @@ import calculator.Settings;
 
 public class CalculatorFrame extends JFrame {
 
+    private Font buttonFont = new Font(Settings.buttonFontName, Settings.buttonFontStyle, Settings.buttonFontSize);
+
     private JTextArea display;
 
     // initialize calculator frame
@@ -22,6 +24,7 @@ public class CalculatorFrame extends JFrame {
         setSize(685, 685);
         setLocationRelativeTo(null);
         initUI();
+        Settings.ensureConsistent();
         setVisible(true);
     }
 
@@ -35,7 +38,7 @@ public class CalculatorFrame extends JFrame {
         display = new JTextArea();
         display.setEditable(false);
 
-        JScrollPane scrollPane = new JScrollPane(display);
+        JScrollPane scrollPane = new JScrollPane(display, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         KeyboardLogic keyListener = new KeyboardLogic();
         KeyboardLogic.setTextArea(display);
@@ -46,7 +49,6 @@ public class CalculatorFrame extends JFrame {
         display.setWrapStyleWord(true);
         display.setPreferredSize(new Dimension(400, 80));
         topPanel.add(scrollPane, BorderLayout.CENTER);
-        topPanel.add(display, BorderLayout.CENTER);
 
 
         // clear and ans buttons beside top display
@@ -54,8 +56,8 @@ public class CalculatorFrame extends JFrame {
         JButton clearButton = new JButton("clear");
         JButton deleteButton = new JButton("delete");
 
-        clearButton.setFont(new Font("SansSerif", Font.BOLD, 18));
-        deleteButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+        clearButton.setFont(buttonFont);
+        deleteButton.setFont(buttonFont);
         
         ButtonLogic clickBehavior = new ButtonLogic(); // class defining button behavior
         ButtonLogic.setTextArea(display);

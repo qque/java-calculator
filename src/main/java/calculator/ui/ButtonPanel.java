@@ -20,11 +20,15 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import calculator.Settings;
+
 public class ButtonPanel extends JPanel {
 
     public interface ButtonListener {
         void onButtonClick(String label);
     }
+
+    private Font buttonFont = new Font(Settings.buttonFontName, Settings.buttonFontStyle, Settings.buttonFontSize);
 
     private final Map<String, JButton> buttons = new HashMap<>();
 
@@ -132,7 +136,7 @@ public class ButtonPanel extends JPanel {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 JButton optionButton = new JButton(popupLabels[row][col]);
-                optionButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+                optionButton.setFont(buttonFont);
 
                 // add listener for buttons in popup menu
                 optionButton.addActionListener(e -> {
@@ -167,7 +171,7 @@ public class ButtonPanel extends JPanel {
                 String label = labels[row][col];
 
                 JButton button = new JButton(label);
-                button.setFont(new Font("SansSerif", Font.BOLD, 18));
+                button.setFont(buttonFont);
 
                 Dimension fixed = new Dimension(100, 40);
                 button.setPreferredSize(fixed);
