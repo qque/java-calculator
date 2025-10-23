@@ -4,6 +4,7 @@
 
 package calculator.ui;
 
+import javax.script.ScriptException;
 import javax.swing.*;
 import java.awt.*;
 
@@ -75,7 +76,13 @@ public class CalculatorFrame extends JFrame {
 
 
         // setup JS parsing engine (preloads js functions)
-        ButtonLogic.setupEngine();
+        // if an error is thrown in this case, it will be because the graal.js engine could not be found
+        // in this case, the program will exit immediately
+        try {
+            ButtonLogic.setupEngine();
+        } catch (ScriptException e) {
+            
+        }
 
     
         // 9x6 button grid below top display (see ButtonPanel.java)

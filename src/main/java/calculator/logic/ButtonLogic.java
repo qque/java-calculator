@@ -18,12 +18,10 @@ import javax.script.ScriptException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Scanner;
 
 import calculator.ui.ButtonPanel;
 import calculator.History;
@@ -61,6 +59,8 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
         // converts "(abc)^(xyz)" -> "(abc) ** (xyz)"
         expression = expression.replaceAll("\\^", "**");
+
+        expression = expression.replaceAll("->", "=");
 
         // converts "x!" -> "fact(x)"
         while (expression.contains("!") && ++safety < 20) {
@@ -123,9 +123,13 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
     public static boolean isSetup = false; 
 
     // setup javascript ScriptEngine to evaluate, done on initialization 
-    public static void setupEngine() {
+    public static void setupEngine() throws ScriptException {
         manager = new ScriptEngineManager();
         engine = manager.getEngineByName("graal.js");
+
+        if (engine == null) {
+            throw new ScriptException("graal.js engine not found. See if the dependency is properly included in the build configuration");
+        }
 
         // functions that need to be defined for computation (stdev, nCr, etc.)
         // see ../../../resources/functionDefinitions.js for a readable version of the code with comments
@@ -143,10 +147,14 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                     throw new IOException("Custom function file not defined, or specified path not found");
                 }
             } else {
-                File minifiedJS = new File("util/minified.js");
+                File minifiedJS = new File("src/main/resources/minified.js");
                 if (minifiedJS.exists()) {
                     Scanner minifiedJSScanner = new Scanner(minifiedJS, StandardCharsets.UTF_8).useDelimiter("\\Z");
                     content = minifiedJSScanner.next();
+
+                    // if 
+                    if (!Settings.LOAD_ADVANCED) content = content.substring(content.indexOf("###*/"));
+
                     minifiedJSScanner.close();
                 } else {
                     throw new IOException("minified.js not found, try running ./util/minify");
@@ -242,7 +250,14 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
     // static implementation of onButtonClick behavior
     public static void runButton(String label) { 
-        if (!isSetup) setupEngine();
+        if (!isSetup) {
+            try {
+                setupEngine();
+            } catch (ScriptException e) {
+                System.out.println(e);
+                System.exit(1);
+            }
+        }
 
         try {
             String expression = display.getText();

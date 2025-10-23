@@ -2,7 +2,7 @@
     Defines all functions used in the calculator...
 */
 
-// simple copies of Math library functions
+// below are all of the functions used in the base calculator
 function sin(x) { return Math.sin(x); }
 function cos(x) { return Math.cos(x); }
 function tan(x) { return Math.tan(x); }
@@ -17,8 +17,6 @@ function acosh(x) { return Math.acosh(x); }
 function atanh(x) { return Math.atanh(x); }
 function sqrt(x) { return Math.sqrt(x); }
 function ln(x) { return Math.log(x); }
-
-// slight variants
 function csc(x) { return 1/Math.sin(x); }
 function sec(x) { return 1/Math.cos(x); }
 function cot(x) { return 1/Math.tan(x); }
@@ -27,9 +25,8 @@ function asec(x) { return Math.acos(1/x); }
 function acot(x) { return Math.PI - Math.atan(x); }
 function log(a,x) { return Math.log(x) / Math.log(a); }
 function abs(x) {
-    return Math.abs(x);
+    return Math.abs(x) // do complex number shit, as well for other funcs
 }
-
 // degree variants for trig functions
 function dsin(x) { x = Math.PI * x / 180; return Math.sin(x); }
 function dcos(x) { x = Math.PI * x / 180; return Math.cos(x); }
@@ -49,6 +46,8 @@ function dcot(x) { x = Math.PI * x / 180; return 1/Math.tan(x); }
 function dacsc(x) { x = Math.PI * x / 180; return Math.asin(1/x); }
 function dasec(x) { x = Math.PI * x / 180; return Math.acos(1/x); }
 function dacot(x) { x = Math.PI * x / 180; return Math.PI - Math.atan(x); }
+
+/* ADVANCED FUNCTIONS BEGIN HERE; DO NOT EDIT THE STRING AT THE END OF THIS LINE */'#'
 
 // gamma, factorial, npr, and ncr
 function gamma(x) { // lanczos approximation
@@ -106,8 +105,6 @@ function nCr(n,r) {
     return out;
 }
 
-
-// statistical functions
 function mean(...nums) {
     return nums.reduce((a,b) => a + b, 0) / nums.length;
 }

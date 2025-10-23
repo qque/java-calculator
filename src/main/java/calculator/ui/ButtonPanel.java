@@ -37,60 +37,58 @@ public class ButtonPanel extends JPanel {
     @SuppressWarnings("unused")
     private final ButtonListener listener;
     
-    // main 9x6 grid labels
-    public static String[][] labels = {
-        {"list" , "matrix", "test"  , "solve"  , "graph" , "->"   },
-        {"stat" , "calc"  , "signal", "special", "cmplx" , "MENUS"},
-        {"sin⁻¹", "cos⁻¹" , "tan⁻¹" , "(hyp.)" , "i"     , "π"    },
-        {"sin"  , "cos"   , "tan"   , "(rec.)" , "(deg.)", "e"    },
-        {"("    , ")"     , ","     , "1/x"    , "|x|"   , "ln"   },
-        {"7"    , "8"     , "9"     , "÷"      , "^"     , "eˣ"   },
-        {"4"    , "5"     , "6"     , "×"      , "√"     , "log"  },
-        {"1"    , "2"     , "3"     , "-"      , "x²"    , "10ˣ"  },
-        {"0"    , "."     , "ans"   , "+"      , "="     , "="    }
+    
+    /* Button  */
+    public static final String[][] labels = {
+        {"list" , "matrix", "test"   , "solve" , "graph" , "->"       },
+        {"stat" , "number", "special", "calc"  , "cmplx" , "constants"},
+        {"sin⁻¹", "cos⁻¹" , "tan⁻¹"  , "(hyp.)", "i"     , "π"        },
+        {"sin"  , "cos"   , "tan"    , "(rec.)", "(deg.)", "e"        },
+        {"("    , ")"     , ","      , "1/x"   , "|x|"   , "ln"       },
+        {"7"    , "8"     , "9"      , "÷"     , "^"     , "eˣ"       },
+        {"4"    , "5"     , "6"      , "×"     , "√"     , "log"      },
+        {"1"    , "2"     , "3"      , "-"     , "x²"    , "10ˣ"      },
+        {"0"    , "."     , "ans"    , "+"     , "="     , "="        }
     };
-
-    // sub-labels for the popup menus
-    // will generally be n-by-6, n ranging from 2 to 7
     
     // list editing & operations, similar to 
-    public static String[][] listPopupLabels = {
+    public static final String[][] listPopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
     };
 
-    public static String[][] matrixPopupLabels = {
+    public static final String[][] matrixPopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
     };
 
-    public static String[][] testPopupLabels = {
+    public static final String[][] testPopupLabels = {
         {"==", ">", "<", ">=", "<=", "∈"},
         {"AND", "OR", "XOR", "NOT", "IF", ""},
         {"ALL", "ANY", "PIECEWISE", "sgn", "dirac", ""}
     };
 
-    public static String[][] solvePopupLabels = {
+    public static final String[][] solvePopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
     };
 
     // graphing
-    public static String[][] graphPopupLabels = {
+    public static final String[][] graphPopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
     };
 
     // functions for probability and statistics (these are the labels for the sub-popup menus)
-    public static String[][] statPopupLabels = {
+    public static final String[][] statPopupLabels = {
         {"descriptive"     , "correlation"   , "regression"       , "frequency"    , "applied"      },
         {"continuous dist.", "discrete dist.", "analytic prob"    , "combinatorics", "stochastic"   },
         {"hypothesis"      , "confidence"    , "dynamical systems", "time series"  , "survival"     },
-        {"bayesian"        , "multivariate"  , "nonparametric"    , "effect sizes" , "miscellaneous"}
+        {"effect sizes"    , "bayesian"      , "multivariate"     , "nonparametric", "miscellaneous"}
     };
 
     // this is divided into multiple sub categories due to how many functions there are
-    public static String[][][] statSubLabels = {
+    public static final String[][][] statSubLabels = {
         // descriptive stats
         {
             {"mean"  , "stdev" , "cv"   , "variance"  , "skewness", "kurtosis" },
@@ -197,42 +195,47 @@ public class ButtonPanel extends JPanel {
         },
     };
 
-    // calculus & differential equations
-    public static String[][] calcPopupLabels = {
-        {"mean", "stdev", "stdevp"},
-        {"erf", "example", "example2"}
+    // number theory
+    public static final String[][] numberPopupLabels = {
+        {"something...", "primes?", "sequences?"},
     };
 
-    // fast fourier transform and related operations
-    // some functions are not necessarily related to signals processing,
-    // more broadly this is for any kind of engineering/physics 
-    public static String[][] signalPopupLabels = {
+    public static final String[][][] numberSubLabels = {
+        {
+            {}
+        }
+    };
+
+    // calculus & differential equations
+    public static final String[][] calcPopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
     };
 
     // special functions (gamma, bessel, etc.)
-    public static String[][] specialPopupLabels = {
+    // todo: expand
+    public static final String[][] specialPopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
     };
 
     // complex number functions & utilities
-    public static String[][] cmplxPopupLabels = {
+    public static final String[][] cmplxPopupLabels = {
         {"imag", "real", "conj"},
     };
 
     // separate ui windows
     // typically opened with ctrl+h, ctrl+s, etc., but also accessable here
-    public static String[][] menusPopupLabels = {
-        {"history", "notepad", "settings"},
-        {"erf", "example", "example2"}
+    public static final String[][] menusPopupLabels = {
+        {"history", "notepad"  , "settings"   },
+        {"console", "list edit", "matrix edit"},
+        {""}
     };
 
 
     // fully initializes popup menu for a given button
     // used to avoid code repetition in `stat`, `test`, etc.
-    private void createPopup(ButtonListener listener, JButton button, String[][] popupLabels) {
+    private void createPopup(JButton button, String[][] popupLabels) {
         int rows = popupLabels.length;
         int cols = popupLabels[0].length;
 
@@ -262,6 +265,65 @@ public class ButtonPanel extends JPanel {
             popupMenu.show(button, 0, button.getHeight());
         });
     };
+
+    private void createPopupWithSub(JButton button, String[][] outerLabels, String[][][] innerLabels) {
+        int rows = outerLabels.length;
+        int cols = outerLabels[0].length;
+        int index = 0;
+
+        JPopupMenu popupMenu =  new JPopupMenu();
+
+        JPanel gridPanel = new JPanel(new GridLayout(rows, cols, 5, 5));
+        gridPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        for (int _r = 0; _r < rows; _r++) {
+            for (int _c = 0; _c < cols; _c++) {
+                JButton optionButton = new JButton(outerLabels[_r][_c]);
+                optionButton.setFont(popupButtonFont);
+
+                /* code for creating sub popup menu */
+                String[][] subMenuLabels = innerLabels[index];
+                int subrows = subMenuLabels.length;
+                int subcols = subMenuLabels[0].length;
+
+                JPopupMenu subPopupMenu =  new JPopupMenu();
+
+                JPanel subGridPanel = new JPanel(new GridLayout(rows, cols, 5, 5));
+                subGridPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+                for (int __r = 0; __r < subrows; __r++) {
+                    for (int __c = 0; __c < subcols; __c++) {
+                        JButton subOptionButton = new JButton(subMenuLabels[__r][__c]);
+                        subOptionButton.setFont(popupButtonFont);
+
+                        subOptionButton.addActionListener(e -> {
+                            if (listener != null) listener.onButtonClick(subOptionButton.getText());
+                            subPopupMenu.setVisible(false);
+                        });
+
+                        subGridPanel.add(subOptionButton);
+                    }
+                }
+
+                subPopupMenu.add(subGridPanel);
+                /* end */
+
+                optionButton.addActionListener(e -> {
+                    subPopupMenu.show(button, 0, optionButton.getHeight());
+                });
+
+                gridPanel.add(optionButton);
+
+                index += 1;
+            }
+        }
+
+        popupMenu.add(gridPanel);
+
+        button.addActionListener(e -> {
+            popupMenu.show(button, 0, button.getHeight());
+        });
+    }
 
 
     public ButtonPanel(ButtonListener listener) {
@@ -300,76 +362,19 @@ public class ButtonPanel extends JPanel {
 
                 // popup menu for certain buttons
                 // createPopup is used both to create the popup and to pass it along to onButtonClick
-                if (row == 0 && col == 0) createPopup(listener, button, listPopupLabels);
-                else if (row == 0 && col == 1) createPopup(listener, button, matrixPopupLabels);
-                else if (row == 0 && col == 2) createPopup(listener, button, testPopupLabels);
-                else if (row == 0 && col == 3) createPopup(listener, button, solvePopupLabels);
-                else if (row == 0 && col == 4) createPopup(listener, button, graphPopupLabels);
-                else if (row == 1 && col == 1) createPopup(listener, button, calcPopupLabels);
-                else if (row == 1 && col == 2) createPopup(listener, button, signalPopupLabels);
-                else if (row == 1 && col == 3) createPopup(listener, button, specialPopupLabels);
-                else if (row == 1 && col == 4) createPopup(listener, button, cmplxPopupLabels);
-                else if (row == 1 && col == 5) createPopup(listener, button, menusPopupLabels);
-                // special stat menu with sub-menus
-                // has difference in implementation from createPopup, so the code is directly written here
-                else if (row == 1 && col == 0) {
-                    int rows = statPopupLabels.length;
-                    int cols = statPopupLabels[0].length;
-                    int index = 0;
-
-                    JPopupMenu popupMenu =  new JPopupMenu();
-
-                    JPanel gridPanel = new JPanel(new GridLayout(rows, cols, 5, 5));
-                    gridPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-                    for (int _r = 0; _r < rows; _r++) {
-                        for (int _c = 0; _c < cols; _c++) {
-                            JButton optionButton = new JButton(statPopupLabels[_r][_c]);
-                            optionButton.setFont(popupButtonFont);
-
-                            /* create sub popup menu */
-                            String[][] subMenuLabels = statSubLabels[index];
-                            int subrows = subMenuLabels.length;
-                            int subcols = subMenuLabels[0].length;
-
-                            JPopupMenu subPopupMenu =  new JPopupMenu();
-
-                            JPanel subGridPanel = new JPanel(new GridLayout(rows, cols, 5, 5));
-                            subGridPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-                            for (int __r = 0; __r < subrows; __r++) {
-                                for (int __c = 0; __c < subcols; __c++) {
-                                    JButton subOptionButton = new JButton(subMenuLabels[__r][__c]);
-                                    subOptionButton.setFont(popupButtonFont);
-
-                                    subOptionButton.addActionListener(e -> {
-                                        if (listener != null) listener.onButtonClick(subOptionButton.getText());
-                                        subPopupMenu.setVisible(false);
-                                    });
-
-                                    subGridPanel.add(subOptionButton);
-                                }
-                            }
-
-                            subPopupMenu.add(subGridPanel);
-                            /* end */
-
-                            optionButton.addActionListener(e -> {
-                                subPopupMenu.show(button, 0, optionButton.getHeight());
-                            });
-
-                            gridPanel.add(optionButton);
-
-                            index += 1;
-                        }
-                    }
-
-                    popupMenu.add(gridPanel);
-
-                    button.addActionListener(e -> {
-                        popupMenu.show(button, 0, button.getHeight());
-                    });
-                }
+                // createPopupWithSub does the same, but also creates a popup menu for each option within the first popup menu
+                //
+                if (row == 0 && col == 0) createPopup(button, listPopupLabels);
+                else if (row == 0 && col == 1) createPopup(button, matrixPopupLabels);
+                else if (row == 0 && col == 2) createPopup(button, testPopupLabels);
+                else if (row == 0 && col == 3) createPopup(button, solvePopupLabels);
+                else if (row == 0 && col == 4) createPopup(button, graphPopupLabels);
+                else if (row == 1 && col == 0) createPopupWithSub(button, statPopupLabels, statSubLabels);
+                else if (row == 1 && col == 1) createPopupWithSub(button, numberPopupLabels, numberSubLabels);
+                else if (row == 1 && col == 2) createPopup(button, calcPopupLabels);
+                else if (row == 1 && col == 3) createPopup(button, specialPopupLabels);
+                else if (row == 1 && col == 4) createPopup(button, cmplxPopupLabels);
+                else if (row == 1 && col == 5) createPopup(button, menusPopupLabels);
 
                 // listener for button clicks
                 button.addActionListener(e -> {
@@ -385,7 +390,6 @@ public class ButtonPanel extends JPanel {
     }
 
 
-    // definitions for hyp, rec, and deg label changes
     public static boolean isHyperbolic = false;
     public static boolean isReciprocal = false;
     public static boolean isDegree = false;

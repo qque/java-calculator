@@ -40,12 +40,18 @@ public class DebugConsole extends JFrame implements KeyListener {
 
     @SuppressWarnings("unused")
     private volatile String text;
-
+    
     public DebugConsole() {
+        this(false);
+    }
+
+    public DebugConsole(boolean large) {
         super("Debug Console");
         
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(400, 400);
+
+        // large size is 800x800, regular is 400x400
+        setSize(large ? 800 : 400, large ? 800 : 400);
         setLocationRelativeTo(null);
         setLayout(new FlowLayout());
         initUI();
@@ -118,7 +124,7 @@ public class DebugConsole extends JFrame implements KeyListener {
                 try {
                     String result = ButtonLogic.compute(text).toString();
 
-                    if (Settings.displayOutputOnConsoleDebug) { 
+                    if (Settings.DISPLAY_DEBUG_CONSOLE_OUT) { 
                         JOptionPane.showMessageDialog(
                             textArea,
                             result,
@@ -129,7 +135,7 @@ public class DebugConsole extends JFrame implements KeyListener {
 
                     System.out.println("DEBUG CONSOLE:\n\n" + text + ",   " + result);
 
-                    if (Settings.sendDebugConsoleInputToHistory) {
+                    if (Settings.SEND_DEBUG_CONSOLE_OUT_TO_HIST) {
                         history.add(text, result);
                     }
                 } catch (ScriptException err) {

@@ -36,10 +36,11 @@ if %errorlevel% neq 0 (
 echo.
 echo --------------------------------
 
+cd %~dp0\..\src\main\resources
+
 if not exist "functionDefinitions.js" (
-    echo ERROR: functionDefinitions.js not found in current directory.
+    echo ERROR: functionDefinitions.js not found in directory.
     echo Please make sure functionDefinitions.js exists.
-    pause
     exit /b 1
 )
 
@@ -59,11 +60,4 @@ echo Output: minified.js
 echo ================================
 echo.
 
-for %%A in (example.js) do set size1=%%~zA
-for %%B in (minified.js) do set size2=%%~zB
-
-echo Original size: %size1% bytes
-echo Minified size: %size2% bytes
-echo.
-
-pause
+exit /b 0;
