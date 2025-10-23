@@ -18,10 +18,12 @@ import javax.script.ScriptException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.io.IOException;
+import java.util.Scanner;
 
 import calculator.ui.ButtonPanel;
 import calculator.History;
@@ -128,10 +130,43 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         // functions that need to be defined for computation (stdev, nCr, etc.)
         // see ../../../resources/functionDefinitions.js for a readable version of the code with comments
         try {
-            String content = Files.readString(Path.of("src/main/resources/minified.js"), StandardCharsets.UTF_8);
+            String content;
+
+            // default value is false for both. if either is true, 
+            if (Settings.USE_CUSTOM_FUNCTION_FILE) {
+                String path = Settings.CUSTOM_FUNCTION_FILE;
+                if (path != null) {
+                    Scanner customFileScanner = new Scanner(new File(path), StandardCharsets.UTF_8).useDelimiter("\\Z");
+                    content = customFileScanner.next();
+                    customFileScanner.close();
+                } else {
+                    throw new IOException("Custom function file not defined, or specified path not found");
+                }
+            } else {
+                File minifiedJS = new File("util/minified.js");
+                if (minifiedJS.exists()) {
+                    Scanner minifiedJSScanner = new Scanner(minifiedJS, StandardCharsets.UTF_8).useDelimiter("\\Z");
+                    content = minifiedJSScanner.next();
+                    minifiedJSScanner.close();
+                } else {
+                    throw new IOException("minified.js not found, try running ./util/minify");
+                }
+
+                if (Settings.ADD_CUSTOM_FUNCTION_FILE) {
+                    String path = Settings.CUSTOM_FUNCTION_FILE;
+                    if (path != null) {
+                        Scanner customFileScanner = new Scanner(new File(path), StandardCharsets.UTF_8).useDelimiter("\\Z");
+                        content += customFileScanner.next();
+                        customFileScanner.close();
+                    } else {
+                        throw new IOException("Custom function file not defined, or specified path not found");
+                    }
+                }
+            }
+
             engine.eval(content);
         } catch (ScriptException | IOException e) {
-            // critical exception, must exit program
+            // critical exception, must exit program 
             System.out.println(e);
             System.exit(0);
         } catch (Exception e) {
@@ -296,15 +331,14 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             case "nCr": output = "nCr("; break;
             case "∫": output = "∫("; break;
 
-
-            // buttons in popup menu
-            //...
-
-
             // input plain label (includes `ans`, which is converted in preprocessing)
             default:
                 display.setText(expression + label);
                 break;
+
+
+            // buttons in popup menu
+            //...
             }
 
             if (output != null) {

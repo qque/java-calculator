@@ -26,6 +26,7 @@ set RUN=false
 if "%1"=="" goto build
 if /i "%1"=="-r" set RUN=true
 if /i "%1"=="--run" set RUN=true
+if /i "%1"=="-t" set SKIP_TESTS=false
 if /i "%1"=="--use-tests" set SKIP_TESTS=false
 if /i "%1"=="clean" goto clean_build
 shift
@@ -55,18 +56,18 @@ goto end
 :check_result
 if %ERRORLEVEL% EQU 0 (
     echo.
-    echo ========================================
-    echo BUILD SUCCESSFUL
-    echo ========================================
+    echo Build successful, running 
+    echo.
     echo.
 ) else (
     echo.
-    echo ========================================
-    echo BUILD FAILED
-    echo ========================================
+    echo Build failed, exiting with error level %ERRORLEVEL%
     echo.
     exit /b %ERRORLEVEL%
 )
+
+echo.
+echo 
 
 :end
 echo.

@@ -35,6 +35,11 @@ public class History {
         return history.get(index); 
     }
 
+    public String getToString(int index) {
+        ArrayList<String> latest = get(index);
+        return latest.get(0) + " = " + latest.get(1);
+    }
+
     public ArrayList<String> getLatest() {
         return history.get(history.size() - 1); 
     }

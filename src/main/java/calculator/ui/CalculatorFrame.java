@@ -1,6 +1,5 @@
 /*
- *  Defines and implements the core GUI components of the application.
- *  Complex operations and separate ui frames are offloaded to other classes.
+ *  Defines and implements the core GUI components of the application
  */
 
 package calculator.ui;
@@ -24,7 +23,6 @@ public class CalculatorFrame extends JFrame {
         setSize(685, 685);
         setLocationRelativeTo(null);
         initUI();
-        Settings.ensureConsistent();
         setVisible(true);
     }
 

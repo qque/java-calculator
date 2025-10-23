@@ -18,10 +18,14 @@ public class SettingsFrame extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new FlowLayout());
         initUI();
-        Settings.ensureConsistent();
     }
 
     private void initUI() {
+        // todo
+    }
+
+    // update settings, ensure consistency 
+    private void ensureConsistent() {
         // todo
     }
     

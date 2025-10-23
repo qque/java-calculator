@@ -1,10 +1,5 @@
 /*
-    Defines functions used in the calculator for the ScriptEngine to evaluate properly
-
-    This is used for most buttons, except for exponentiation (which is parsed into Math.pow beforehand)
-    and basic arithmetic operators that already get parsed correctly (including parentheses)
-
-    This code is evaluated by the engine when the application is opened
+    Defines all functions used in the calculator...
 */
 
 // simple copies of Math library functions
