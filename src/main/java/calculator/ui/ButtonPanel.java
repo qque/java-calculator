@@ -41,15 +41,15 @@ public class ButtonPanel extends JPanel {
     
     /* All button label definitions */
     public static final String[][] labels = {
-        {"list" , "matrix", "test"   , "solve" , "graph" , "->"    },
-        {"stat" , "number", "special", "calc"  , "cmplx" , "const."},
-        {"sin⁻¹", "cos⁻¹" , "tan⁻¹"  , "(hyp.)", "i"     , "π"     },
-        {"sin"  , "cos"   , "tan"    , "(rec.)", "(deg.)", "e"     },
-        {"("    , ")"     , ","      , "1/x"   , "|x|"   , "ln"    },
-        {"7"    , "8"     , "9"      , "÷"     , "^"     , "eˣ"    },
-        {"4"    , "5"     , "6"      , "×"     , "√"     , "log"   },
-        {"1"    , "2"     , "3"      , "-"     , "x²"    , "10ˣ"   },
-        {"0"    , "."     , "ans"    , "+"     , "="     , "="     }
+        {"list" , "matrix", "test"   , "solve" , "graph" , "->"       },
+        {"stat" , "number", "special", "calc"  , "cmplx" , "constants"},
+        {"sin⁻¹", "cos⁻¹" , "tan⁻¹"  , "(hyp.)", "i"     , "π"        },
+        {"sin"  , "cos"   , "tan"    , "(rec.)", "(deg.)", "e"        },
+        {"("    , ")"     , ","      , "1/x"   , "|x|"   , "ln"       },
+        {"7"    , "8"     , "9"      , "÷"     , "^"     , "eˣ"       },
+        {"4"    , "5"     , "6"      , "×"     , "√"     , "log"      },
+        {"1"    , "2"     , "3"      , "-"     , "x²"    , "10ˣ"      },
+        {"0"    , "."     , "ans"    , "+"     , "="     , "="        }
     };
     
     // list editing & operations, similar to 
