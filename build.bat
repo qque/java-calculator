@@ -1,24 +1,62 @@
 @echo off
+setlocal enabledelayedexpansion
 
-set MAVEN_OPTS=-Xmx1024m
-set QUIET=false
-set ERRORLEVEL=0
+set "MAVEN_OPTS=-Xmx1024m"
 
-if /i "%1"=="-q" (
-    set QUIET=true
+set "QUIET=false"
+set "CLEAN=false"
+set "CLEANONLY=false"
+set "COMPILE=false"
+set "PACKAGE=false"
+set "SKIPTEST=true"
+
+set "ERRORLEVEL=0"
+
+for %%a in (%*) do (
+    set "arg=%%a"
+    
+    if "!arg:~0,1!"=="-" (
+        if "!arg:~0,2!" neq "--" (
+            set "flag_string=!arg:~1!"
+            
+            echo !flag_string! | findstr /i "\<q\>" >nul && set "QUIET=true"
+            echo !flag_string! | findstr /i "\<c\>" >nul && set "CLEAN=true"
+            echo !flag_string! | findstr /i "\<C\>" >nul && set "CLEANONLY=true"
+            echo !flag_string! | findstr /i "\<m\>" >nul && set "COMPILE=true"
+            echo !flag_string! | findstr /i "\<p\>" >nul && set "PACKAGE=true"
+            echo !flag_string! | findstr /i "\<t\>" >nul && set "SKIPTEST=false"
+        )
+    )
+    
+    if /i "!arg!"=="--quiet" set "QUIET=true"
+    if /i "!arg!"=="--clean" set "CLEAN=true"
+    if /i "!arg!"=="--clean-only" set "CLEANONLY=true"
+    if /i "!arg!"=="--compile" set "COMPILE=true"
+    if /i "!arg!"=="--package" set "PACKAGE=true"
+    if /i "!arg!"=="--test" set "SKIPTEST=false"
+)
+
+if %QUIET%==true (
     goto qrun
 )
-if /i "%1"=="--quiet" (
-    set QUIET=true
-    goto qrun
-)
-
 
 echo.
 echo ========================================
 echo Maven Project Build Script
 echo ========================================
 echo.
+
+if %CLEANONLY%==true (
+    echo. Cleaning build...
+    echo.
+    call mvn clean
+    goto end
+)
+if %CLEAN%==true (
+    echo. Cleaning build...
+    echo.
+    call mvn clean
+)
 
 where mvn >nul 2>nul
 if %ERRORLEVEL% neq 0 (
@@ -34,7 +72,16 @@ echo.
 
 echo Starting Maven build...
 echo.
-call mvn clean install
+if %COMPILE%==true (
+    mvn compile
+    goto check
+)
+if %PACKAGE%==true (
+    mvn package "-Dmaven.test.skip=%SKIPTEST%
+    goto check
+)
+mvn install "-Dmaven.test.skip=%SKIPTEST%
+:check
 if %ERRORLEVEL%==1 (
     echo.
     echo Build failed, exiting with error level %ERRORLEVEL%
@@ -85,7 +132,22 @@ echo Installation complete, exiting...
 goto end
 
 :qrun
-call mvn clean install -q
+if %CLEANONLY%==true (
+    call mvn clean -q
+    goto end
+)
+if %CLEAN%==true (
+    call mvn clean -q
+)
+if %COMPILE%==true (
+    mvn compile -q
+    goto check
+)
+if %PACKAGE%==true (
+    mvn package -q "-Dmaven.test.skip=%SKIPTEST%
+    goto check
+)
+mvn install -q "-Dmaven.test.skip=%SKIPTEST%
 if %ERRORLEVEL%==1 (
     echo.
     echo Build failed, exiting with error level %ERRORLEVEL%

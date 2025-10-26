@@ -80,7 +80,11 @@ public class Engine {
                     }
                 }
             }
+
+            // load settings needed for calculation
+            pyi.set("precision", settings.getPrecision());
             
+            // load functions
             pyi.exec(content);
         } catch (IOException e) {
             System.out.println(e);

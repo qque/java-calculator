@@ -109,6 +109,8 @@ public class Settings {
     private final boolean SEND_DEBUG_CONSOLE_OUT_TO_HIST;
     private final boolean DISPLAY_DEBUG_CONSOLE_OUT;
 
+    
+
     private final boolean ADD_CUSTOM_FUNCTION_FILE;
     private final boolean USE_CUSTOM_FUNCTION_FILE; // if both are set, use is prioritized over add
     private final String CUSTOM_FUNCTION_FILE;
