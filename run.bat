@@ -7,6 +7,8 @@ set "BUILD=false"
 set "DEBUG=false"
 set "NOCONSOLE=false"
 
+set /p JEP_PATH=<%~dp0jep.cfg
+
 for %%a in (%*) do (
     set "arg=%%a"
     
@@ -25,10 +27,10 @@ for %%a in (%*) do (
             if "!arg:~0,2!" neq "-D" (
                 set "flag_string=!arg:~1!"
                 
-                echo !flag_string! | findstr /i "q" >nul && set "QUIET=true"
-                echo !flag_string! | findstr /i "b" >nul && set "BUILD=true"
-                echo !flag_string! | findstr /i "d" >nul && set "DEBUG=true"
-                echo !flag_string! | findstr /i "w" >nul && set "NOCONSOLE=true"
+                echo !flag_string! | findstr /i "\<q\>" >nul && set "QUIET=true"
+                echo !flag_string! | findstr /i "\<b\>" >nul && set "BUILD=true"
+                echo !flag_string! | findstr /i "\<d\>" >nul && set "DEBUG=true"
+                echo !flag_string! | findstr /i "\<w\>" >nul && set "NOCONSOLE=true"
             )
         )
     )
@@ -39,16 +41,16 @@ for %%a in (%*) do (
     if /i "!arg!"=="--no-console" set "NOCONSOLE=true"
 )
 
-if %QUIET%==true (
-    goto qrun
-)
-
 if %BUILD%==true (
     if %QUIET%==true (
         call build.bat -q
     ) else (
         call build.bat
     )
+)
+
+if %QUIET%==true (
+    goto qrun
 )
 
 echo.
@@ -91,9 +93,9 @@ for %%F in (target\*.jar) do (
         echo Starting application...
         echo.
         if %NOCONSOLE%==false (
-            start java %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "%%F"
+            start java %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
         ) else (
-            start javaw %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "%%F"
+            start javaw %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
         )
         goto :done
     )
@@ -106,9 +108,9 @@ for %%F in (target\*.jar) do (
     if errorlevel 1 (
         set JAR_FOUND=1
         if %NOCONSOLE%==false (
-            start java %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "%%F"
+            start java %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
         ) else (
-            start javaw %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "%%F"
+            start javaw %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
         )
     )
 )

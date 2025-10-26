@@ -79,6 +79,10 @@ public class CalculatorFrame extends JFrame {
         ButtonPanel buttonPanel = new ButtonPanel(clickBehavior);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
+        // force engine to load into memory and evaluate functions on initialization
+        // this is done so there isn't a ~0.5 second pause when the user enters their first calculation
+        Engine.eval("pass");
+
         add(mainPanel);
     }
 

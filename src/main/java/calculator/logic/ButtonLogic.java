@@ -45,7 +45,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         // todo
 
         // replaces "ans" with answer value
-        if (!history.isEmpty()) {
+        if (!history.isEmpty() && expression.contains("ans")) {
             if (DEBUG_MODE) System.out.println("ACCESSED OUTPUT FROM HISTORY");
             expression = expression.replaceAll("ans", history.getLatest().get(1));
         }
@@ -266,11 +266,22 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
             if (output != null) {
                 display.setText(expression + output);
-                if (DEBUG_MODE) {
-                    System.out.println(label + ";    " + expression + output);
+            }
+
+            if (DEBUG_MODE) {
+                String dout;
+
+                if (label == "clear") {
+                    dout = "";
+                } else if (label == "delete") {
+                    dout = expression.substring(0, expression.length()-1);
+                } else if (output == null) {
+                    dout = expression + label;
+                } else {
+                    dout = expression + output;
                 }
-            } else if (DEBUG_MODE) {
-                System.out.println(label + ";    " + expression + label);
+
+                System.out.println(label + ";    " + dout);
             }
 
             // makes display scroll down so new text is visible
