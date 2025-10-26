@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import calculator.History;
+import calculator.Logger;
 import calculator.Settings;
 
 public class NotepadFrame extends JFrame implements KeyListener {
@@ -14,6 +15,8 @@ public class NotepadFrame extends JFrame implements KeyListener {
 
     private static Settings settings = Settings.getSettings();
     private static boolean DEBUG_MODE = settings.getDebugMode();
+
+    private static Logger logger = Logger.getInstance();
     private static boolean DEBUG_LOG = settings.getDebugLog();
 
     private JTextArea textArea;
@@ -31,6 +34,9 @@ public class NotepadFrame extends JFrame implements KeyListener {
 
         if (DEBUG_MODE) {
             System.out.println("NOTEPAD OPENED");
+        }
+        if (DEBUG_LOG) {
+            logger.log("NOTEPAD OPENED");
         }
     }
 

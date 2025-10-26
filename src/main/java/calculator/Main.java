@@ -18,7 +18,7 @@ public class Main {
     
 
     public static void main(String[] args) {
-        // capture arguments to settings
+        /* Capture arguments to settings */
         Properties properties = System.getProperties();
         Enumeration<?> propertyNames = properties.propertyNames();
 
@@ -75,6 +75,15 @@ public class Main {
 
         Settings.setSettings(finalValues);
 
+        /* Open logger */
+        Settings settings = Settings.getSettings();
+        
+        if (settings.getDebugLog()) {
+            Logger logger = Logger.getInstance();
+        }
+
+
         SwingUtilities.invokeLater(main);
     }
+
 }

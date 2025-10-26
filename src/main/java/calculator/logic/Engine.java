@@ -8,13 +8,14 @@ package calculator.logic;
 import jep.SharedInterpreter;
 import jep.JepException;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
+import calculator.Logger;
 import calculator.Settings;
 
 public class Engine {
@@ -61,7 +62,7 @@ public class Engine {
                     content = minifiedPythonScanner.next();
 
                     // if user doesn't want advanced functions, cut that part off
-                    if (!settings.getLoadAdvanced()) content = content.substring(content.indexOf("\"eof\"") + 5);
+                    if (!settings.getLoadAdvanced()) content = content.substring(0,content.indexOf("def end()"));
 
                     minifiedPythonScanner.close();
                 } else {
@@ -91,6 +92,7 @@ public class Engine {
             System.exit(1);
         } catch (JepException e) {
             if (settings.getDebugMode()) System.out.println(e);
+            if (settings.getDebugLog()) Logger.getInstance().log("Error occurred in JEP function evaluation: " + e.getMessage());
             System.out.println("Error occurred in JEP function evaluation. NumPy, SymPy, mpmath, or gmpy2 may not have been installed.");
             System.out.println("The calculator will still load, but core functions may not run correctly.");
         } catch (RuntimeException e) {

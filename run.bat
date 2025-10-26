@@ -6,6 +6,7 @@ set "QUIET=false"
 set "BUILD=false"
 set "DEBUG=false"
 set "NOCONSOLE=false"
+set "CLEAR=false"
 
 set /p JEP_PATH=<%~dp0jep.cfg
 
@@ -31,6 +32,7 @@ for %%a in (%*) do (
                 echo !flag_string! | findstr /i "\<b\>" >nul && set "BUILD=true"
                 echo !flag_string! | findstr /i "\<d\>" >nul && set "DEBUG=true"
                 echo !flag_string! | findstr /i "\<w\>" >nul && set "NOCONSOLE=true"
+                echo !flag_string! | findstr /i "\<c\>" >nul && set "CLEAR=true"
             )
         )
     )
@@ -39,6 +41,11 @@ for %%a in (%*) do (
     if /i "!arg!"=="--build" set "BUILD=true"
     if /i "!arg!"=="--debug-console" set "DEBUG=true"
     if /i "!arg!"=="--no-console" set "NOCONSOLE=true"
+    if /i "!arg!"=="--clear-logs" set "CLEAR=true"
+)
+
+if %CLEAR%==true (
+    python ./util/clear_logs.py
 )
 
 if %BUILD%==true (

@@ -17,8 +17,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import calculator.ui.ButtonPanel;
-import calculator.History;
 
+import calculator.History;
+import calculator.Logger;
 import calculator.Settings;
 
 public class ButtonLogic implements ButtonPanel.ButtonListener {
@@ -29,6 +30,8 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
     private static Settings settings = Settings.getSettings();
     private static boolean DEBUG_MODE = settings.getDebugMode();
+
+    private static Logger logger = Logger.getInstance();
     private static boolean DEBUG_LOG = settings.getDebugLog();
 
     public static void setTextArea(JTextArea area) { display = area; }
@@ -38,20 +41,28 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         if (DEBUG_MODE) {
             System.out.println("Preprocessing: " + expression);
         }
+        if (DEBUG_LOG) {
+            logger.log("Preprocessing: " + expression);
+        }
 
+        // replace limit to avoid infinite loop
         int safety = 0;
+        final int SAFETY_LIM = 27;
 
         // check for user defined function
         // todo
 
         // replaces "ans" with answer value
         if (!history.isEmpty() && expression.contains("ans")) {
-            if (DEBUG_MODE) System.out.println("ACCESSED OUTPUT FROM HISTORY");
             expression = expression.replaceAll("ans", history.getLatest().get(1));
+
+            if (DEBUG_LOG) {
+                logger.log("(Accessed output of last calculation from history)");
+            }
         }
 
         // converts "|xyz|" -> "abs(xyz)"
-        while (expression.contains("|") && ++safety < 20) {
+        while (expression.contains("|") && ++safety < SAFETY_LIM) {
             expression = expression.replaceAll("\\|([^|]+)\\|", "abs($1)");
         }
 
@@ -61,7 +72,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         expression = expression.replaceAll("->", "=");
 
         // converts "x!" -> "fact(x)"
-        while (expression.contains("!") && ++safety < 20) {
+        while (expression.contains("!") && ++safety < SAFETY_LIM) {
             int i = expression.indexOf('!');
             int start = i - 1;
             if (start >= 0 && expression.charAt(start) == ')') {
@@ -79,10 +90,8 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             }
         }
 
-        // converts "π" & "pi" -> "Math.PI" and "e" -> "Math.E"
-        expression = expression.replaceAll("π", "math.pi");
-        expression = expression.replaceAll("pi", "math.pi");
-        expression = expression.replaceAll("(?<![a-zA-Z0-9_])e(?![a-zA-Z0-9_])", "math.e");
+        // converts "π" -> "pi"
+        expression = expression.replaceAll("π", "pi");
 
         // check if degree mode is on. if so, use degree versions of math functions
         // patterns with negative lookbehind are making sure inverse versions dont double convert inverse trig functions
@@ -109,7 +118,10 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         
         if (DEBUG_MODE) {
             // fail message if preprocessing stalled on factorial or absolute value
-            System.out.println((safety < 20) ? "Processed: " + expression : "Preprocessing failed, moving to computation");
+            System.out.println((safety < SAFETY_LIM) ? "Processed: " + expression : "Preprocessing failed, moving to computation");
+        }
+        if (DEBUG_LOG) {
+            logger.log((safety < SAFETY_LIM) ? "Processed:     " + expression : "Preprocessing failed, moving to computation");
         }
 
         return expression;
@@ -124,6 +136,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
         if (DEBUG_MODE) {
             System.out.println("Evaluated: " + eval);
+        }
+        if (DEBUG_LOG) {
+            logger.log("Evaluated:     " + eval);
         }
 
         Output output;
@@ -162,10 +177,6 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             }
         }
 
-        if (DEBUG_MODE) {
-            System.out.println(expression + "=" + output.toString());
-        }
-
         return output;
     }
 
@@ -174,15 +185,15 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         try {
             String expression = display.getText();
             String output = null;
+            String result = null;
 
             if (label != "=") display.setForeground(Color.BLACK);
 
             switch (label) {
             case "=":
-                String result = compute(expression).toString();
+                result = compute(expression).toString();
                 display.setText(result);
                 display.setForeground(Color.RED);
-                System.out.println(expression + ",   " + result);
                 history.add(expression, result);
                 break;
             case "clear":
@@ -222,70 +233,76 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             // input modified label
             case "×": output = "*"; break;
             case "÷": output = "/"; break;
-            case "1/x": output = "1/"; break;
             case "|x|": output = "|"; break;
             case "x²": output = "^2"; break;
             case "10ˣ": output = "10^"; break;
             case "eˣ": output = "e^"; break;
-            
-            // input label with parenthesis (inverse trig & sqrt have modified label as well)
-            case "sin": output = "sin("; break;
-            case "cos": output = "cos("; break;
-            case "tan": output = "tan("; break;
             case "sin⁻¹": output = "asin("; break;
             case "cos⁻¹": output = "acos("; break;
             case "tan⁻¹": output = "atan("; break;
-            case "csc": output = "csc("; break;
-            case "sec": output = "sec("; break;
-            case "cot": output = "cot("; break;
             case "csc⁻¹": output = "acsc("; break;
             case "sec⁻¹": output = "asec("; break;
             case "cot⁻¹": output = "acot("; break;
-            case "sinh": output = "sinh("; break;
-            case "cosh": output = "cosh("; break;
-            case "tanh": output = "tanh("; break;
             case "sinh⁻¹": output = "asinh("; break;
             case "cosh⁻¹": output = "acosh("; break;
             case "tanh⁻¹": output = "atanh("; break;
             case "√": output = "sqrt("; break;
-            case "log": output = "log("; break;
-            case "ln": output = "ln("; break;
-            case "nPr": output = "nPr("; break;
-            case "nCr": output = "nCr("; break;
-            case "∫": output = "∫("; break;
-
-            // input plain label (includes `ans`, which is converted in preprocessing)
-            default:
-                display.setText(expression + label);
+            case "1/x": output = "1/("; break;
+            
+            // input label with parenthesis
+            case "sin":
+            case "cos":
+            case "tan":
+            case "csc":
+            case "sec":
+            case "cot":
+            case "sinh":
+            case "cosh":
+            case "tanh":
+            case "ln":
+            case "log":
+                output = label + "(";
                 break;
 
+            // input plain label
+            default:
+                output = label;
+                break;
 
+            
             // buttons in popup menu
             //...
+
             }
 
             if (output != null) {
                 display.setText(expression + output);
             }
 
-            if (DEBUG_MODE) {
+            if (DEBUG_MODE || DEBUG_LOG) {
                 String dout;
 
                 if (label == "clear") {
                     dout = "";
                 } else if (label == "delete") {
                     dout = expression.substring(0, expression.length()-1);
+                } else if (label == "=") {
+                    dout = expression + "=" + result;
                 } else if (output == null) {
                     dout = expression + label;
                 } else {
                     dout = expression + output;
                 }
 
-                System.out.println(label + ";    " + dout);
+                if (DEBUG_MODE) System.out.println(label + ";    " + dout);
+                if (DEBUG_LOG) logger.log(label + ";    " + dout);
             }
 
             // makes display scroll down so new text is visible
             display.setCaretPosition(display.getDocument().getLength());
+        } catch (StringIndexOutOfBoundsException e) {
+            // if user tries to delete with nothing, just ignore and move on
+            return;
         } catch (Exception e) {
             System.out.println(e);
 

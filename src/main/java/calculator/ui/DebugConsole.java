@@ -31,6 +31,7 @@ import calculator.logic.ButtonLogic;
 import calculator.logic.Engine;
 
 import calculator.History;
+import calculator.Logger;
 import calculator.Settings;
 
 public class DebugConsole extends JFrame implements KeyListener {
@@ -39,6 +40,9 @@ public class DebugConsole extends JFrame implements KeyListener {
 
     private static Settings settings = Settings.getSettings();
     private static boolean DEBUG_MODE = settings.getDebugMode();
+
+    private static Logger logger = Logger.getInstance();
+    private static boolean DEBUG_LOG = settings.getDebugLog();
 
     private JTextArea textArea;
 

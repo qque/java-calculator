@@ -1,7 +1,8 @@
-import math,cmath,statistics,decimal,random,fractions,itertools,numpy as np,sympy as sp,mpmath as mp
+import math,cmath,statistics,decimal,random,fractions,numpy as np,sympy as sp,mpmath as mp
 pi=math.pi
+e=math.e
 def sqrt(x):return math.sqrt(x)
-def ln(x):return math.ln(x)
+def ln(x):return math.log(x)
 def log(x,a):return math.log(x,a)
 def abs(x):return abs(x)
 def sin(x):return math.sin(x)
@@ -40,7 +41,7 @@ def dcot(x):x=pi*x/180;return 1/math.tan(x)
 def dacsc(x):x=pi*x/180;return math.asin(1/x)
 def dasec(x):x=pi*x/180;return math.acos(1/x)
 def dacot(x):x=pi*x/180;return pi-math.atan(x)
-'eof'
+def end():import sys;sys.exit(0)
 def gamma(x):return math.gamma(x)
 def fact(x):return math.gamma(x+1)
 def nPr(n,k):return math.perm(n,k)

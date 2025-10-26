@@ -77,6 +77,10 @@ if %ERRORLEVEL%==1 (
 )
 
 echo.
+echo Minifying python function file...
+python ./util/minify.py
+
+echo.
 echo Installation complete, exiting...
 goto end
 
@@ -108,6 +112,7 @@ python -m pip show gmpy2 >nul 2>&1
 if %ERRORLEVEL%==1 (
     yes | python -m pip install gmpy2 -q -q --exists-action i
 )
+python ./util/minify.py -q
 
 :end
 for /f "usebackq tokens=*" %%i in (`python -m site --user-site`) do set SITE_PACKAGES=%%i

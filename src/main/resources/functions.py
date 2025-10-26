@@ -1,7 +1,11 @@
+#!/usr/bin/env python3
+
+#
 # This file defines all functions used internally within the calculator.
 #
 # In all cases, functions are optimized for preformance.
 # In almost every case, this means using libraries such as numpy, sympy, or mpmath.
+#
 
 import math
 import cmath
@@ -10,20 +14,19 @@ import decimal
 import random
 import fractions
 
-import itertools
-
 # if not installed by user, an error will be caught within the Engine class
 import numpy as np
 import sympy as sp
 import mpmath as mp
 
 pi = math.pi
+e = math.e
 
 def sqrt(x):
     return math.sqrt(x)
 
 def ln(x):
-    return math.ln(x)
+    return math.log(x)
 
 def log(x, a):
     return math.log(x, a)
@@ -157,7 +160,7 @@ def dacot(x):
     x = pi * x / 180
     return pi - math.atan(x)
 
-"eof"
+def end(): import sys; sys.exit(0)
 # start of advanced functions
 
 def gamma(x):
