@@ -4,7 +4,6 @@ target/
 
 # Debugging
 logs/
-todo.txt
 
 # Compiled class file
 *.class

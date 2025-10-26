@@ -8,7 +8,7 @@ import calculator.History;
 
 public class HistoryFrame extends JFrame {
 
-    private static History history = History.getInstance();
+    private static History history = History.getHistory();
 
     public HistoryFrame() {
         super("History");

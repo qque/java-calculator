@@ -12,13 +12,13 @@ public class History {
     
     private ArrayList<ArrayList<String>> history;
 
-    private static History instance;
-
     public History() {
         history = new ArrayList<>();
     }
 
-    public static History getInstance() {
+    private static History instance;
+
+    public static History getHistory() {
         if (instance == null) instance = new History();
         return instance;
     }

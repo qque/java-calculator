@@ -10,7 +10,9 @@ import java.time.LocalDateTime; // get datetime for logs
 import calculator.ui.CalculatorFrame;
 import calculator.ui.DebugConsole;
 import calculator.ui.NotepadFrame;
+import jep.SharedInterpreter;
 import calculator.Settings;
+import calculator.logic.ButtonLogic;
 
 public class Main {
 
@@ -22,6 +24,8 @@ public class Main {
     
 
     public static void main(String[] args) {
+        Settings settings = Settings.getSettings();
+
         // capture arguments
         Properties properties = System.getProperties();
         Enumeration<?> propertyNames = properties.propertyNames();
@@ -30,7 +34,7 @@ public class Main {
             String name = (String) propertyNames.nextElement();
             String value = properties.getProperty(name);
 
-            if (name == "OPEN_DEBUG_ON_EXECUTION" && value == "true") {
+            if ((name == "ODCOE" || name == "OPEN_DEBUG_CONSOLE_ON_EXECUTION") && value == "true") {
                 main = new Runnable() {
                     public void run() {
                         new DebugConsole();

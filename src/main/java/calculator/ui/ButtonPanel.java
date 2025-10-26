@@ -24,13 +24,14 @@ import calculator.Settings;
 
 public class ButtonPanel extends JPanel {
 
+    private static Settings settings = Settings.getSettings();
+
     public interface ButtonListener {
         void onButtonClick(String label);
     }
 
-    private Font buttonFont = new Font(Settings.buttonFontName, Settings.buttonFontStyle, Settings.buttonFontSize);
-
-    private Font popupButtonFont = new Font(Settings.popupButtonFontName, Settings.popupButtonFontStyle, Settings.popupButtonFontSize);
+    private Font buttonFont = new Font(settings.getButtonFontName(), settings.getButtonFontStyle(), settings.getButtonFontSize());
+    private Font popupButtonFont = new Font(settings.getPopupButtonFontName(), settings.getPopupButtonFontStyle(), settings.getPopupButtonFontSize());
 
     private final Map<String, JButton> buttons = new HashMap<>();
 
@@ -38,7 +39,7 @@ public class ButtonPanel extends JPanel {
     private final ButtonListener listener;
     
     
-    /* Button  */
+    /* All button label definitions */
     public static final String[][] labels = {
         {"list" , "matrix", "test"   , "solve" , "graph" , "->"       },
         {"stat" , "number", "special", "calc"  , "cmplx" , "constants"},
@@ -195,6 +196,7 @@ public class ButtonPanel extends JPanel {
         },
     };
 
+
     // number theory
     public static final String[][] numberPopupLabels = {
         {"something...", "primes?", "sequences?"},
@@ -202,15 +204,25 @@ public class ButtonPanel extends JPanel {
 
     public static final String[][][] numberSubLabels = {
         {
-            {}
+            {"...", "...", "..."}
+        },
+
+        {
+            {"...", "...", "..."}
+        },
+
+        {
+            {"...", "...", "..."}
         }
     };
+
 
     // calculus & differential equations
     public static final String[][] calcPopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
     };
+
 
     // special functions (gamma, bessel, etc.)
     // todo: expand
@@ -219,17 +231,34 @@ public class ButtonPanel extends JPanel {
         {"erf", "example", "example2"}
     };
 
+
     // complex number functions & utilities
     public static final String[][] cmplxPopupLabels = {
         {"imag", "real", "conj"},
     };
 
-    // separate ui windows
-    // typically opened with ctrl+h, ctrl+s, etc., but also accessable here
-    public static final String[][] menusPopupLabels = {
-        {"history", "notepad"  , "settings"   },
-        {"console", "list edit", "matrix edit"},
-        {""}
+
+    // wide variety of constants, divided into a couple of categories for ease of access
+    // e, pi, and i are on the base button panel since they are used so frequently
+    public static final String[][] constantsPopupLabels = {
+        {"trivial", "transcendental", "scientific"}
+    };
+
+    public static final String[][][] constantsSubLabels = {
+        // trivial constants, i.e. those that can be achieved through a finite number of algebraic operations
+        {
+            {"...", "...", "..."}
+        },
+
+        // transcendental constants
+        {
+            {"...", "...", "..."}
+        },
+
+        // constants used outside of math in physics, engineering, etc.
+        {
+            {"...", "...", "..."}
+        }
     };
 
 
@@ -374,7 +403,7 @@ public class ButtonPanel extends JPanel {
                 else if (row == 1 && col == 2) createPopup(button, calcPopupLabels);
                 else if (row == 1 && col == 3) createPopup(button, specialPopupLabels);
                 else if (row == 1 && col == 4) createPopup(button, cmplxPopupLabels);
-                else if (row == 1 && col == 5) createPopup(button, menusPopupLabels);
+                else if (row == 1 && col == 5) createPopup(button, constantsPopupLabels);
 
                 // listener for button clicks
                 button.addActionListener(e -> {

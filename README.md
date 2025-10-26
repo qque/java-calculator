@@ -16,10 +16,18 @@ As far as I'm aware, this project only builds correctly on Windows. To install:
 
 3. Run `./build`
 
+    `-q` or `--quiet` can be passed to `./build` to suppress output to the console.
+
 4. Run `./run`
 
-    For run, you can set any setting value with a flag of the form `-D[setting name]=[value]`. This is parsed in 
+    The following flags can be passed to `./run`:
+    
+    - `-D[setting name]=[setting value]` to set settings before the program is opened (this is how all core program behavior, such as debug mode or custom function files must be set)
+    - `-q` / `--quiet` to suppress output
+    - `-b` / `--build` to build before execution
+    - `-w` / `--no-console` to stop the console from opening (this will prevent real-time debug information, though the equivalent log files will still be created if DEBUG_LOG is true)
+    - `-d` / `--debug-console` to open the larger debug console instead of the regular calculator
 
 If you encounter any issues, make sure Maven and JDK 17 are properly installed and in the PATH.
 
-The flag `-q` or `--quiet` can be passed to either to suppress output, and `-r` / `--run` and `-b` / `--build` can be passed to the scripts respectively to execute both at the same time. (Note that passing settings values will not work if you use `./build -r`)
+

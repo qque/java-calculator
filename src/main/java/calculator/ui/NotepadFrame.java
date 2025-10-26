@@ -10,7 +10,11 @@ import calculator.Settings;
 
 public class NotepadFrame extends JFrame implements KeyListener {
 
-    private static History history = History.getInstance();
+    private static History history = History.getHistory();
+
+    private static Settings settings = Settings.getSettings();
+    private static boolean DEBUG_MODE = settings.getDebugMode();
+    private static boolean DEBUG_LOG = settings.getDebugLog();
 
     private JTextArea textArea;
 
@@ -25,7 +29,7 @@ public class NotepadFrame extends JFrame implements KeyListener {
         setLayout(new FlowLayout());
         initUI();
 
-        if (Settings.DEBUG_MODE) {
+        if (DEBUG_MODE) {
             System.out.println("NOTEPAD OPENED");
         }
     }
@@ -69,9 +73,13 @@ public class NotepadFrame extends JFrame implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown()) {
-            if (Settings.DEBUG_MODE) {
+            if (DEBUG_MODE) {
                 System.out.println("Accessed output from history");
             }
+            if (DEBUG_LOG) {
+                
+            }
+
             textArea.setText(textArea.getText() + history.getLatestToString());
         } else {
             textArea.setText(textArea.getText() + e.getKeyChar());

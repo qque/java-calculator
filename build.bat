@@ -1,14 +1,9 @@
 @echo off
 
 set MAVEN_OPTS=-Xmx1024m
-set RUN=false
 set QUIET=false
 set ERRORLEVEL=0
 
-:parse_args
-if "%1"=="" goto build
-if /i "%1"=="-r" set RUN=true
-if /i "%1"=="--run" set RUN=true
 if /i "%1"=="-q" (
     set QUIET=true
     goto run
@@ -17,9 +12,6 @@ if /i "%1"=="--quiet" (
     set QUIET=true
     goto run
 )
-if /i "%1"=="clean" goto clean_build
-shift
-goto parse_args
 
 
 echo.
@@ -44,15 +36,11 @@ echo.
 echo Starting Maven build...
 echo.
 
-:clean_build
-echo Cleaning project...
-
-call mvn clean
-goto end
+call mvn clean install
 
 :run
 if %QUIET%==true (
-    call mvn install -q
+    call mvn clean install -q
 )
 
 :check_result

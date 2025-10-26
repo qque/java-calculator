@@ -9,7 +9,7 @@ import calculator.Settings;
 
 public class SettingsFrame extends JFrame {
 
-    private static History history = History.getInstance();
+    private static History history = History.getHistory();
 
     public SettingsFrame() {
         super("Settings");
@@ -21,11 +21,6 @@ public class SettingsFrame extends JFrame {
     }
 
     private void initUI() {
-        // todo
-    }
-
-    // update settings, ensure consistency 
-    private void ensureConsistent() {
         // todo
     }
     

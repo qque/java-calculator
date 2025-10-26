@@ -1,42 +1,54 @@
 @echo off
+setlocal enabledelayedexpansion
 
 set "JAVA_OPTS="
 set "QUIET=false"
 set "BUILD=false"
+set "DEBUG=false"
+set "NOCONSOLE=false"
 
-set "i=0"
 for %%a in (%*) do (
     set "arg=%%a"
+    
     if /i "!arg:~0,2!"=="-D" (
         set "JAVA_OPTS=!JAVA_OPTS! %%a"
-        
         set "setting_pair=!arg:~2!"
         for /f "tokens=1* delims==" %%b in ("!setting_pair!") do (
             set "setting_name=%%b"
             set "setting_value=%%c"
-
             set "!setting_name!=!setting_value!"
         )
     )
-    set "flag_string=!arg:~1!"
-    if "!flag_string:q=!" neq "!flag_string!" (
-        set "QUIET=true"
+    
+    if "!arg:~0,1!"=="-" (
+        if "!arg:~0,2!" neq "--" (
+            if "!arg:~0,2!" neq "-D" (
+                set "flag_string=!arg:~1!"
+                
+                echo !flag_string! | findstr /i "q" >nul && set "QUIET=true"
+                echo !flag_string! | findstr /i "b" >nul && set "BUILD=true"
+                echo !flag_string! | findstr /i "d" >nul && set "DEBUG=true"
+                echo !flag_string! | findstr /i "w" >nul && set "NOCONSOLE=true"
+            )
+        )
     )
-    if /i "!arg!"=="--quiet" (
-        set "QUIET=true"
-    )
-    if /i "!arg!"=="-b" (
-        set "BUILD=true"
-        call build.bat -q
-    )
-    if /i "!arg!"=="--build" (
-        set "BUILD=true"
-        call build.bat -q
-    )
+    
+    if /i "!arg!"=="--quiet" set "QUIET=true"
+    if /i "!arg!"=="--build" set "BUILD=true"
+    if /i "!arg!"=="--debug-console" set "DEBUG=true"
+    if /i "!arg!"=="--no-console" set "NOCONSOLE=true"
 )
 
 if %QUIET%==true (
     goto qrun
+)
+
+if %BUILD%==true (
+    if %QUIET%==true (
+        call build.bat -q
+    ) else (
+        call build.bat
+    )
 )
 
 echo.
@@ -73,12 +85,16 @@ for %%F in (target\*.jar) do (
     echo Checking: %%F
     echo %%F | find /i "original-" >nul
     if errorlevel 1 (
+        set JAR_FOUND=1
         echo Found application JAR: %%F
         echo.
         echo Starting application...
         echo.
-        start javaw %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "%%F"
-        set JAR_FOUND=1
+        if %NOCONSOLE%==false (
+            start java %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "%%F"
+        ) else (
+            start javaw %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "%%F"
+        )
         goto :done
     )
 )
@@ -88,8 +104,12 @@ set JAR_FOUND=0
 for %%F in (target\*.jar) do (
     echo %%F | find /i "original-" >nul
     if errorlevel 1 (
-        start javaw %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "%%F"
         set JAR_FOUND=1
+        if %NOCONSOLE%==false (
+            start java %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "%%F"
+        ) else (
+            start javaw %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "%%F"
+        )
     )
 )
 
@@ -101,5 +121,4 @@ if %JAR_FOUND%==0 (
 )
 
 :done
-timeout /t 3 >nul
 exit

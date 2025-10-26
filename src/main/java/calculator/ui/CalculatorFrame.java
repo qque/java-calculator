@@ -4,7 +4,6 @@
 
 package calculator.ui;
 
-import javax.script.ScriptException;
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,7 +12,10 @@ import calculator.Settings;
 
 public class CalculatorFrame extends JFrame {
 
-    private Font buttonFont = new Font(Settings.buttonFontName, Settings.buttonFontStyle, Settings.buttonFontSize);
+    private static Settings settings = Settings.getSettings();
+
+    private Font consoleFont = new Font(settings.getConsoleFontName(), settings.getConsoleFontStyle(), settings.getConsoleFontSize());
+    private Font buttonFont = new Font(settings.getButtonFontName(), settings.getButtonFontStyle(), settings.getButtonFontSize());
 
     private JTextArea display;
 
@@ -43,12 +45,11 @@ public class CalculatorFrame extends JFrame {
         KeyboardLogic.setTextArea(display);
         display.addKeyListener(keyListener); // key listener
 
-        display.setFont(new Font(Settings.consoleFontName, Settings.consoleFontStyle, Settings.consoleFontSize));
+        display.setFont(consoleFont);
         display.setLineWrap(true); // wrap text
         display.setWrapStyleWord(true);
         display.setPreferredSize(new Dimension(400, 80));
         topPanel.add(scrollPane, BorderLayout.CENTER);
-
 
         // clear and ans buttons beside top display
         JPanel sideButtons = new JPanel(new GridLayout(2, 1, 5, 5));
@@ -73,17 +74,6 @@ public class CalculatorFrame extends JFrame {
         topPanel.add(sideButtons, BorderLayout.EAST);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
-
-
-        // setup JS parsing engine (preloads js functions)
-        // if an error is thrown in this case, it will be because the graal.js engine could not be found
-        // in this case, the program will exit immediately
-        try {
-            ButtonLogic.setupEngine();
-        } catch (ScriptException e) {
-            
-        }
-
     
         // 9x6 button grid below top display (see ButtonPanel.java)
         ButtonPanel buttonPanel = new ButtonPanel(clickBehavior);

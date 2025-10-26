@@ -17,24 +17,28 @@ package calculator.ui;
 import javax.script.ScriptException;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import calculator.logic.ButtonLogic;
+import calculator.logic.Engine;
 
 import calculator.History;
 import calculator.Settings;
 
 public class DebugConsole extends JFrame implements KeyListener {
 
-    private static History history = History.getInstance();
+    private static History history = History.getHistory();
+
+    private static Settings settings = Settings.getSettings();
+    private static boolean DEBUG_MODE = settings.getDebugMode();
 
     private JTextArea textArea;
 
@@ -108,7 +112,7 @@ public class DebugConsole extends JFrame implements KeyListener {
                     }
                 }
 
-                ButtonLogic.engineEval(text);
+                Engine.eval(text);
             } else if (e.isControlDown()) {
                 // pass input indirectly
 
@@ -124,7 +128,7 @@ public class DebugConsole extends JFrame implements KeyListener {
                 try {
                     String result = ButtonLogic.compute(text).toString();
 
-                    if (Settings.DISPLAY_DEBUG_CONSOLE_OUT) { 
+                    if (settings.getDisplayDebugConsoleOut()) { 
                         JOptionPane.showMessageDialog(
                             textArea,
                             result,
@@ -135,7 +139,7 @@ public class DebugConsole extends JFrame implements KeyListener {
 
                     System.out.println("DEBUG CONSOLE:\n\n" + text + ",   " + result);
 
-                    if (Settings.SEND_DEBUG_CONSOLE_OUT_TO_HIST) {
+                    if (settings.getSendDebugConsoleOutToHist()) {
                         history.add(text, result);
                     }
                 } catch (ScriptException err) {
@@ -156,7 +160,5 @@ public class DebugConsole extends JFrame implements KeyListener {
     public void keyTyped(KeyEvent e) {
         // not used
     }
-
-
     
 }

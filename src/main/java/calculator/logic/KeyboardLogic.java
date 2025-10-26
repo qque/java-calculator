@@ -55,7 +55,7 @@ public class KeyboardLogic implements KeyListener {
             break;
         case KeyEvent.VK_EQUALS:
             if (shift) button = "+";        // '+' -- `+`
-            else if (ctrl) button = "->"; //
+            else if (ctrl) button = "->";   //
             else button = "=";              // '=' -- `=`
             break;
 
@@ -174,9 +174,6 @@ public class KeyboardLogic implements KeyListener {
 
         // runButton is always ran here, even when it is "null", since we want the baseline
         // behavior of runButton (setting display text to black, setting cursor, etc.) to occur
-
-        // popupMenu is always null, since popup menus can only be opened via button presses
-        // of course, you can access functions within these popup menus, though
         if (button != null) {
             ButtonLogic.runButton(button);
         }

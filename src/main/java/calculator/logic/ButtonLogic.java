@@ -11,17 +11,10 @@ import java.awt.Color;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import java.util.Scanner;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import calculator.ui.ButtonPanel;
 import calculator.History;
@@ -32,27 +25,32 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
     private static JTextArea display;
 
-    private static History history = History.getInstance();
+    private static History history = History.getHistory();
+
+    private static Settings settings = Settings.getSettings();
+    private static boolean DEBUG_MODE = settings.getDebugMode();
+    private static boolean DEBUG_LOG = settings.getDebugLog();
 
     public static void setTextArea(JTextArea area) { display = area; }
 
     // preprocessing using regex for more annoying conversions
     private static String preprocess(String expression) {
-        if (Settings.DEBUG_MODE) {
+        if (DEBUG_MODE) {
             System.out.println("Preprocessing: " + expression);
         }
 
         int safety = 0;
 
         // check for user defined function
+        // todo
 
         // replaces "ans" with answer value
         if (!history.isEmpty()) {
-            if (Settings.DEBUG_MODE) System.out.println("Accessed output from history");
+            if (DEBUG_MODE) System.out.println("ACCESSED OUTPUT FROM HISTORY");
             expression = expression.replaceAll("ans", history.getLatest().get(1));
         }
 
-        // converts "|xyz|" -> "Math.abs(xyz)"
+        // converts "|xyz|" -> "abs(xyz)"
         while (expression.contains("|") && ++safety < 20) {
             expression = expression.replaceAll("\\|([^|]+)\\|", "abs($1)");
         }
@@ -82,9 +80,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         }
 
         // converts "π" & "pi" -> "Math.PI" and "e" -> "Math.E"
-        expression = expression.replaceAll("π", "Math.PI");
-        expression = expression.replaceAll("pi", "Math.PI");
-        expression = expression.replaceAll("(?<![a-zA-Z0-9_])e(?![a-zA-Z0-9_])", "Math.E");
+        expression = expression.replaceAll("π", "math.pi");
+        expression = expression.replaceAll("pi", "math.pi");
+        expression = expression.replaceAll("(?<![a-zA-Z0-9_])e(?![a-zA-Z0-9_])", "math.e");
 
         // check if degree mode is on. if so, use degree versions of math functions
         // patterns with negative lookbehind are making sure inverse versions dont double convert inverse trig functions
@@ -109,7 +107,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             expression = expression.replaceAll("atanh", "datanh");
         }
         
-        if (Settings.DEBUG_MODE) {
+        if (DEBUG_MODE) {
             // fail message if preprocessing stalled on factorial or absolute value
             System.out.println((safety < 20) ? "Processed: " + expression : "Preprocessing failed, moving to computation");
         }
@@ -117,91 +115,14 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         return expression;
     }
 
-    private static ScriptEngineManager manager;
-    private static ScriptEngine engine;
-
-    public static boolean isSetup = false; 
-
-    // setup javascript ScriptEngine to evaluate, done on initialization 
-    public static void setupEngine() throws ScriptException {
-        manager = new ScriptEngineManager();
-        engine = manager.getEngineByName("graal.js");
-
-        if (engine == null) {
-            throw new ScriptException("graal.js engine not found. See if the dependency is properly included in the build configuration");
-        }
-
-        // functions that need to be defined for computation (stdev, nCr, etc.)
-        // see ../../../resources/functionDefinitions.js for a readable version of the code with comments
-        try {
-            String content;
-
-            // default value is false for both. if either is true, 
-            if (Settings.USE_CUSTOM_FUNCTION_FILE) {
-                String path = Settings.CUSTOM_FUNCTION_FILE;
-                if (path != null) {
-                    Scanner customFileScanner = new Scanner(new File(path), StandardCharsets.UTF_8).useDelimiter("\\Z");
-                    content = customFileScanner.next();
-                    customFileScanner.close();
-                } else {
-                    throw new IOException("Custom function file not defined, or specified path not found");
-                }
-            } else {
-                File minifiedJS = new File("src/main/resources/minified.js");
-                if (minifiedJS.exists()) {
-                    Scanner minifiedJSScanner = new Scanner(minifiedJS, StandardCharsets.UTF_8).useDelimiter("\\Z");
-                    content = minifiedJSScanner.next();
-
-                    // if 
-                    if (!Settings.LOAD_ADVANCED) content = content.substring(content.indexOf("###*/"));
-
-                    minifiedJSScanner.close();
-                } else {
-                    throw new IOException("minified.js not found, try running ./util/minify");
-                }
-
-                if (Settings.ADD_CUSTOM_FUNCTION_FILE) {
-                    String path = Settings.CUSTOM_FUNCTION_FILE;
-                    if (path != null) {
-                        Scanner customFileScanner = new Scanner(new File(path), StandardCharsets.UTF_8).useDelimiter("\\Z");
-                        content += customFileScanner.next();
-                        customFileScanner.close();
-                    } else {
-                        throw new IOException("Custom function file not defined, or specified path not found");
-                    }
-                }
-            }
-
-            engine.eval(content);
-        } catch (ScriptException | IOException e) {
-            // critical exception, must exit program 
-            System.out.println(e);
-            System.exit(0);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        isSetup = true;
-    }
-
-    // string evaluator for debug console
-    public static Object engineEval(String code) {
-        try {
-            return engine.eval(code);
-        } catch (ScriptException e) {
-            System.out.println(e);
-            return 0;
-        }
-    }
-
     // defines parsing and computation for "=" button
     // uses generic Output type to handle double, int, boolean, etc.
     public static Output compute(String expression) throws ScriptException {
         expression = preprocess(expression);
 
-        String eval = engine.eval(expression).toString();
+        String eval = Engine.getValue(expression).toString();
 
-        if (Settings.DEBUG_MODE) {
+        if (DEBUG_MODE) {
             System.out.println("Evaluated: " + eval);
         }
 
@@ -241,7 +162,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             }
         }
 
-        if (Settings.DEBUG_MODE) {
+        if (DEBUG_MODE) {
             System.out.println(expression + "=" + output.toString());
         }
 
@@ -249,25 +170,12 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
     }
 
     // static implementation of onButtonClick behavior
-    public static void runButton(String label) { 
-        if (!isSetup) {
-            try {
-                setupEngine();
-            } catch (ScriptException e) {
-                System.out.println(e);
-                System.exit(1);
-            }
-        }
-
+    public static void runButton(String label) {
         try {
             String expression = display.getText();
             String output = null;
 
             if (label != "=") display.setForeground(Color.BLACK);
-
-            if (Settings.DEBUG_MODE) {
-                System.out.println(label + ";    " + expression);
-            }
 
             switch (label) {
             case "=":
@@ -358,6 +266,11 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
             if (output != null) {
                 display.setText(expression + output);
+                if (DEBUG_MODE) {
+                    System.out.println(label + ";    " + expression + output);
+                }
+            } else if (DEBUG_MODE) {
+                System.out.println(label + ";    " + expression + label);
             }
 
             // makes display scroll down so new text is visible
@@ -380,4 +293,5 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
     public void onButtonClick(String label) {
         runButton(label);
     }
+
 }
