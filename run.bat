@@ -102,7 +102,7 @@ for %%F in (target\*.jar) do (
         if %NOCONSOLE%==false (
             start java %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
         ) else (
-            start javaw %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
+            start javaw %JAVA_OPTS% -Ddebug=false -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
         )
         goto :done
     )
@@ -117,7 +117,7 @@ for %%F in (target\*.jar) do (
         if %NOCONSOLE%==false (
             start java %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
         ) else (
-            start javaw %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
+            start javaw %JAVA_OPTS% -Ddebug=false -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
         )
     )
 )

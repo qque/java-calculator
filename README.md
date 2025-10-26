@@ -1,6 +1,6 @@
 # calculator
 
-This is a calculator app built in Swing
+This is a calculator app built in Swing using [Jep](https://ninia.github.io/jep/) (Java Embedded Python) on the backend. It supports...
 
 ## Functionality
 
@@ -29,8 +29,8 @@ The following flags can be passed to `./run`:
  - `-D[setting name]=[setting value]` to set core program behavior before execution
  - `-q` / `--quiet` to suppress output
  - `-b` / `--build` to build before execution
- - `-w` / `--no-console` to stop the console from opening (this will prevent real-time debug information, though the equivalent log files will still be created if DEBUG_LOG is true)
- - `-d` / `--debug-console` to open the larger debug console on initialization instead of the regular calculator
+ - `-w` / `--no-console` to stop the console from opening (this will also disable debug mode, though log files will still be created if DEBUG_LOG is true)
+ - `-d` / `--debug-console` to open the debug console on execution instead of the calculator
  - `-c` / `--clear-logs` to clear the existing log files
 
-If you are making changes to the project and want to rebuild, I would recommend running `./run -b -q`
+If you are making changes and want to quickly rebuild to test them out, I would recommend running `./run -b -q`.
