@@ -92,11 +92,11 @@ public class ButtonPanel extends JPanel {
     public static final String[][][] statSubLabels = {
         // descriptive stats
         {
-            {"mean"  , "stdev" , "cv"   , "variance"  , "skewness", "kurtosis" },
-            {"median", "mode"  , "sort" , "percentile", "iqr"     , "mad"      },
-            {"min"   , "max"   , "range", "midrange"  , "mode"    , "trim"     },
-            {"wmean" , "gmean" , "hmean", "qmean"     , "pmean"   , "quasimean"},
-            {"weigh" , "wgm"   , "whm"  , "wqm"       , "wpm"     , "wqam"     }
+            {"mean"  , "stdev", "stdevp", "variance"  , "skewness", "kurtosis" },
+            {"median", "mode" , "sort"  , "percentile", "iqr"     , "mad"      },
+            {"min"   , "max"  , "range" , "midrange"  , "mode"    , "trim"     },
+            {"wmean" , "gmean", "hmean" , "qmean"     , "pmean"   , "quasimean"},
+            {"weigh" , "wgm"  , "whm"   , "wqm"       , "wpm"     , "wqam"     }
         },
 
         // correlation

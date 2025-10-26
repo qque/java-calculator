@@ -22,7 +22,7 @@ As far as I'm aware, this project only builds correctly on Windows. To install:
 
     The following flags can be passed to `./run`:
     
-    - `-D[setting name]=[setting value]` to set settings before the program is opened (this is how all core program behavior, such as debug mode or custom function files must be set)
+    - `-D[setting name]=[setting value]` to set core program behavior before execution
     - `-q` / `--quiet` to suppress output
     - `-b` / `--build` to build before execution
     - `-w` / `--no-console` to stop the console from opening (this will prevent real-time debug information, though the equivalent log files will still be created if DEBUG_LOG is true)

@@ -5,34 +5,36 @@
 
 package calculator;
 
-import java.util.Map;
-
 public class Settings {
-
-    private Map<String, Object> settings = Map.ofEntries(
-        Map.entry(null, null),
-        Map.entry(null, null),
-        Map.entry(null, null),
-        Map.entry(null, null),
-        Map.entry(null, null),
-        Map.entry(null, null),
-        Map.entry(null, null),
-        Map.entry(null, null),
-        Map.entry(null, null),
-        Map.entry(null, null)
-    );
-
-    public Settings(Map<String, Object> settings) {
-        this.settings = settings;
+    
+    // note that this only sets the final (program behavior) settings, as the rest have their
+    // default values preset and can be directly changed with setters.
+    // the final settings, on the other hand, have to be set on construction.
+    public Settings(Object[] finalSettings) {
+        this.DEBUG_MODE = (boolean) finalSettings[0];
+        this.DEBUG_LOG = (boolean) finalSettings[1];
+        this.OPEN_DEBUG_CONSOLE_ON_EXECUTION = (boolean) finalSettings[2];
+        this.SEND_DEBUG_CONSOLE_OUT_TO_HIST = (boolean) finalSettings[3];
+        this.DISPLAY_DEBUG_CONSOLE_OUT = (boolean) finalSettings[4];
+        this.ADD_CUSTOM_FUNCTION_FILE  = (boolean) finalSettings[5];
+        this.USE_CUSTOM_FUNCTION_FILE = (boolean) finalSettings[6];
+        this.CUSTOM_FUNCTION_FILE = (String) finalSettings[7];
+        this.LOAD_ADVANCED = (boolean) finalSettings[8];
+        ensureConsistent();
     }
-
-    // set
-    public Settings() {}
 
     private static Settings instance;
 
+    // this is exclusively used in Main when settings are passed through ./run
+    public static void setSettings(Object[] finalSettings) {
+        instance = new Settings(finalSettings);
+    }
+
+    // sets instance with default settings
+    // note that if non-default settings were given in Main, it won't be overwritten, as when this
+    // overloaded version is ran in other classes, instance will not be null, so it will just 
     public static Settings getSettings() {
-        if (instance == null) instance = new Settings();
+        if (instance == null) instance = new Settings(defaultValues);
         return instance;
     }
 
@@ -40,8 +42,9 @@ public class Settings {
     // if the inconsistencies are predictable and are easily fixed then they will be corrected without throwing any error
     // if they are fatal, however, (e.g. passing a negative value to consoleFontSize), the program will exit
     private void ensureConsistent() {
-
+        // ...
     }
+
 
 
     /* Fonts & Display Settings */
@@ -81,12 +84,12 @@ public class Settings {
 
 
 
-    
     /* Calculation Settings */
     private int precision = -1; // -1 = regular floating point (double) precision, 
 
     // getters/setters
-    // ...
+    public int getPrecision() { return precision; }
+    public void setPrecision(int prec) { precision = prec; }
 
 
 
@@ -94,43 +97,50 @@ public class Settings {
      *  
      *     NOTE: These are final, and cannot be directly modified while the application is open;
      *           if the user attempts to, it will prompt them to reload (see SettingsFrame.java)
+     *           This reloading will effectively close 
      *  
      *           To set these without having to reload, pass them to ./run in the command line
      *  
-     *           Also, some of the settings here with longer names have abbreviated versions.
-     *           This is here because, otherwise, the user would have to write the full name in the console
-     *           when setting them when passing them through ./run
      */ 
-    private final boolean DEBUG_MODE = true;
-    private final boolean DEBUG_LOG = true; // logs debug output to ../../resources/logs/, 1 file per session
+    private final boolean DEBUG_MODE;
+    private final boolean DEBUG_LOG; // logs debug output to ../../resources/logs/, 1 file per session
     
-    private final boolean OPEN_DEBUG_CONSOLE_ON_EXECUTION = false; // causes a larger version of the debug console to be opened on execution instead of the standard calculator frame   
-    private final boolean ODCOE = OPEN_DEBUG_CONSOLE_ON_EXECUTION;
-    private final boolean SEND_DEBUG_CONSOLE_OUT_TO_HIST = true;
-    private final boolean SDCOTH = SEND_DEBUG_CONSOLE_OUT_TO_HIST;
-    private final boolean DISPLAY_DEBUG_CONSOLE_OUT = true;
-    private final boolean DDCO = DISPLAY_DEBUG_CONSOLE_OUT;
+    private final boolean OPEN_DEBUG_CONSOLE_ON_EXECUTION; // causes a larger version of the debug console to be opened on execution instead of the standard calculator frame 
+    private final boolean SEND_DEBUG_CONSOLE_OUT_TO_HIST;
+    private final boolean DISPLAY_DEBUG_CONSOLE_OUT;
 
-    private final boolean ADD_CUSTOM_FUNCTION_FILE = false;
-    private final boolean ACFT = ADD_CUSTOM_FUNCTION_FILE;
-    private final boolean USE_CUSTOM_FUNCTION_FILE = false; // if both are set, use is prioritized over add
-    private final boolean UCFF = USE_CUSTOM_FUNCTION_FILE;
-    private final String CUSTOM_FUNCTION_FILE = null;
-    private final String CFF = CUSTOM_FUNCTION_FILE;
+    private final boolean ADD_CUSTOM_FUNCTION_FILE;
+    private final boolean USE_CUSTOM_FUNCTION_FILE; // if both are set, use is prioritized over add
+    private final String CUSTOM_FUNCTION_FILE;
 
-    private final boolean LOAD_ADVANCED = true; // if false, most submenu functions will be disabled
+    private final boolean LOAD_ADVANCED; // if false, most submenu functions will be disabled
 
-    // getters (no setters since final)
+    // getters and default values (no setters since final)
+    public final static Object[] defaultValues = {
+        true,
+        true,
+
+        false,
+        true,
+        true,
+
+        false,
+        false,
+        null,
+
+        true,
+    };
+
     public boolean getDebugMode() { return DEBUG_MODE; }
     public boolean getDebugLog() { return DEBUG_LOG; }
     
-    public boolean getOpenDebugConsoleOnExecution() { return ODCOE; }
-    public boolean getSendDebugConsoleOutToHist() { return SDCOTH; }
-    public boolean getDisplayDebugConsoleOut() { return DDCO; }
+    public boolean getOpenDebugConsoleOnExecution() { return OPEN_DEBUG_CONSOLE_ON_EXECUTION; }
+    public boolean getSendDebugConsoleOutToHist() { return SEND_DEBUG_CONSOLE_OUT_TO_HIST; }
+    public boolean getDisplayDebugConsoleOut() { return DISPLAY_DEBUG_CONSOLE_OUT; }
     
-    public boolean getAddCustomFunctionFile() { return ACFT; }
-    public boolean getUseCustomFunctionFile() { return UCFF; }
-    public String getCustomFunctionFile() { return CFF; }
+    public boolean getAddCustomFunctionFile() { return ADD_CUSTOM_FUNCTION_FILE; }
+    public boolean getUseCustomFunctionFile() { return USE_CUSTOM_FUNCTION_FILE; }
+    public String getCustomFunctionFile() { return CUSTOM_FUNCTION_FILE; }
     
     public boolean getLoadAdvanced() { return LOAD_ADVANCED; }
 

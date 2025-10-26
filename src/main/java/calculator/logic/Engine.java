@@ -39,6 +39,9 @@ public class Engine {
 
             System.loadLibrary("jep");
 
+            // load calculation settings to be used in internals
+            pyi.eval("precision = " + settings.getPrecision());
+
             if (settings.getUseCustomFunctionFile()) {
                 String path = settings.getCustomFunctionFile();
                 if (path != null) {
