@@ -1,4 +1,4 @@
-# java-calculator
+# calculator
 
 This is a calculator app built in Swing
 
