@@ -4,44 +4,61 @@ setlocal enabledelayedexpansion
 set "JAVA_OPTS="
 set "QUIET=false"
 set "BUILD=false"
-set "DEBUG=false"
 set "NOCONSOLE=false"
 set "CLEAR=false"
+set "DEBUG=false"
+set "TEST=false"
+set FILE="/"
 
 set /p JEP_PATH=<%~dp0jep.cfg
 
-for %%a in (%*) do (
-    set "arg=%%a"
-    
-    if /i "!arg:~0,2!"=="-D" (
-        set "JAVA_OPTS=!JAVA_OPTS! %%a"
-        set "setting_pair=!arg:~2!"
-        for /f "tokens=1* delims==" %%b in ("!setting_pair!") do (
-            set "setting_name=%%b"
-            set "setting_value=%%c"
-            set "!setting_name!=!setting_value!"
-        )
-    )
-    
-    if "!arg:~0,1!"=="-" (
-        if "!arg:~0,2!" neq "--" (
-            if "!arg:~0,2!" neq "-D" (
-                set "flag_string=!arg:~1!"
-                
-                echo !flag_string! | findstr /i "\<q\>" >nul && set "QUIET=true"
-                echo !flag_string! | findstr /i "\<b\>" >nul && set "BUILD=true"
-                echo !flag_string! | findstr /i "\<d\>" >nul && set "DEBUG=true"
-                echo !flag_string! | findstr /i "\<w\>" >nul && set "NOCONSOLE=true"
-                echo !flag_string! | findstr /i "\<c\>" >nul && set "CLEAR=true"
-            )
-        )
-    )
-    
+:parseargs
+if "%~1"=="" goto endparse
+
+set "arg=%~1"
+
+if /i "!arg:~0,2!"=="-f" (
+    shift
+    set "FILE=%~2"
+    goto parseargs
+)
+
+if /i "!arg:~0,2!"=="-D" (
+    shift
+    set "JAVA_OPTS=!JAVA_OPTS! %1=%2"
+    goto parseargs
+)
+
+if "!arg:~0,1!"=="-" (
+
     if /i "!arg!"=="--quiet" set "QUIET=true"
     if /i "!arg!"=="--build" set "BUILD=true"
-    if /i "!arg!"=="--debug-console" set "DEBUG=true"
     if /i "!arg!"=="--no-console" set "NOCONSOLE=true"
     if /i "!arg!"=="--clear-logs" set "CLEAR=true"
+    if /i "!arg!"=="--debug-console" set "DEBUG=true"
+    if /i "!arg!"=="--test" set "TEST=true"
+
+    if "!arg:~0,2!" neq "--" (
+        
+        set "flag_string=!arg:~1!"
+        
+        echo !flag_string! | findstr /i "\<q\>" >nul && set "QUIET=true"
+        echo !flag_string! | findstr /i "\<b\>" >nul && set "BUILD=true"
+        echo !flag_string! | findstr /i "\<w\>" >nul && set "NOCONSOLE=true"
+        echo !flag_string! | findstr /i "\<c\>" >nul && set "CLEAR=true"
+        echo !flag_string! | findstr /i "\<d\>" >nul && set "DEBUG=true"
+        echo !flag_string! | findstr /i "\<t\>" >nul && set "TEST=true"
+    )
+    shift
+    goto parseargs
+)
+shift
+goto parseargs
+
+:endparse
+
+if %FILE% neq "/" (
+    set JAVA_OPTS="%JAVA_OPTS% -Dcdf="%FILE%""
 )
 
 if %CLEAR%==true (

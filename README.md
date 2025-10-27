@@ -42,6 +42,4 @@ The following flags can be passed to `./run`:
  - `-c` / `--clear-logs` to clear the existing log files
  - `-d` / `--debug-console` to open the debug console instead of the calculator
  - `-t` / `--test` to run tests instead of opening the calculator
- - `-f [file]` to run a specific test file
-
-If you are making changes and want to quickly rebuild to test them out, I would recommend running `./run -b -q -d`.
+ - `-f [file path]` to run a custom test file
