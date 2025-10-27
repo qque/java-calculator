@@ -5,7 +5,7 @@ set "MAVEN_OPTS=-Xmx1024m"
 
 set "QUIET=false"
 set "CLEAN=false"
-set "CLEANONLY=false"
+set "ONLY=false"
 set "COMPILE=false"
 set "PACKAGE=false"
 set "SKIPTEST=true"
@@ -21,7 +21,7 @@ for %%a in (%*) do (
             
             echo !flag_string! | findstr /i "\<q\>" >nul && set "QUIET=true"
             echo !flag_string! | findstr /i "\<c\>" >nul && set "CLEAN=true"
-            echo !flag_string! | findstr /i "\<C\>" >nul && set "CLEANONLY=true"
+            echo !flag_string! | findstr /i "\<o\>" >nul && set "ONLY=true"
             echo !flag_string! | findstr /i "\<m\>" >nul && set "COMPILE=true"
             echo !flag_string! | findstr /i "\<p\>" >nul && set "PACKAGE=true"
             echo !flag_string! | findstr /i "\<t\>" >nul && set "SKIPTEST=false"
@@ -30,7 +30,7 @@ for %%a in (%*) do (
     
     if /i "!arg!"=="--quiet" set "QUIET=true"
     if /i "!arg!"=="--clean" set "CLEAN=true"
-    if /i "!arg!"=="--clean-only" set "CLEANONLY=true"
+    if /i "!arg!"=="--clean-only" set "ONLY=true"
     if /i "!arg!"=="--compile" set "COMPILE=true"
     if /i "!arg!"=="--package" set "PACKAGE=true"
     if /i "!arg!"=="--test" set "SKIPTEST=false"
@@ -46,7 +46,7 @@ echo Maven Project Build Script
 echo ========================================
 echo.
 
-if %CLEANONLY%==true (
+if %ONLY%==true (
     echo. Cleaning build...
     echo.
     call mvn clean
@@ -132,12 +132,9 @@ echo Installation complete, exiting...
 goto end
 
 :qrun
-if %CLEANONLY%==true (
+if %ONLY%==true (
     call mvn clean -q
     goto end
-)
-if %CLEAN%==true (
-    call mvn clean -q
 )
 if %COMPILE%==true (
     mvn compile -q
@@ -147,7 +144,13 @@ if %PACKAGE%==true (
     mvn package -q "-Dmaven.test.skip=%SKIPTEST%
     goto check
 )
-mvn install -q "-Dmaven.test.skip=%SKIPTEST%
+if %CLEAN%==true (
+    call mvn clean install "-Dmaven.test.skip=%SKIPTEST%" -q
+    goto check
+) else (
+    mvn install "-Dmaven.test.skip=%SKIPTEST%" -q
+)
+:check
 if %ERRORLEVEL%==1 (
     echo.
     echo Build failed, exiting with error level %ERRORLEVEL%
