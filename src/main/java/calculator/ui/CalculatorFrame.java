@@ -7,7 +7,10 @@ package calculator.ui;
 import javax.swing.*;
 import java.awt.*;
 
-import calculator.logic.*;
+import calculator.logic.ButtonLogic;
+import calculator.logic.Engine;
+import calculator.logic.KeyboardLogic;
+
 import calculator.Settings;
 
 public class CalculatorFrame extends JFrame {
@@ -78,8 +81,8 @@ public class CalculatorFrame extends JFrame {
         // 9x6 button grid below top display (see ButtonPanel.java)
         ButtonPanel buttonPanel = new ButtonPanel(clickBehavior);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
-
-        // force engine to load into memory and evaluate functions on initialization
+        
+        // force engine to load into memory and evaluate functions.py
         // this is done so there isn't a ~0.5 second pause when the user enters their first calculation
         Engine.eval("pass");
 

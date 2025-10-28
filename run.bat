@@ -8,7 +8,7 @@ set "NOCONSOLE=false"
 set "CLEAR=false"
 set "DEBUG=false"
 set "TEST=false"
-set FILE="/"
+set FILE="..."
 
 set /p JEP_PATH=<%~dp0jep.cfg
 
@@ -19,13 +19,13 @@ set "arg=%~1"
 
 if /i "!arg:~0,2!"=="-f" (
     shift
-    set "FILE=%~2"
+    set FILE="%2"
     goto parseargs
 )
 
 if /i "!arg:~0,2!"=="-D" (
     shift
-    set "JAVA_OPTS=!JAVA_OPTS! %1=%2"
+    set "JAVA_OPTS=%1=%2 !JAVA_OPTS!"
     goto parseargs
 )
 
@@ -56,9 +56,8 @@ shift
 goto parseargs
 
 :endparse
-
-if %FILE% neq "/" (
-    set JAVA_OPTS="%JAVA_OPTS% -Dcdf="%FILE%""
+if %FILE% neq "..." (
+    set JAVA_OPTS="-Dcustom_debug_file=%FILE:"=% %JAVA_OPTS%"
 )
 
 if %CLEAR%==true (
@@ -117,9 +116,9 @@ for %%F in (target\*.jar) do (
         echo Starting application...
         echo.
         if %NOCONSOLE%==false (
-            start java %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
+            start java -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F" %JAVA_OPTS%
         ) else (
-            start javaw %JAVA_OPTS% -Ddebug=false -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
+            start javaw -Ddebug=false -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F" %JAVA_OPTS%
         )
         goto :done
     )
@@ -132,9 +131,9 @@ for %%F in (target\*.jar) do (
     if errorlevel 1 (
         set JAR_FOUND=1
         if %NOCONSOLE%==false (
-            start java %JAVA_OPTS% -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
+            start java -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F" %JAVA_OPTS%
         ) else (
-            start javaw %JAVA_OPTS% -Ddebug=false -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F"
+            start javaw -Ddebug=false -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F" %JAVA_OPTS%
         )
     )
 )

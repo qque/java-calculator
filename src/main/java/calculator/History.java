@@ -23,8 +23,12 @@ public class History {
         return instance;
     }
 
-    public void add(ArrayList<String> entry) {
-        history.add(entry); 
+    public ArrayList<ArrayList<String>> getHistoryArray() {
+        return history;
+    }
+
+    public static String historyLineToString(ArrayList<String> line) {
+        return line.get(0) + " = " + line.get(1);
     }
 
     public void add(String computation, String result) {

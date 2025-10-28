@@ -46,7 +46,7 @@ public class Engine {
             // load calculation settings to be used in internals
             pyi.eval("precision = " + settings.getPrecision());
 
-            if (settings.getUseCustomFunctionFile()) {
+            if (settings.isUseCustomFunctionFile()) {
                 String path = settings.getCustomFunctionFile();
                 if (path != null) {
                     Scanner customFileScanner = new Scanner(new File(path), StandardCharsets.UTF_8).useDelimiter("\\Z");
@@ -62,14 +62,14 @@ public class Engine {
                     content = minifiedPythonScanner.next();
 
                     // if user doesn't want advanced functions, cut that part off
-                    if (!settings.getLoadAdvanced()) content = content.substring(0,content.indexOf("def end()"));
+                    if (!settings.isLoadAdvanced()) content = content.substring(0,content.indexOf("def end()"));
 
                     minifiedPythonScanner.close();
                 } else {
                     throw new IOException("minified.py not found, try running ./util/minify");
                 }
 
-                if (settings.getAddCustomFunctionFile()) {
+                if (settings.isAddCustomFunctionFile()) {
                     String path = settings.getCustomFunctionFile();
                     if (path != null) {
                         Scanner customFileScanner = new Scanner(new File(path), StandardCharsets.UTF_8).useDelimiter("\\Z");
@@ -91,8 +91,8 @@ public class Engine {
             }
             System.exit(1);
         } catch (JepException e) {
-            if (settings.getDebugMode()) System.out.println(e);
-            if (settings.getDebugLog()) Logger.getInstance().log("Error occurred in JEP function evaluation: " + e.getMessage());
+            if (settings.isDebugMode()) System.out.println(e);
+            if (settings.isDebugLog()) Logger.getInstance().log("Error occurred in JEP function evaluation: " + e.getMessage());
             System.out.println("Error occurred in JEP function evaluation. NumPy, SymPy, mpmath, or gmpy2 may not have been installed.");
             System.out.println("The calculator will still load, but core functions may not run correctly.");
         } catch (RuntimeException e) {

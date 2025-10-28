@@ -29,10 +29,10 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
     private static History history = History.getHistory();
 
     private static Settings settings = Settings.getSettings();
-    private static boolean DEBUG_MODE = settings.getDebugMode();
+    private static boolean DEBUG_MODE = settings.isDebugMode();
 
     private static Logger logger = Logger.getInstance();
-    private static boolean DEBUG_LOG = settings.getDebugLog();
+    private static boolean DEBUG_LOG = settings.isDebugLog();
 
     public static void setTextArea(JTextArea area) { display = area; }
 

@@ -14,10 +14,10 @@ public class NotepadFrame extends JFrame implements KeyListener {
     private static History history = History.getHistory();
 
     private static Settings settings = Settings.getSettings();
-    private static boolean DEBUG_MODE = settings.getDebugMode();
+    private static boolean DEBUG_MODE = settings.isDebugMode();
 
     private static Logger logger = Logger.getInstance();
-    private static boolean DEBUG_LOG = settings.getDebugLog();
+    private static boolean DEBUG_LOG = settings.isDebugLog();
 
     private JTextArea textArea;
 
@@ -83,7 +83,7 @@ public class NotepadFrame extends JFrame implements KeyListener {
                 System.out.println("Accessed output from history");
             }
             if (DEBUG_LOG) {
-                
+                // todo
             }
 
             textArea.setText(textArea.getText() + history.getLatestToString());

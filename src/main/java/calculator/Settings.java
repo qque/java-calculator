@@ -11,16 +11,39 @@ public class Settings {
     // default values preset and can be directly changed with setters.
     // the final settings, on the other hand, have to be set on construction.
     public Settings(Object[] finalSettings) {
+
+        // ensures consistency between settings to fix incompatible values (e.g. settings DEBUG_MODE=false but DEBUG_LOG=true)
+        // if the inconsistencies are predictable and are easily fixed then they will be corrected without throwing any error
+        // if they are fatal, however, (e.g. passing a negative value to consoleFontSize), the program will exit
+        
+        if (finalSettings[6] != null) {
+            finalSettings[5] = true;
+        } else if (finalSettings[5].equals(true)) {
+            throw new IllegalArgumentException("Custom debug file must be set");
+        }
+
+        if (finalSettings[9] != null && finalSettings[7].equals(false) && finalSettings[8].equals(false)) {
+            finalSettings[7] = true;
+        } else if (finalSettings[9] == null && finalSettings[7].equals(true) && finalSettings[8].equals(true)) {
+            throw new IllegalArgumentException("Custom function file must be set");
+        }
+
+
         this.DEBUG_MODE = (boolean) finalSettings[0];
         this.DEBUG_LOG = (boolean) finalSettings[1];
+
         this.OPEN_DEBUG_CONSOLE_ON_EXECUTION = (boolean) finalSettings[2];
         this.SEND_DEBUG_CONSOLE_OUT_TO_HIST = (boolean) finalSettings[3];
         this.DISPLAY_DEBUG_CONSOLE_OUT = (boolean) finalSettings[4];
-        this.ADD_CUSTOM_FUNCTION_FILE  = (boolean) finalSettings[5];
-        this.USE_CUSTOM_FUNCTION_FILE = (boolean) finalSettings[6];
-        this.CUSTOM_FUNCTION_FILE = (String) finalSettings[7];
-        this.LOAD_ADVANCED = (boolean) finalSettings[8];
-        ensureConsistent();
+
+        this.RUN_DEBUG_FILE = (boolean) finalSettings[5];
+        this.CUSTOM_DEBUG_FILE = (String) finalSettings[6];
+
+        this.ADD_CUSTOM_FUNCTION_FILE  = (boolean) finalSettings[7];
+        this.USE_CUSTOM_FUNCTION_FILE = (boolean) finalSettings[8];
+        this.CUSTOM_FUNCTION_FILE = (String) finalSettings[9];
+
+        this.LOAD_ADVANCED = (boolean) finalSettings[10];
     }
 
     private static Settings instance;
@@ -38,13 +61,6 @@ public class Settings {
         return instance;
     }
 
-    // ensures consistency between settings to fix incompatible values (e.g. settings DEBUG_MODE=false but DEBUG_LOG=true)
-    // if the inconsistencies are predictable and are easily fixed then they will be corrected without throwing any error
-    // if they are fatal, however, (e.g. passing a negative value to consoleFontSize), the program will exit
-    private void ensureConsistent() {
-        // ...
-    }
-
 
 
     /* Fonts & Display Settings */
@@ -59,6 +75,9 @@ public class Settings {
     private String popupButtonFontName = "SansSerif";
     private int popupButtonFontStyle = 1; // bold
     private int popupButtonFontSize = 9;
+
+    // debug font?
+    // notepad font?
 
     // getters/setters
     public String getConsoleFontName() { return consoleFontName; }
@@ -109,9 +128,12 @@ public class Settings {
     private final boolean SEND_DEBUG_CONSOLE_OUT_TO_HIST;
     private final boolean DISPLAY_DEBUG_CONSOLE_OUT;
 
+    private final boolean RUN_DEBUG_FILE;
+    private final String CUSTOM_DEBUG_FILE;
+
     private final boolean ADD_CUSTOM_FUNCTION_FILE;
     private final boolean USE_CUSTOM_FUNCTION_FILE; // if both are set, use is prioritized over add
-    private final String CUSTOM_FUNCTION_FILE;
+    private final String CUSTOM_FUNCTION_FILE; // if neither are set but custom_function_file is, default to add
 
     private final boolean LOAD_ADVANCED; // if false, most submenu functions will be disabled
 
@@ -125,23 +147,29 @@ public class Settings {
         true,
 
         false,
+        null,
+
+        false,
         false,
         null,
 
         true,
     };
 
-    public boolean getDebugMode() { return DEBUG_MODE; }
-    public boolean getDebugLog() { return DEBUG_LOG; }
+    public boolean isDebugMode() { return DEBUG_MODE; }
+    public boolean isDebugLog() { return DEBUG_LOG; }
     
-    public boolean getOpenDebugConsoleOnExecution() { return OPEN_DEBUG_CONSOLE_ON_EXECUTION; }
-    public boolean getSendDebugConsoleOutToHist() { return SEND_DEBUG_CONSOLE_OUT_TO_HIST; }
-    public boolean getDisplayDebugConsoleOut() { return DISPLAY_DEBUG_CONSOLE_OUT; }
+    public boolean isOpenDebugConsoleOnExecution() { return OPEN_DEBUG_CONSOLE_ON_EXECUTION; }
+    public boolean isSendDebugConsoleOutToHist() { return SEND_DEBUG_CONSOLE_OUT_TO_HIST; }
+    public boolean isDisplayDebugConsoleOut() { return DISPLAY_DEBUG_CONSOLE_OUT; }
     
-    public boolean getAddCustomFunctionFile() { return ADD_CUSTOM_FUNCTION_FILE; }
-    public boolean getUseCustomFunctionFile() { return USE_CUSTOM_FUNCTION_FILE; }
+    public boolean isRunDebugFile() { return RUN_DEBUG_FILE; }
+    public String getCustomDebugFile() { return CUSTOM_DEBUG_FILE; }
+
+    public boolean isAddCustomFunctionFile() { return ADD_CUSTOM_FUNCTION_FILE; }
+    public boolean isUseCustomFunctionFile() { return USE_CUSTOM_FUNCTION_FILE; }
     public String getCustomFunctionFile() { return CUSTOM_FUNCTION_FILE; }
     
-    public boolean getLoadAdvanced() { return LOAD_ADVANCED; }
+    public boolean isLoadAdvanced() { return LOAD_ADVANCED; }
 
 }

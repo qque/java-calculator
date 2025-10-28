@@ -26,7 +26,7 @@ By default, `./build` will run a Maven install with tests skipped and deal with 
 
  - `-q` / `--quiet` to suppress output
  - `-c` / `--clean` to clean the build (delete the target/ directory). this can be combined with other flags (e.g. `./build -c -m` to run `mvn clean compile`)
- - `-o` / `--clean-only` to clean without doing anything else. this **cannot** be combined with other flags (besides `-q`)
+ - `-o` / `--clean-only` to clean without doing anything else
  - `-m` / `--compile` to compile the build without packaging or installing
  - `-p` / `--package` to package the build without installing
  - `-t` / `--test` to use tests, which are always skipped by default. this can be combined with other flags.
@@ -46,4 +46,4 @@ The following flags can be passed to `./run`:
  - `-c` / `--clear-logs` to clear the existing log files
  - `-d` / `--debug-console` to open the debug console instead of the calculator
  - `-t` / `--test` to run tests instead of opening the calculator
- - `-f [file path]` to run a custom test file
+ - `-f [file path]` to run a custom test file (this is equivalent to `-Ddebug_file=[file path]`, it exists here as a convenience)
