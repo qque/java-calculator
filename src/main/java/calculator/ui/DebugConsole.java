@@ -3,8 +3,6 @@
  *  directly (straight python code) or indirectly (text that gets preprocessed and computed by ButtonLogic)
  *  to test out functions. It is also possible to pass file input for programmatic testing.
  *  
- *  To pass a file, put '#' then the path to said file in the text area.
- *  
  *  NOTE: For obvious reasons, also mentioned in ButtonLogic, this code is unsafe.
  *        Particularly for direct file input (though this also applies to non-file and indirect input),
  *        any kind of malicious Python can be executed on your computer. So, it should go
@@ -109,27 +107,9 @@ public class DebugConsole extends JFrame implements KeyListener {
             if (e.isShiftDown()) {
                 // pass input directly
 
-                // check if file string
-                if (text.startsWith("#")) {
-                    try {
-                        text = Files.readString(Path.of(text.substring(1)), StandardCharsets.UTF_8);
-                    } catch (IOException err) {
-                        System.out.println(err);
-                    }
-                }
-
                 Engine.eval(text);
             } else if (e.isControlDown()) {
                 // pass input indirectly
-
-                // check if file string
-                if (text.startsWith("#")) {
-                    try {
-                        text = Files.readString(Path.of(text.substring(1)), StandardCharsets.UTF_8);
-                    } catch (IOException err) {
-                        System.out.println(err);
-                    }
-                }
 
                 try {
                     String result = ButtonLogic.compute(text).toString();
@@ -153,7 +133,7 @@ public class DebugConsole extends JFrame implements KeyListener {
                 }
             }
         } else {
-            textArea.setText(textArea.getText() + e.getKeyChar());
+            textArea.setText(textArea.getText() + "\n");
         }
     }
 

@@ -15,6 +15,7 @@ import javax.script.ScriptException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import calculator.ui.ButtonPanel;
 
@@ -35,6 +36,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
     private static boolean DEBUG_LOG = settings.isDebugLog();
 
     public static void setTextArea(JTextArea area) { display = area; }
+
+
+    private static final String[] numberButtons = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "ans"};
 
     // preprocessing using regex for more annoying conversions
     private static String preprocess(String expression) {
@@ -180,19 +184,41 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         return output;
     }
 
+    private static boolean resultDisplayed = false;
+
     // static implementation of onButtonClick behavior
     public static void runButton(String label) {
         try {
+            String output = null; // text output
+
+            String result = null; // used only for calculation ("="), but it's defined in this larger scope
+                                  // because it is also needed for some debug messages
+
+            // check if result should be cleared based on input
+            // most buttons will erase the display completely, some will truncate it into "ans"
+            if (resultDisplayed) {
+                if (label == "+" || label == "-" ||
+                    label == "×" || label == "÷" ||
+                    label == "^" || label == "x²" ||
+                    label == "eˣ" || label == "10ˣ") {
+                    display.setText("ans");
+                } else {
+                    display.setText("");
+                }
+            }
+
             String expression = display.getText();
-            String output = null;
-            String result = null;
 
-            if (label != "=") display.setForeground(Color.BLACK);
+            // set resultDisplayed & display color back accordingly
+            resultDisplayed = false;
+            display.setForeground(Color.BLACK);
 
+            // switch label
             switch (label) {
             case "=":
                 result = compute(expression).toString();
                 display.setText(result);
+                resultDisplayed = true;
                 display.setForeground(Color.RED);
                 history.add(expression, result);
                 break;

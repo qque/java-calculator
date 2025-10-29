@@ -1,5 +1,5 @@
 /* 
- *  Defines creation of log files in calculator/logs/ and writing to log files
+ *  Defines creation of custom log files in calculator/logs/ and writing to log files
  *  
  *  The log is generally equivalent to the console output, with the main differences
  *  being that the log file attaches a timestamps to each line and aligns output.

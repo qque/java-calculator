@@ -41,28 +41,30 @@ public class ButtonPanel extends JPanel {
     
     /* All button label definitions */
     public static final String[][] labels = {
-        {"list" , "matrix", "test"   , "solve" , "graph" , "->"       },
-        {"stat" , "number", "special", "calc"  , "cmplx" , "constants"},
-        {"sin⁻¹", "cos⁻¹" , "tan⁻¹"  , "(hyp.)", "i"     , "π"        },
-        {"sin"  , "cos"   , "tan"    , "(rec.)", "(deg.)", "e"        },
-        {"("    , ")"     , ","      , "1/x"   , "|x|"   , "ln"       },
-        {"7"    , "8"     , "9"      , "÷"     , "^"     , "eˣ"       },
-        {"4"    , "5"     , "6"      , "×"     , "√"     , "log"      },
-        {"1"    , "2"     , "3"      , "-"     , "x²"    , "10ˣ"      },
-        {"0"    , "."     , "ans"    , "+"     , "="     , "="        }
+        {"list" , "matrix", "test"   , "solve" , "graph" , "->"   },
+        {"stat" , "num"   , "special", "calc"  , "cmplx" , "const"},
+        {"sin⁻¹", "cos⁻¹" , "tan⁻¹"  , "(hyp.)", "i"     , "π"    },
+        {"sin"  , "cos"   , "tan"    , "(rec.)", "(deg.)", "e"    },
+        {"("    , ")"     , ","      , "1/x"   , "|x|"   , "ln"   },
+        {"7"    , "8"     , "9"      , "÷"     , "^"     , "eˣ"   },
+        {"4"    , "5"     , "6"      , "×"     , "√"     , "log"  },
+        {"1"    , "2"     , "3"      , "-"     , "x²"    , "10ˣ"  },
+        {"0"    , "."     , "ans"    , "+"     , "="     , "="    }
     };
     
-    // list editing & operations, similar to 
+    // list variables & operations
     public static final String[][] listPopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
     };
 
+    // matrix variables & operations (like ti84, some basic operations work with matricies)
     public static final String[][] matrixPopupLabels = {
         {"mean", "stdev", "stdevp"},
         {"erf", "example", "example2"}
     };
 
+    // test/logic operators
     public static final String[][] testPopupLabels = {
         {"==", ">", "<", ">=", "<=", "∈"},
         {"AND", "OR", "XOR", "NOT", "IF", ""},

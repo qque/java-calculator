@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-#
-# This file defines all functions used internally within the calculator.
-#
-# In all cases, functions are optimized for preformance.
-# In almost every case, this means using libraries such as numpy, sympy, or mpmath.
-#
+###
+### This file defines all functions used internally within the calculator.
+###
+### In all cases, functions are optimized for preformance.
+### Typically, this means offloading calculation libraries such as numpy, sympy, or mpmath.
+### Not only is it more convienient
+###
 
 import math
 import cmath
@@ -18,24 +19,20 @@ import fractions
 import numpy as np
 import sympy as sp
 import mpmath as mp
+# gmpy2 is detected by mpmath automatically
+
+
+# check if precision is wanted by user, 
 
 pi = math.pi
 e = math.e
 
-def sqrt(x):
-    return math.sqrt(x)
-
-def ln(x):
-    return math.log(x)
-
-def log(x, a):
-    return math.log(x, a)
-
-def abs(x):
-    return abs(x)
-
-def sin(x):
-    return math.sin(x)
+## 
+sqrt = math.sqrt
+ln = lambda x: math.log(x)
+log = lambda a,x: math.log(x,a)
+# abs already exists built-in
+sin = math
 
 def cos(x):
     return math.cos(x)

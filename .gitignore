@@ -6,6 +6,8 @@ jep.cfg
 
 logs/
 
+todo
+
 # Compiled class file
 *.class
 

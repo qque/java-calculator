@@ -6,62 +6,61 @@
 package calculator;
 
 public class Settings {
-    
-    public final static Object[] defaultValues = {
-        true,
-        true,
 
-        false,
-        true,
-        true,
+    public final static String[] defaultValues = {
+        "true",
+        "true",
 
-        false,
-        null,
+        "false",
+        "true",
+        "true",
 
-        false,
-        false,
-        null,
+        "false",
+        "null",
 
-        true,
+        "false",
+        "false",
+        "null",
+
+        "true",
     };
     
     // note that this only sets the final (program behavior) settings, as the rest have their
     // default values preset and can be directly changed with setters.
     // the final settings, on the other hand, have to be set on construction.
-    public Settings(Object[] finalSettings) {
+    public Settings(String[] finalSettings) {
 
         // ensures consistency between settings to fix incompatible values (e.g. settings DEBUG_MODE=false but DEBUG_LOG=true)
         // if the inconsistencies are predictable and are easily fixed then they will be corrected without throwing any error
-        // if they are fatal, however, (e.g. passing a negative value to consoleFontSize), the program will exit
+        // if they are fatal, however, (e.g. passing a negative value to consoleFontSize), the program will catch the error and exit
         
-        if (finalSettings[6] != null) {
-            finalSettings[5] = true;
-        } else if (finalSettings[5].equals(true)) {
-            throw new IllegalArgumentException("Custom debug file must be set");
+        if (finalSettings[6] != "null") {
+            finalSettings[5] = "true";
+        } else if (finalSettings[6] == "null" && finalSettings[5] == "true") {
+            System.out.println(new IllegalArgumentException("Custom debug file must be set").getMessage());
+            System.exit(1);
         }
 
-        if (finalSettings[9] != null && finalSettings[7].equals(false) && finalSettings[8].equals(false)) {
-            finalSettings[7] = true;
-        } else if (finalSettings[9] == null && finalSettings[7].equals(true) && finalSettings[8].equals(true)) {
-            throw new IllegalArgumentException("Custom function file must be set");
+        if (finalSettings[9] != "null" && finalSettings[7] == "false" && finalSettings[8] == "false") {
+            finalSettings[7] = "true";
         }
 
 
-        this.DEBUG_MODE = (boolean) finalSettings[0];
-        this.DEBUG_LOG = (boolean) finalSettings[1];
+        this.DEBUG_MODE = Boolean.parseBoolean(finalSettings[0]);
+        this.DEBUG_LOG = Boolean.parseBoolean(finalSettings[1]);
 
-        this.OPEN_DEBUG_CONSOLE_ON_EXECUTION = (boolean) finalSettings[2];
-        this.SEND_DEBUG_CONSOLE_OUT_TO_HIST = (boolean) finalSettings[3];
-        this.DISPLAY_DEBUG_CONSOLE_OUT = (boolean) finalSettings[4];
+        this.OPEN_DEBUG_CONSOLE_ON_EXECUTION = Boolean.parseBoolean(finalSettings[2]);
+        this.SEND_DEBUG_CONSOLE_OUT_TO_HIST = Boolean.parseBoolean(finalSettings[3]);
+        this.DISPLAY_DEBUG_CONSOLE_OUT = Boolean.parseBoolean(finalSettings[4]);
 
-        this.RUN_DEBUG_FILE = (boolean) finalSettings[5];
-        this.CUSTOM_DEBUG_FILE = (String) finalSettings[6];
+        this.RUN_DEBUG_FILE = Boolean.parseBoolean(finalSettings[5]);
+        this.CUSTOM_DEBUG_FILE = finalSettings[6];
 
-        this.ADD_CUSTOM_FUNCTION_FILE  = (boolean) finalSettings[7];
-        this.USE_CUSTOM_FUNCTION_FILE = (boolean) finalSettings[8];
-        this.CUSTOM_FUNCTION_FILE = (String) finalSettings[9];
+        this.ADD_CUSTOM_FUNCTION_FILE  = Boolean.parseBoolean(finalSettings[7]);
+        this.USE_CUSTOM_FUNCTION_FILE = Boolean.parseBoolean(finalSettings[8]);
+        this.CUSTOM_FUNCTION_FILE = finalSettings[9];
 
-        this.LOAD_ADVANCED = (boolean) finalSettings[10];
+        this.LOAD_ADVANCED = Boolean.parseBoolean(finalSettings[10]);
     }
 
     private static Settings instance;
@@ -75,7 +74,7 @@ public class Settings {
     }
 
     // this is exclusively used in Main when settings are passed through ./run
-    public static Settings getSettings(Object[] finalSettings) {
+    public static Settings getSettings(String[] finalSettings) {
         if (instance == null) instance = new Settings(finalSettings);
         return instance;
     }
@@ -122,7 +121,8 @@ public class Settings {
 
 
     /* Calculation Settings */
-    private int precision = -1; // -1 = regular floating point (double) precision, 
+    private int precision = -1; // -1 = don't use custom precision, i.e. use regular double (or `float` in python)
+                                // any other positive integer 
 
     // getters/setters
     public int getPrecision() { return precision; }

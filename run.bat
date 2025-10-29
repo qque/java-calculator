@@ -116,12 +116,19 @@ for %%F in (target\*.jar) do (
         echo Starting application...
         echo.
         if %NOCONSOLE%==false (
-            start java -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F" %JAVA_OPTS%
+            start java -Xms256M -Xmx1536M -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F" %JAVA_OPTS%
         ) else (
-            start javaw -Ddebug=false -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F" %JAVA_OPTS%
+            start javaw -Xms256M -Xmx1536M -Ddebug=false -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F" %JAVA_OPTS%
         )
-        goto :done
+        goto done
     )
+)
+
+if %JAR_FOUND%==0 (
+    echo ERROR: No JAR file found!
+    echo Files in target directory:
+    dir target\*.jar
+    exit /b 1
 )
 
 :qrun
@@ -135,6 +142,7 @@ for %%F in (target\*.jar) do (
         ) else (
             start javaw -Ddebug=false -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8 -Djava.library.path="%JEP_PATH%" -jar "%%F" %JAVA_OPTS%
         )
+        goto done
     )
 )
 

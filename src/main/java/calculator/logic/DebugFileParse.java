@@ -41,8 +41,9 @@ public class DebugFileParse {
             if (first == '!') { // load subfile within file
                 try {
                     getFileLines(l.substring(1));
+                    // todo
                 } catch (IOException e) {
-
+                    // todo
                 }
             } else { // evaluate anything else as a calculation
 

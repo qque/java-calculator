@@ -37,6 +37,8 @@ If you encounter any issues, make sure Maven, JDK 17, and some version of Python
 
 Once the project has been built, you can open the calculator by running `./run`
 
+It's possible to run the project normally in an IDE such as Visual Studio Code, but you will need to make sure the
+
 The following flags can be passed to `./run`:
     
  - `-D[setting name]=[setting value]` to set core program behavior before execution
