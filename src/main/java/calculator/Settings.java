@@ -7,6 +7,24 @@ package calculator;
 
 public class Settings {
     
+    public final static Object[] defaultValues = {
+        true,
+        true,
+
+        false,
+        true,
+        true,
+
+        false,
+        null,
+
+        false,
+        false,
+        null,
+
+        true,
+    };
+    
     // note that this only sets the final (program behavior) settings, as the rest have their
     // default values preset and can be directly changed with setters.
     // the final settings, on the other hand, have to be set on construction.
@@ -48,16 +66,17 @@ public class Settings {
 
     private static Settings instance;
 
-    // this is exclusively used in Main when settings are passed through ./run
-    public static void setSettings(Object[] finalSettings) {
-        instance = new Settings(finalSettings);
-    }
-
     // sets instance with default settings
     // note that if non-default settings were given in Main, it won't be overwritten, as when this
     // overloaded version is ran in other classes, instance will not be null, so it will just 
     public static Settings getSettings() {
         if (instance == null) instance = new Settings(defaultValues);
+        return instance;
+    }
+
+    // this is exclusively used in Main when settings are passed through ./run
+    public static Settings getSettings(Object[] finalSettings) {
+        if (instance == null) instance = new Settings(finalSettings);
         return instance;
     }
 
@@ -102,14 +121,12 @@ public class Settings {
     public void setPopupButtonFontSize(int size) { popupButtonFontSize = size; }
 
 
-
     /* Calculation Settings */
     private int precision = -1; // -1 = regular floating point (double) precision, 
 
     // getters/setters
     public int getPrecision() { return precision; }
     public void setPrecision(int prec) { precision = prec; }
-
 
 
     /* Program Behavior 
@@ -138,24 +155,6 @@ public class Settings {
     private final boolean LOAD_ADVANCED; // if false, most submenu functions will be disabled
 
     // getters and default values (no setters since final)
-    public final static Object[] defaultValues = {
-        true,
-        true,
-
-        false,
-        true,
-        true,
-
-        false,
-        null,
-
-        false,
-        false,
-        null,
-
-        true,
-    };
-
     public boolean isDebugMode() { return DEBUG_MODE; }
     public boolean isDebugLog() { return DEBUG_LOG; }
     
