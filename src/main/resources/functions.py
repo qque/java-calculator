@@ -98,16 +98,13 @@ def dtan(x):
     return math.tan(x)
 
 def dasin(x):
-    x = pi * x / 180
-    return math.asin(x)
+    return math.asin(x) * 180 / pi
 
 def dacos(x):
-    x = pi * x / 180
-    return math.acos(x)
+    return math.acos(x) * 180 / pi
 
 def datan(x):
-    x = pi * x / 180
-    return math.atan(x)
+    return math.atan(x) * 180 / pi
 
 def dsinh(x):
     x = pi * x / 180
@@ -122,16 +119,13 @@ def dtanh(x):
     return math.tanh(x)
 
 def dasinh(x):
-    x = pi * x / 180
-    return math.asinh(x)
+    return math.asinh(x) * 180 / pi
 
 def dacosh(x):
-    x = pi * x / 180
-    return math.acosh(x)
+    return math.acosh(x) * 180 / pi
 
 def datanh(x):
-    x = pi * x / 180
-    return math.atanh(x)
+    return math.atanh(x) * 180 / pi
 
 def dcsc(x):
     x = pi * x / 180
@@ -146,16 +140,13 @@ def dcot(x):
     return 1/math.tan(x)
 
 def dacsc(x):
-    x = pi * x / 180
-    return math.asin(1/x)
+    return math.asin(1/x) * 180 / pi
 
 def dasec(x):
-    x = pi * x / 180
-    return math.acos(1/x)
+    return math.acos(1/x) * 180 / pi
 
 def dacot(x):
-    x = pi * x / 180
-    return pi - math.atan(x)
+    return (pi - math.atan(x)) * 180 / pi
 
 def end(): import sys; sys.exit(0)
 # start of advanced functions
