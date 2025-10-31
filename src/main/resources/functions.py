@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 ###
 ### This file defines all functions used internally within the calculator.
 ###

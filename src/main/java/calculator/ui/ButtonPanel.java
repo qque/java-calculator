@@ -307,9 +307,9 @@ public class ButtonPanel extends JPanel {
         JPanel gridPanel = new JPanel(new GridLayout(rows, cols, 5, 5));
         gridPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        for (int _r = 0; _r < rows; _r++) {
-            for (int _c = 0; _c < cols; _c++) {
-                JButton optionButton = new JButton(outerLabels[_r][_c]);
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                JButton optionButton = new JButton(outerLabels[row][col]);
                 optionButton.setFont(popupButtonFont);
 
                 /* code for creating sub popup menu */
@@ -322,9 +322,9 @@ public class ButtonPanel extends JPanel {
                 JPanel subGridPanel = new JPanel(new GridLayout(rows, cols, 5, 5));
                 subGridPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-                for (int __r = 0; __r < subrows; __r++) {
-                    for (int __c = 0; __c < subcols; __c++) {
-                        JButton subOptionButton = new JButton(subMenuLabels[__r][__c]);
+                for (int _r = 0; _r < subrows; _r++) {
+                    for (int _c = 0; _c < subcols; _c++) {
+                        JButton subOptionButton = new JButton(subMenuLabels[_r][_c]);
                         subOptionButton.setFont(popupButtonFont);
 
                         subOptionButton.addActionListener(e -> {

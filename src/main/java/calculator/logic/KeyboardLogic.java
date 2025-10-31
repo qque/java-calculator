@@ -116,6 +116,10 @@ public class KeyboardLogic implements KeyListener {
             if (shift) button = "<";
             else button = ",";
             break;
+        case KeyEvent.VK_SEMICOLON:
+            if (shift) button = ":";
+            else button = ";";
+            break;
         case KeyEvent.VK_BACK_SLASH:        // '|' -- `|x|`
             if (shift) button = "|x|";
             break;

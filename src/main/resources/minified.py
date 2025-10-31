@@ -1,11 +1,10 @@
 import math,cmath,statistics,decimal,random,fractions,numpy as np,sympy as sp,mpmath as mp
 pi=math.pi
 e=math.e
-def sqrt(x):return math.sqrt(x)
-def ln(x):return math.log(x)
-def log(x,a):return math.log(x,a)
-def abs(x):return abs(x)
-def sin(x):return math.sin(x)
+sqrt=math.sqrt
+ln=lambda x:math.log(x)
+log=lambda a,x:math.log(x,a)
+sin=math
 def cos(x):return math.cos(x)
 def tan(x):return math.tan(x)
 def asin(x):return math.asin(x)
@@ -26,21 +25,21 @@ def atanh(x):return math.atanh(x)
 def dsin(x):x=pi*x/180;return math.sin(x)
 def dcos(x):x=pi*x/180;return math.cos(x)
 def dtan(x):x=pi*x/180;return math.tan(x)
-def dasin(x):x=pi*x/180;return math.asin(x)
-def dacos(x):x=pi*x/180;return math.acos(x)
-def datan(x):x=pi*x/180;return math.atan(x)
+def dasin(x):return math.asin(x)*180/pi
+def dacos(x):return math.acos(x)*180/pi
+def datan(x):return math.atan(x)*180/pi
 def dsinh(x):x=pi*x/180;return math.sinh(x)
 def dcosh(x):x=pi*x/180;return math.cosh(x)
 def dtanh(x):x=pi*x/180;return math.tanh(x)
-def dasinh(x):x=pi*x/180;return math.asinh(x)
-def dacosh(x):x=pi*x/180;return math.acosh(x)
-def datanh(x):x=pi*x/180;return math.atanh(x)
+def dasinh(x):return math.asinh(x)*180/pi
+def dacosh(x):return math.acosh(x)*180/pi
+def datanh(x):return math.atanh(x)*180/pi
 def dcsc(x):x=pi*x/180;return 1/math.sin(x)
 def dsec(x):x=pi*x/180;return 1/math.cos(x)
 def dcot(x):x=pi*x/180;return 1/math.tan(x)
-def dacsc(x):x=pi*x/180;return math.asin(1/x)
-def dasec(x):x=pi*x/180;return math.acos(1/x)
-def dacot(x):x=pi*x/180;return pi-math.atan(x)
+def dacsc(x):return math.asin(1/x)*180/pi
+def dasec(x):return math.acos(1/x)*180/pi
+def dacot(x):return(pi-math.atan(x))*180/pi
 def end():import sys;sys.exit(0)
 def gamma(x):return math.gamma(x)
 def fact(x):return math.gamma(x+1)

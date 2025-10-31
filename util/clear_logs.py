@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 
 for file in os.listdir("logs"):
