@@ -24,6 +24,8 @@ public class Settings {
 
         "true",
     };
+
+    private String[] settingValues;
     
     // note that this only sets the final (program behavior) settings, as the rest have their
     // default values preset and can be directly changed with setters.
@@ -45,7 +47,9 @@ public class Settings {
             finalSettings[7] = "true";
         }
 
+        this.settingValues = finalSettings;
 
+        
         this.DEBUG_MODE = Boolean.parseBoolean(finalSettings[0]);
         this.DEBUG_LOG = Boolean.parseBoolean(finalSettings[1]);
 
@@ -63,6 +67,15 @@ public class Settings {
         this.LOAD_ADVANCED = Boolean.parseBoolean(finalSettings[10]);
     }
 
+    public String toString() {
+        String s = "";
+        for (String v : settingValues) {
+            s += v + "\n";
+        }
+
+        return s;
+    }
+
     private static Settings instance;
 
     // sets instance with default settings
@@ -78,8 +91,6 @@ public class Settings {
         if (instance == null) instance = new Settings(finalSettings);
         return instance;
     }
-
-
 
     /* Fonts & Display Settings */
     private String consoleFontName = "Consolas";
