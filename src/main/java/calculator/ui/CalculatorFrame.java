@@ -43,7 +43,8 @@ public class CalculatorFrame extends JFrame {
         display.setEditable(false);
 
         JScrollPane scrollPane = new JScrollPane(display, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
+        topPanel.add(scrollPane, BorderLayout.CENTER);
+        
         KeyboardLogic keyListener = new KeyboardLogic();
         KeyboardLogic.setTextArea(display);
         display.addKeyListener(keyListener); // key listener
@@ -52,7 +53,6 @@ public class CalculatorFrame extends JFrame {
         display.setLineWrap(true); // wrap text
         display.setWrapStyleWord(true);
         display.setPreferredSize(new Dimension(400, 80));
-        topPanel.add(scrollPane, BorderLayout.CENTER);
 
         // clear and ans buttons beside top display
         JPanel sideButtons = new JPanel(new GridLayout(2, 1, 5, 5));

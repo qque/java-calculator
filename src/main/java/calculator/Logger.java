@@ -13,6 +13,8 @@ package calculator;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -70,6 +72,14 @@ public class Logger {
                 System.out.println("Failed to write log: " + e.getMessage());
             }
         }
+    }
+
+    // util, gets stack trace of exception in string format for logging
+    public static String getStackTrace(final Throwable throwable) {
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw, true);
+        throwable.printStackTrace(pw);
+        return sw.getBuffer().toString();
     }
 
     public void close() {

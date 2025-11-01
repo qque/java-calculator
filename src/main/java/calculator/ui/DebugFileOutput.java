@@ -9,10 +9,10 @@ import calculator.Settings;
 public class DebugFileOutput extends JFrame {
 
     private static Settings settings = Settings.getSettings();
-    private static boolean DEBUG_MODE = settings.isDebugMode();
+    private static final boolean DEBUG_MODE = settings.isDebugMode();
 
     private static Logger logger = Logger.getInstance();
-    private static boolean DEBUG_LOG = settings.isDebugLog();
+    private static final boolean DEBUG_LOG = settings.isDebugLog();
 
     private JTextArea textArea;
 

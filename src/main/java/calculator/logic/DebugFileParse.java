@@ -7,16 +7,16 @@
 
 package calculator.logic;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import javax.swing.JTextArea;
 
 import calculator.ui.DebugFileOutput;
 
+import calculator.Logger;
 import calculator.History;
 
 public class DebugFileParse {
@@ -26,39 +26,45 @@ public class DebugFileParse {
     public DebugFileParse(String path) throws IOException {
         Engine.eval("pass");
 
-        ArrayList<String> lines = getFileLines(path);
+        String[] lines = getFileLines(path);
 
-        for (String l : lines) {
-            char first = l.charAt(0);
+        try {
+            for (String l : lines) {
+                char first = l.charAt(0);
 
-            if (l.isBlank() || first == '#' || first == ';') { // comment/skipped line
-                debugFileOutput.add("null","\n");
-                continue;
-            }
-
-            l = l.strip();
-
-            if (first == '!') { // load subfile within file
-                try {
-                    getFileLines(l.substring(1));
-                    // todo
-                } catch (IOException e) {
-                    // todo
+                if (l.isBlank() || first == '#' || first == ';') { // comment/skipped line
+                    debugFileOutput.add("null","\n");
+                    continue;
                 }
-            } else { // evaluate anything else as a calculation
 
-                // create a dummy JTextArea of just the line, and make ButtonLogic use it
-                // this makes it so runButton with label "=" will deal with this line how one would want it to
-                // we can get the result simply by capturing the JTextArea's text after runButton("=")
-                JTextArea input = new JTextArea(l);
-                ButtonLogic.setTextArea(input);
+                l = l.strip();
 
-                ButtonLogic.runButton("=");
+                if (first == '!') { // load subfile within file
+                    try {
+                        getFileLines(l.substring(1));
+                        // todo
+                    } catch (IOException e) {
+                        // todo
+                    }
+                } else { // evaluate anything else as a calculation
 
-                String result = input.getText();
+                    // create a dummy JTextArea of just the line, and make ButtonLogic use it
+                    // this makes it so runButton with label "=" will deal with this line how one would want it to
+                    // we can get the result simply by capturing the JTextArea's text after runButton("=")
+                    JTextArea input = new JTextArea(l);
+                    ButtonLogic.setTextArea(input);
 
-                debugFileOutput.add(l, result);
+                    ButtonLogic.runButton("=");
+
+                    String result = input.getText();
+
+                    debugFileOutput.add(l, result);
+                }
             }
+        } catch (Exception e) {
+            Logger.getInstance().log("ERROR: debug file parsing failed");
+            Logger.getInstance().log(Logger.getStackTrace(e));
+            System.exit(1);
         }
     }
 
@@ -80,17 +86,9 @@ public class DebugFileParse {
             };
     }
 
-    private static ArrayList<String> getFileLines(String path) throws IOException {
-        ArrayList<String> lines = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
-            }
-        }
-
-        return lines;
+    // todo, returning null
+    private static String[] getFileLines(String path) throws IOException {
+        return Files.readAllLines(Path.of(path)).toArray(new String[0]);
     }
 
 }

@@ -19,13 +19,6 @@ public class Main {
         } 
     };
 
-    public static String getStackTrace(final Throwable throwable) {
-        final StringWriter sw = new StringWriter();
-        final PrintWriter pw = new PrintWriter(sw, true);
-        throwable.printStackTrace(pw);
-        return sw.getBuffer().toString();
-    }
-
     public static void main(String[] args) {
         /* Capture arguments to settings */
         final int size = Settings.defaultValues.length;
@@ -92,7 +85,7 @@ public class Main {
                 }
             } catch (Exception e) {
                 Logger.getInstance().log("ERROR: argument parsing failed, check what you entered in the command line");
-                Logger.getInstance().log(getStackTrace(e));
+                Logger.getInstance().log(Logger.getStackTrace(e));
                 System.exit(1);
             }
         }
@@ -117,26 +110,20 @@ public class Main {
                 }
             };
         }
-        
+
         if (settings.isRunDebugFile()) {
             try {
                 DebugFileParse debugFile = new DebugFileParse(settings.getCustomDebugFile());
                 main = debugFile.outputRunnable();
             } catch (IOException e) {
                 Logger.getInstance().log("ERROR: debug file parsing failed, check what you entered in the command line");
-                Logger.getInstance().log(getStackTrace(e));
+                Logger.getInstance().log(Logger.getStackTrace(e));
                 System.exit(1);
             }
         }
 
         /* Start GUI */
-        try {
-            SwingUtilities.invokeLater(main);
-        } catch (Exception e) {
-            Logger.getInstance().log("ERROR: main execution failed");
-            Logger.getInstance().log(getStackTrace(e));
-            System.exit(1);
-        }
+        SwingUtilities.invokeLater(main);
     }
 
 }
