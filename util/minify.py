@@ -11,7 +11,7 @@ except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "python_minifier"])
     except subprocess.CalledProcessError as e:
         print(f"Failed to install python_minifier with error code {e.returncode}, try running `python -m pip install python_minifier`\n")
-        raise e.with_traceback()
+        sys.exit(1)
 
 
 with open('src/main/resources/functions.py','r') as f:

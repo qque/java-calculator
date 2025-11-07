@@ -15,10 +15,9 @@ import javax.script.ScriptException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 import calculator.ui.ButtonPanel;
-
+import jep.JepException;
 import calculator.History;
 import calculator.Logger;
 import calculator.Settings;
@@ -36,9 +35,6 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
     private static boolean DEBUG_LOG = settings.isDebugLog();
 
     public static void setTextArea(JTextArea area) { display = area; }
-
-
-    private static final String[] numberButtons = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "ans"};
 
     // preprocessing using regex for more annoying conversions
     private static String preprocess(String expression) {
@@ -74,6 +70,8 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         expression = expression.replaceAll("\\^", "**");
 
         expression = expression.replaceAll("->", "=");
+        
+        expression = expression.replaceAll("(?<![A-Za-z0-9_])(?:(?:[+-]?\\d*\\.?\\d*)?i)(?![A-Za-z0-9_])", "j");
 
         // converts "x!" -> "fact(x)"
         while (expression.contains("!") && ++safety < SAFETY_LIM) {
@@ -136,7 +134,18 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
     public static Output compute(String expression) throws ScriptException {
         expression = preprocess(expression);
 
-        String eval = Engine.getValue(expression).toString();
+        String eval = null;
+        try {
+            eval = Engine.getValue(expression).toString();
+        } catch (JepException e) {
+            if (e.getMessage().contains("ZeroDivisionError")) { // handle division by zero if it occurs
+                eval = Engine.getValue(String.format("_dbz_wrapper('%s')", expression)).toString();
+            } else { // otherwise log error and exit
+                logger.log("ERROR: Java Embedded Python evaluation failed");
+                logger.log(Logger.getStackTrace(e));
+                System.exit(1);
+            }
+        }
 
         if (DEBUG_MODE) {
             System.out.println("Evaluated: " + eval);
@@ -151,6 +160,8 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             output = new Output("", Void.class);
         } else if (eval == "false" || eval == "true") {
             output = new Output(Boolean.parseBoolean(eval), Boolean.class);
+        } else if (eval.contains("j")) {
+            output = new Output(eval.replace("j", "i"), String.class);
         } else {
             if (eval == "NaN") {
                 return new Output(Double.NaN, Double.class);
@@ -194,6 +205,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             String result = null; // used only for calculation ("="), but it's defined in this larger scope
                                   // because it is also needed for some debug messages
 
+            // special case for keyboard input that should be completely ignored
+            if (label == "DO NOTHING") return;
+
             // check if result should be cleared based on input
             // most buttons will erase the display completely, some will truncate it into "ans"
             if (resultDisplayed) {
@@ -211,7 +225,11 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
             // set resultDisplayed & display color back accordingly
             resultDisplayed = false;
-            display.setForeground(Color.BLACK);
+            if (settings.isDarkMode()) {
+                display.setForeground(Color.WHITE);
+            } else {
+                display.setForeground(Color.BLACK);
+            }
 
             // switch label
             switch (label) {
@@ -254,7 +272,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             case "signal":
             case "special":
             case "cmplx":
-            case "MENUS": break;
+            case "const": break;
             
             // input modified label
             case "×": output = "*"; break;
@@ -273,7 +291,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             case "cosh⁻¹": output = "acosh("; break;
             case "tanh⁻¹": output = "atanh("; break;
             case "√": output = "sqrt("; break;
-            case "1/x": output = "1/("; break;
+            case "1/x": output = "1/"; break;
             
             // input label with parenthesis
             case "sin":

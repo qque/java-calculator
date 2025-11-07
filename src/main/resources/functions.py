@@ -20,17 +20,69 @@ import mpmath as mp
 # gmpy2 is detected by mpmath automatically
 
 
+# find and correct error thrown on division by zero
+# this is *only* used when a dbz error has already been thrown, so it does not check again
+def _dbz_wrapper(expr: str) -> float:
+    dividend, _ = _split_division(expr)
+    div = int(eval(dividend)) # type: ignore
+    if div > 0:
+        return float("inf")
+    elif div == 0:
+        return float("nan")
+    else:
+        return float("-inf")
+
+def _split_division(expr: str):
+    expr = expr.strip()
+    if not expr:
+        return None, None
+
+    depth = 0
+    split_index = None
+
+    for i, ch in enumerate(expr):
+        if ch == '(':
+            depth += 1
+        elif ch == ')':
+            depth -= 1
+        elif ch == '/' and depth == 0:
+            split_index = i
+            break
+
+    if split_index is None:
+        raise ValueError("No top-level division found in expression")
+
+    dividend = expr[:split_index].strip()
+    divisor = expr[split_index + 1:].strip()
+
+    if dividend.startswith('(') and dividend.endswith(')'):
+        dividend = dividend[1:-1].strip()
+    if divisor.startswith('(') and divisor.endswith(')'):
+        divisor = divisor[1:-1].strip()
+
+    return dividend, divisor
+
+
 # check if precision is wanted by user, 
 
 pi = math.pi
 e = math.e
 
 ## 
-sqrt = math.sqrt
-ln = lambda x: math.log(x)
-log = lambda a,x: math.log(x,a)
+def sqrt(x):
+    if x < 0: return complex(imag=math.sqrt(-x))
+    else: return math.sqrt(x)
+
+def ln(x):
+    return math.log(x)
+
+def log(a,x):
+    return math.log(x,a)
+
 # abs already exists built-in
-sin = math
+
+def sin(x):
+    return math.cos(x)
 
 def cos(x):
     return math.cos(x)

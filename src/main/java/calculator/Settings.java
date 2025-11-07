@@ -1,6 +1,9 @@
 /*
  *  Defines settings used throughout the calculator, which can be changed in the settings frame, opened with Ctrl + S.
  *  These are divided into three categories: font/display settings, calculation settings, and core program behavior.
+ *  
+ *  Settings are currently stored in a string array with fixed values.
+ *  This is not ideal for maintainability, and should possibly be changed in the future, but it is kept now for convenience.
  */
 
 package calculator;
@@ -23,6 +26,8 @@ public class Settings {
         "null",
 
         "true",
+
+        "true",
     };
 
     private String[] settingValues;
@@ -31,24 +36,9 @@ public class Settings {
     // default values preset and can be directly changed with setters.
     // the final settings, on the other hand, have to be set on construction.
     public Settings(String[] finalSettings) {
-
-        // ensures consistency between settings to fix incompatible values (e.g. settings DEBUG_MODE=false but DEBUG_LOG=true)
-        // if the inconsistencies are predictable and are easily fixed then they will be corrected without throwing any error
-        // if they are fatal, however, (e.g. passing a negative value to consoleFontSize), the program will catch the error and exit
-        
-        if (finalSettings[6] != "null") {
-            finalSettings[5] = "true";
-        } else if (finalSettings[6] == "null" && finalSettings[5] == "true") {
-            System.out.println(new IllegalArgumentException("Custom debug file must be set").getMessage());
-            System.exit(1);
-        }
-
-        if (finalSettings[9] != "null" && finalSettings[7] == "false" && finalSettings[8] == "false") {
-            finalSettings[7] = "true";
-        }
+        ensureConsistent(finalSettings);
 
         this.settingValues = finalSettings;
-
         
         this.DEBUG_MODE = Boolean.parseBoolean(finalSettings[0]);
         this.DEBUG_LOG = Boolean.parseBoolean(finalSettings[1]);
@@ -65,6 +55,26 @@ public class Settings {
         this.CUSTOM_FUNCTION_FILE = finalSettings[9];
 
         this.LOAD_ADVANCED = Boolean.parseBoolean(finalSettings[10]);
+
+        this.DARK_MODE = Boolean.parseBoolean(finalSettings[11]);
+
+        instance = this;
+    }
+
+    // ensures consistency between settings to fix incompatible values (e.g. settings DEBUG_MODE=false but DEBUG_LOG=true)
+    // if the inconsistencies are predictable and are easily fixed then they will be corrected without throwing any error
+    // if they are fatal, however, (e.g. passing a negative value to consoleFontSize), the program will catch the error and exit
+    private static void ensureConsistent(String[] finalSettings) {
+        if (finalSettings[6] != "null") {
+            finalSettings[5] = "true";
+        } else if (finalSettings[6] == "null" && finalSettings[5] == "true") {
+            System.out.println(new IllegalArgumentException("Custom debug file must be set").getMessage());
+            System.exit(1);
+        }
+
+        if (finalSettings[9] != "null" && finalSettings[7] == "false" && finalSettings[8] == "false") {
+            finalSettings[7] = "true";
+        }
     }
 
     public String toString() {
@@ -78,17 +88,8 @@ public class Settings {
 
     private static Settings instance;
 
-    // sets instance with default settings
-    // note that if non-default settings were given in Main, it won't be overwritten, as when this
-    // overloaded version is ran in other classes, instance will not be null, so it will just 
+    // static way to access settings in other classes
     public static Settings getSettings() {
-        if (instance == null) instance = new Settings(defaultValues);
-        return instance;
-    }
-
-    // this is exclusively used in Main when settings are passed through ./run
-    public static Settings getSettings(String[] finalSettings) {
-        if (instance == null) instance = new Settings(finalSettings);
         return instance;
     }
 
@@ -165,6 +166,8 @@ public class Settings {
 
     private final boolean LOAD_ADVANCED; // if false, most submenu functions will be disabled
 
+    private final boolean DARK_MODE; // dark vs. light theme (default is dark)
+
     // getters and default values (no setters since final)
     public boolean isDebugMode() { return DEBUG_MODE; }
     public boolean isDebugLog() { return DEBUG_LOG; }
@@ -181,5 +184,7 @@ public class Settings {
     public String getCustomFunctionFile() { return CUSTOM_FUNCTION_FILE; }
     
     public boolean isLoadAdvanced() { return LOAD_ADVANCED; }
+
+    public boolean isDarkMode() { return DARK_MODE; }
 
 }

@@ -6,6 +6,7 @@ set "QUIET=false"
 set "BUILD=false"
 set "NOCONSOLE=false"
 set "CLEAR=false"
+set "MINIFY=false"
 set "DEBUG=false"
 set "TEST=false"
 set FILE="..."
@@ -35,6 +36,7 @@ if "!arg:~0,1!"=="-" (
     if /i "!arg!"=="--build" set "BUILD=true"
     if /i "!arg!"=="--no-console" set "NOCONSOLE=true"
     if /i "!arg!"=="--clear-logs" set "CLEAR=true"
+    if /i "!arg!"=="--minify" set "MINIFY=true"
     if /i "!arg!"=="--debug-console" set "DEBUG=true"
     if /i "!arg!"=="--test" set "TEST=true"
 
@@ -46,6 +48,7 @@ if "!arg:~0,1!"=="-" (
         echo !flag_string! | findstr /i "\<b\>" >nul && set "BUILD=true"
         echo !flag_string! | findstr /i "\<w\>" >nul && set "NOCONSOLE=true"
         echo !flag_string! | findstr /i "\<c\>" >nul && set "CLEAR=true"
+        echo !flag_string! | findstr /i "\<m\>" >nul && set "MINIFY=true"
         echo !flag_string! | findstr /i "\<d\>" >nul && set "DEBUG=true"
         echo !flag_string! | findstr /i "\<t\>" >nul && set "TEST=true"
     )
@@ -62,6 +65,10 @@ if %FILE% neq "..." (
 
 if %CLEAR%==true (
     python ./util/clear_logs.py
+)
+
+if %MINIFY%==true (
+    python ./util/minify.py
 )
 
 if %BUILD%==true (

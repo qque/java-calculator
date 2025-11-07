@@ -81,6 +81,7 @@ if %PACKAGE%==true (
     goto check
 )
 mvn install "-Dmaven.test.skip=%SKIPTEST%
+
 :check
 if %ERRORLEVEL%==1 (
     echo.

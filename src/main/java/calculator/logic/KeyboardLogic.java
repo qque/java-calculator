@@ -38,7 +38,7 @@ public class KeyboardLogic implements KeyListener {
         int key = e.getKeyCode();
         boolean shift = e.isShiftDown();
         boolean ctrl = e.isControlDown();
-        String button = null;
+        String button = "null";
 
         switch (key) {                      // '[key name on (my) keyboard]' -- `[button on calculator]
         // control operation
@@ -93,7 +93,7 @@ public class KeyboardLogic implements KeyListener {
             else button = "7";
             break;
         case KeyEvent.VK_8:                 // '8' -- `8`
-            if (shift) button = "*";
+            if (shift) button = "×";
             else button = "8";
             break;
         case KeyEvent.VK_9:                 // '9' -- `9`
@@ -106,7 +106,7 @@ public class KeyboardLogic implements KeyListener {
             break;
         case KeyEvent.VK_SLASH:             // '/' -- `÷`
             if (shift) button = "?";
-            else button = "/";
+            else button = "÷";
             break;
         case KeyEvent.VK_PERIOD:            // '.' -- `.`
             if (shift) button = ">";
@@ -172,14 +172,17 @@ public class KeyboardLogic implements KeyListener {
             }
             break;
 
+        case KeyEvent.VK_SHIFT:
+        case KeyEvent.VK_CONTROL:
+            button = "DO NOTHING";
+            break;
+
         // everything else (key press does nothing)
         default: break;
         }
 
         // runButton is always ran here, even when it is "null", since we want the baseline
         // behavior of runButton (setting display text to black, setting cursor, etc.) to occur
-        if (button != null) {
-            ButtonLogic.runButton(button);
-        }
+        ButtonLogic.runButton(button);
     } 
 }

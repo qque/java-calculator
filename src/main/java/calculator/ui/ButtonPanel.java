@@ -1,6 +1,6 @@
 /* 
  *  Defines the 9x6 main button area
- *  This includes everything except the "ans" and "clear buttons" (and the side panel)
+ *  This includes everything except the "ans" and "clear buttons"
  *  Those buttons are not defined here since they are contained in the top panel
  *  
  *  NOTE: The grid can easily modified by changing `labels`, but any newly defined
@@ -32,6 +32,7 @@ public class ButtonPanel extends JPanel {
 
     private Font buttonFont = new Font(settings.getButtonFontName(), settings.getButtonFontStyle(), settings.getButtonFontSize());
     private Font popupButtonFont = new Font(settings.getPopupButtonFontName(), settings.getPopupButtonFontStyle(), settings.getPopupButtonFontSize());
+    private Color buttonColor = settings.isDarkMode() ? Color.WHITE : Color.BLACK;
 
     private final Map<String, JButton> buttons = new HashMap<>();
 
@@ -279,6 +280,7 @@ public class ButtonPanel extends JPanel {
             for (int col = 0; col < cols; col++) {
                 JButton optionButton = new JButton(popupLabels[row][col]);
                 optionButton.setFont(popupButtonFont);
+                optionButton.setForeground(buttonColor);
 
                 // add listener for buttons in popup menu
                 optionButton.addActionListener(e -> {
@@ -311,6 +313,7 @@ public class ButtonPanel extends JPanel {
             for (int col = 0; col < cols; col++) {
                 JButton optionButton = new JButton(outerLabels[row][col]);
                 optionButton.setFont(popupButtonFont);
+                optionButton.setForeground(buttonColor);
 
                 /* code for creating sub popup menu */
                 String[][] subMenuLabels = innerLabels[index];
@@ -326,6 +329,7 @@ public class ButtonPanel extends JPanel {
                     for (int _c = 0; _c < subcols; _c++) {
                         JButton subOptionButton = new JButton(subMenuLabels[_r][_c]);
                         subOptionButton.setFont(popupButtonFont);
+                        subOptionButton.setForeground(buttonColor);
 
                         subOptionButton.addActionListener(e -> {
                             if (listener != null) listener.onButtonClick(subOptionButton.getText());
@@ -373,6 +377,7 @@ public class ButtonPanel extends JPanel {
 
                 JButton button = new JButton(label);
                 button.setFont(buttonFont);
+                button.setForeground(buttonColor);
 
                 Dimension fixed = new Dimension(100, 40);
                 button.setPreferredSize(fixed);

@@ -103,8 +103,7 @@ public class Engine {
                 e1.printStackTrace();
             }
             System.exit(1);
-        } 
-
+        }
     }
 
     // attempts to find python installation

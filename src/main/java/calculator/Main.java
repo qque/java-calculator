@@ -3,8 +3,9 @@ package calculator;
 import javax.swing.SwingUtilities;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import calculator.logic.DebugFileParse;
 
@@ -22,7 +23,7 @@ public class Main {
     public static void main(String[] args) {
         /* Capture arguments to settings */
         final int size = Settings.defaultValues.length;
-        String[] finalValues = new String[size];
+        String[] finalSettings = new String[size];
 
         int len = args.length;
 
@@ -35,53 +36,56 @@ public class Main {
                     boolean setTrue = value.equals("true") || value.equals("1");
                     boolean setFalse = value.equals("false") || value.equals("0");
 
+                    Logger.getInstance().log(name);
+                    Logger.getInstance().log(value);
+
                     if ((name.equals("debug_mode") || name.equals("debug")) && setFalse) {
-                        finalValues[0] = "false";
+                        finalSettings[0] = "false";
                     }
 
                     if ((name.equals("debug_log") || name.equals("log")) && setFalse) {
-                        finalValues[1] = "false";
+                        finalSettings[1] = "false";
                     }
 
                     if ((name.equals("odcoe") || name.equals("open_debug_console_on_execution") || name.equals("open_debug")) && setTrue) {
-                        finalValues[2] = "true";
+                        finalSettings[2] = "true";
                     }
 
                     if ((name.equals("sdcoth") || name.equals("send_debug_console_out_to_hist") || name.equals("debug_history")) && setFalse) {
-                        finalValues[3] = "false";
+                        finalSettings[3] = "false";
                     }
 
                     if ((name.equals("ddco") || name.equals("display_debug_console_out") || name.equals("debug_output")) && setFalse) {
-                        finalValues[4] = "false";
+                        finalSettings[4] = "false";
                     }
 
                     if ((name.equals("rdf") || name.equals("run_debug_file")) && setTrue) {
-                        finalValues[5] = "true";
+                        finalSettings[5] = "true";
                     }
 
                     if (name.equals("cdf") || name.equals("custom_debug_file") || name.equals("debug_file")) {
-                        finalValues[6] = value;
+                        finalSettings[6] = value;
                     }
 
                     if ((name.equals("acff") || name.equals("add_custom_function_file") || name.equals("add_custom") && setTrue)) {
-                        finalValues[7] = "true";
+                        finalSettings[7] = "true";
                     }
 
                     if ((name.equals("ucff") || name.equals("use_custom_function_file") || name.equals("use_custom")) && setTrue) {
-                        finalValues[8] = "true";
+                        finalSettings[8] = "true";
                     }
 
                     if (name.equals("cff") || name.equals("custom_function_file") || name.equals("function_file")) {
-                        finalValues[9] = value;
+                        finalSettings[9] = value;
                     }
 
                     if ((name.equals("load_advanced") || name.equals("advanced") && setFalse)) {
-                        finalValues[10] = "false";
+                        finalSettings[10] = "false";
                     }
-                }
 
-                for (int i = 0; i < size; i++) {
-                    if (finalValues[i] == null) finalValues[i] = Settings.defaultValues[i];
+                    if ((name.equals("dark_mode") && setFalse) || (name.equals("light_mode") && setTrue)) {
+                        finalSettings[11] = "false";
+                    }
                 }
             } catch (Exception e) {
                 Logger.getInstance().log("ERROR: argument parsing failed, check what you entered in the command line");
@@ -89,9 +93,20 @@ public class Main {
                 System.exit(1);
             }
         }
+        
+        for (int i = 0; i < size; i++) {
+            if (finalSettings[i] == null) finalSettings[i] = Settings.defaultValues[i];
+        }
 
         /* Use settings for certain initialization behavior */
-        Settings settings = Settings.getSettings(finalValues);
+        Settings settings = new Settings(finalSettings);
+        
+        /* Setup FlatLaf */
+        if (settings.isDarkMode()) {
+            FlatDarkLaf.setup();
+        } else {
+            FlatLightLaf.setup();
+        }
 
         // open logger & log arguments if applicable
         if (settings.isDebugLog()) {

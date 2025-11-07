@@ -46,6 +46,7 @@ The following flags can be passed to `./run`:
  - `-b` / `--build` to build before execution
  - `-w` / `--no-console` to stop the console from opening (this will also disable debug mode, though log files will still be created if DEBUG_LOG is true)
  - `-c` / `--clear-logs` to clear the existing log files
+ - `-m` / `--minify` to minify the function file before execution
  - `-d` / `--debug-console` to open the debug console instead of the calculator
  - `-t` / `--test` to run tests instead of opening the calculator
  - `-f [file path]` to run a custom test file (this is equivalent to `-Ddebug_file=[file path]`, it exists here as a convenience)
