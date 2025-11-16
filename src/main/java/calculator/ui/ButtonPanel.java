@@ -17,6 +17,7 @@ package calculator.ui;
 import javax.swing.*;
 import java.awt.*;
 
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class ButtonPanel extends JPanel {
     
     // list variables & operations
     public static final String[][] listPopupLabels = {
-        {"mean", "stdev", "stdevp"},
+        {"edit", "vars", "sortD"},
         {"erf", "example", "example2"}
     };
 
@@ -299,12 +300,12 @@ public class ButtonPanel extends JPanel {
         });
     };
 
-    private void createPopupWithSub(JButton button, String[][] outerLabels, String[][][] innerLabels) {
+    private void createPopupWithSub(JButton button, String[][] outerLabels, String[][][] innerLabels, List<Integer> include) {
         int rows = outerLabels.length;
         int cols = outerLabels[0].length;
         int index = 0;
 
-        JPopupMenu popupMenu =  new JPopupMenu();
+        JPopupMenu popupMenu = new JPopupMenu();
 
         JPanel gridPanel = new JPanel(new GridLayout(rows, cols, 5, 5));
         gridPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -314,6 +315,8 @@ public class ButtonPanel extends JPanel {
                 JButton optionButton = new JButton(outerLabels[row][col]);
                 optionButton.setFont(popupButtonFont);
                 optionButton.setForeground(buttonColor);
+
+                Boolean allSubLabels = include.isEmpty();
 
                 /* code for creating sub popup menu */
                 String[][] subMenuLabels = innerLabels[index];
@@ -325,8 +328,13 @@ public class ButtonPanel extends JPanel {
                 JPanel subGridPanel = new JPanel(new GridLayout(rows, cols, 5, 5));
                 subGridPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
+                int subindex = 0;
                 for (int _r = 0; _r < subrows; _r++) {
                     for (int _c = 0; _c < subcols; _c++) {
+                        subindex += 1;
+
+                        if (!include.contains(subindex - 1) && !allSubLabels) break;
+
                         JButton subOptionButton = new JButton(subMenuLabels[_r][_c]);
                         subOptionButton.setFont(popupButtonFont);
                         subOptionButton.setForeground(buttonColor);
@@ -405,8 +413,8 @@ public class ButtonPanel extends JPanel {
                 else if (row == 0 && col == 2) createPopup(button, testPopupLabels);
                 else if (row == 0 && col == 3) createPopup(button, solvePopupLabels);
                 else if (row == 0 && col == 4) createPopup(button, graphPopupLabels);
-                else if (row == 1 && col == 0) createPopupWithSub(button, statPopupLabels, statSubLabels);
-                else if (row == 1 && col == 1) createPopupWithSub(button, numberPopupLabels, numberSubLabels);
+                else if (row == 1 && col == 0) createPopupWithSub(button, statPopupLabels, statSubLabels, List.<Integer>of());
+                else if (row == 1 && col == 1) createPopupWithSub(button, numberPopupLabels, numberSubLabels, List.<Integer>of());
                 else if (row == 1 && col == 2) createPopup(button, calcPopupLabels);
                 else if (row == 1 && col == 3) createPopup(button, specialPopupLabels);
                 else if (row == 1 && col == 4) createPopup(button, cmplxPopupLabels);

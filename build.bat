@@ -73,14 +73,14 @@ echo.
 echo Starting Maven build...
 echo.
 if %COMPILE%==true (
-    mvn compile
+    call mvn compile
     goto check
 )
 if %PACKAGE%==true (
-    mvn package "-Dmaven.test.skip=%SKIPTEST%
+    call mvn package "-Dmaven.test.skip=%SKIPTEST%
     goto check
 )
-mvn install "-Dmaven.test.skip=%SKIPTEST%
+call mvn install "-Dmaven.test.skip=%SKIPTEST%
 
 :check
 if %ERRORLEVEL%==1 (
@@ -93,40 +93,40 @@ if %ERRORLEVEL%==1 (
 echo.
 echo Installing python dependencies...
 echo.
-python -m pip show jep >nul 2>&1
+call python -m pip show jep >nul 2>&1
 if %ERRORLEVEL%==1 (
-    python -m pip install jep
+    call python -m pip install jep
 ) else (
-    python -c "from importlib.metadata import version; print('jep version ' + version('jep'))"
+    call python -c "from importlib.metadata import version; print('jep version ' + version('jep'))"
 )
-python -m pip show numpy >nul 2>&1
+call python -m pip show numpy >nul 2>&1
 if %ERRORLEVEL%==1 (
-    python -m pip install numpy
+    call python -m pip install numpy
 ) else (
-    python -c "import numpy; print('numpy version ' + numpy.__version__)"
+    call python -c "import numpy; print('numpy version ' + numpy.__version__)"
 )
-python -m pip show sympy >nul 2>&1
+call python -m pip show sympy >nul 2>&1
 if %ERRORLEVEL%==1 (
-    python -m pip install sympy
+    call python -m pip install sympy
 ) else (
-    python -c "import sympy; print('sympy version ' + sympy.__version__)"
+    call python -c "import sympy; print('sympy version ' + sympy.__version__)"
 )
-python -m pip show mpmath >nul 2>&1
+call python -m pip show mpmath >nul 2>&1
 if %ERRORLEVEL%==1 (
-    python -m pip install mpmath
+    call python -m pip install mpmath
 ) else (
-    python -c "import mpmath; print('mpmath version ' + mpmath.__version__)"
+    call python -c "import mpmath; print('mpmath version ' + mpmath.__version__)"
 )
-python -m pip show gmpy2 >nul 2>&1
+call python -m pip show gmpy2 >nul 2>&1
 if %ERRORLEVEL%==1 (
-    python -m pip install gmpy2
+    call python -m pip install gmpy2
 ) else (
-    python -c "import gmpy2; print('gmpy2 version ' + gmpy2.__version__)"
+    call python -c "import gmpy2; print('gmpy2 version ' + gmpy2.__version__)"
 )
 
 echo.
 echo Minifying python function file...
-python ./util/minify.py
+call python ./util/minify.py
 
 echo.
 echo Installation complete, exiting...
@@ -138,18 +138,18 @@ if %ONLY%==true (
     goto end
 )
 if %COMPILE%==true (
-    mvn compile -q
+    call mvn compile -q
     goto check
 )
 if %PACKAGE%==true (
-    mvn package -q "-Dmaven.test.skip=%SKIPTEST%
+    call mvn package -q "-Dmaven.test.skip=%SKIPTEST%
     goto check
 )
 if %CLEAN%==true (
     call mvn clean install "-Dmaven.test.skip=%SKIPTEST%" -q
     goto check
 ) else (
-    mvn install "-Dmaven.test.skip=%SKIPTEST%" -q
+    call mvn install "-Dmaven.test.skip=%SKIPTEST%" -q
 )
 :check
 if %ERRORLEVEL%==1 (
@@ -158,27 +158,27 @@ if %ERRORLEVEL%==1 (
     echo.
     exit /b %ERRORLEVEL%
 )
-python -m pip show jep >nul 2>&1
+call python -m pip show jep >nul 2>&1
 if %ERRORLEVEL%==1 (
     yes | python -m pip install jep -q -q --exists-action i
 )
-python -m pip show numpy >nul 2>&1
+call python -m pip show numpy >nul 2>&1
 if %ERRORLEVEL%==1 (
     yes | python -m pip install numpy -q -q --exists-action i
 )
-python -m pip show sympy >nul 2>&1
+call python -m pip show sympy >nul 2>&1
 if %ERRORLEVEL%==1 (
     yes | python -m pip install sympy -q -q --exists-action i
 )
-python -m pip show mpmath >nul 2>&1
+call python -m pip show mpmath >nul 2>&1
 if %ERRORLEVEL%==1 (
     yes | python -m pip install mpmath -q -q --exists-action i
 )
-python -m pip show gmpy2 >nul 2>&1
+call python -m pip show gmpy2 >nul 2>&1
 if %ERRORLEVEL%==1 (
     yes | python -m pip install gmpy2 -q -q --exists-action i
 )
-python ./util/minify.py -q
+call python ./util/minify.py -q
 
 :end
 for /f "usebackq tokens=*" %%i in (`python -m site --user-site`) do set SITE_PACKAGES=%%i

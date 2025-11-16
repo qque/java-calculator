@@ -54,7 +54,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
         // replaces "ans" with answer value
         if (!history.isEmpty() && expression.contains("ans")) {
-            expression = expression.replaceAll("ans", history.getLatest().get(1));
+            expression = expression.replaceAll("ans", "(" + history.getLatest().get(1) + ")");
 
             if (DEBUG_LOG) {
                 logger.log("(Accessed output of last calculation from history)");
@@ -71,7 +71,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
         expression = expression.replaceAll("->", "=");
         
-        expression = expression.replaceAll("(?<![A-Za-z0-9_])(?:(?:[+-]?\\d*\\.?\\d*)?i)(?![A-Za-z0-9_])", "j");
+        expression = expression.replaceAll("(?<![A-Za-z_])i(?![A-Za-z_])", "j");
 
         // converts "x!" -> "fact(x)"
         while (expression.contains("!") && ++safety < SAFETY_LIM) {
@@ -161,6 +161,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         } else if (eval == "false" || eval == "true") {
             output = new Output(Boolean.parseBoolean(eval), Boolean.class);
         } else if (eval.contains("j")) {
+            if (Engine.getValue(eval + ".real == " + eval).equals(true)) eval = Engine.getValue(eval + ".real").toString();
             output = new Output(eval.replace("j", "i"), String.class);
         } else {
             if (eval == "NaN") {

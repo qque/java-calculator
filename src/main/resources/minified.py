@@ -19,6 +19,7 @@ def _split_division(expr):
 	return dividend,divisor
 pi=math.pi
 e=math.e
+j=complex(imag=1)
 def sqrt(x):
 	if x<0:return complex(imag=math.sqrt(-x))
 	else:return math.sqrt(x)

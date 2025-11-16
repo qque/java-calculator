@@ -7,8 +7,6 @@ import java.io.IOException;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
-import calculator.logic.DebugFileParse;
-
 import calculator.ui.CalculatorFrame;
 import calculator.ui.DebugConsole;
 
@@ -124,17 +122,6 @@ public class Main {
                     new DebugConsole(true);
                 }
             };
-        }
-
-        if (settings.isRunDebugFile()) {
-            try {
-                DebugFileParse debugFile = new DebugFileParse(settings.getCustomDebugFile());
-                main = debugFile.outputRunnable();
-            } catch (IOException e) {
-                Logger.getInstance().log("ERROR: debug file parsing failed, check what you entered in the command line");
-                Logger.getInstance().log(Logger.getStackTrace(e));
-                System.exit(1);
-            }
         }
 
         /* Start GUI */

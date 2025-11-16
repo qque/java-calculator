@@ -67,6 +67,7 @@ def _split_division(expr: str):
 
 pi = math.pi
 e = math.e
+j = complex(imag=1) # used so j by itself is always treated as 1j
 
 ## 
 def sqrt(x):
