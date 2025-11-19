@@ -94,7 +94,7 @@ public class Settings {
     }
 
     /* Fonts & Display Settings */
-    private String consoleFontName = "Consolas";
+    private String consoleFontName = "Monospaced";
     private int consoleFontStyle = 0; // plain
     private int consoleFontSize = 47;
 

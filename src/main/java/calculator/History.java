@@ -61,8 +61,4 @@ public class History {
         history.clear(); 
     }
 
-    public void clearLatest() {
-        history.remove(history.size() - 1); 
-    }
-
 }
