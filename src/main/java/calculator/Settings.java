@@ -10,26 +10,6 @@ package calculator;
 
 public class Settings {
 
-    public final static String[] defaultValues = {
-        "true",
-        "true",
-
-        "false",
-        "true",
-        "true",
-
-        "false",
-        "null",
-
-        "false",
-        "false",
-        "null",
-
-        "true",
-
-        "true",
-    };
-
     private String[] settingValues;
     
     // note that this only sets the final (program behavior) settings, as the rest have their
@@ -150,6 +130,27 @@ public class Settings {
      *           To set these without having to reload, pass them to ./run in the command line
      *  
      */ 
+
+    public final static String[] defaultValues = {
+        "true",
+        "true",
+
+        "false",
+        "true",
+        "true",
+
+        "false",
+        "null",
+
+        "false",
+        "false",
+        "null",
+
+        "true",
+
+        "true",
+    };
+
     private final boolean DEBUG_MODE;
     private final boolean DEBUG_LOG; // logs debug output to ../../resources/logs/, 1 file per session
     
@@ -167,6 +168,15 @@ public class Settings {
     private final boolean LOAD_ADVANCED; // if false, most submenu functions will be disabled
 
     private final boolean DARK_MODE; // dark vs. light theme (default is dark)
+
+    // setters for final settings used in settingsframe
+    public void setFinalSettingValue(String value) {
+        
+    }
+
+    public void setFinalSettingValue(boolean value) {
+
+    }
 
     // getters and default values (no setters since final)
     public boolean isDebugMode() { return DEBUG_MODE; }

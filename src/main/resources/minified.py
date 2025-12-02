@@ -62,6 +62,12 @@ def dacsc(x):return math.asin(1/x)*180/pi
 def dasec(x):return math.acos(1/x)*180/pi
 def dacot(x):return(pi-math.atan(x))*180/pi
 def end():import sys;sys.exit(0)
+sort=sorted
+AND=all
+OR=any
+def NOT(x):return not x
+def XOR(*args):return any(args)and not all(args)
+def NAND(*args):return not all(args)
 def gamma(x):return math.gamma(x)
 def fact(x):return math.gamma(x+1)
 def nPr(n,k):return math.perm(n,k)

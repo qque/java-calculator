@@ -17,7 +17,6 @@ package calculator.ui;
 import javax.swing.*;
 import java.awt.*;
 
-import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,190 +42,32 @@ public class ButtonPanel extends JPanel {
     
     /* All button label definitions */
     public static final String[][] labels = {
-        {"list" , "matrix", "test"   , "solve" , "graph" , "->"   },
-        {"stat" , "num"   , "special", "calc"  , "cmplx" , "const"},
-        {"sin⁻¹", "cos⁻¹" , "tan⁻¹"  , "(hyp.)", "i"     , "π"    },
-        {"sin"  , "cos"   , "tan"    , "(rec.)", "(deg.)", "e"    },
-        {"("    , ")"     , ","      , "1/x"   , "|x|"   , "ln"   },
-        {"7"    , "8"     , "9"      , "÷"     , "^"     , "eˣ"   },
-        {"4"    , "5"     , "6"      , "×"     , "√"     , "log"  },
-        {"1"    , "2"     , "3"      , "-"     , "x²"    , "10ˣ"  },
-        {"0"    , "."     , "ans"    , "+"     , "="     , "="    }
-    };
-    
-    // list variables & operations
-    public static final String[][] listPopupLabels = {
-        {"edit", "vars", "sortD"},
-        {"erf", "example", "example2"}
-    };
-
-    // matrix variables & operations (like ti84, some basic operations work with matricies)
-    public static final String[][] matrixPopupLabels = {
-        {"mean", "stdev", "stdevp"},
-        {"erf", "example", "example2"}
+        {"stat" , "num"  , "special", "test"  , "cmplx" , "->" },
+        {"sin⁻¹", "cos⁻¹", "tan⁻¹"  , "(hyp.)", "i"     , "π"  },
+        {"sin"  , "cos"  , "tan"    , "(rec.)", "(deg.)", "e"  },
+        {"("    , ")"    , ","      , "1/x"   , "|x|"   , "ln" },
+        {"7"    , "8"    , "9"      , "÷"     , "^"     , "eˣ" },
+        {"4"    , "5"    , "6"      , "×"     , "√"     , "log"},
+        {"1"    , "2"    , "3"      , "-"     , "x²"    , "10ˣ"},
+        {"0"    , "."    , "ans"    , "+"     , "="     , "="  }
     };
 
     // test/logic operators
     public static final String[][] testPopupLabels = {
-        {"==", ">", "<", ">=", "<=", "∈"},
-        {"AND", "OR", "XOR", "NOT", "IF", ""},
-        {"ALL", "ANY", "PIECEWISE", "sgn", "dirac", ""}
+        {"==" , ">" , "<"  , ">=" , "<="  },
+        {"AND", "OR", "NOT", "XOR", "NAND"},
     };
 
-    public static final String[][] solvePopupLabels = {
-        {"mean", "stdev", "stdevp"},
-        {"erf", "example", "example2"}
-    };
-
-    // graphing
-    public static final String[][] graphPopupLabels = {
-        {"mean", "stdev", "stdevp"},
-        {"erf", "example", "example2"}
-    };
-
-    // functions for probability and statistics (these are the labels for the sub-popup menus)
     public static final String[][] statPopupLabels = {
-        {"descriptive"     , "correlation"   , "regression"       , "frequency"    , "applied"      },
-        {"continuous dist.", "discrete dist.", "analytic prob"    , "combinatorics", "stochastic"   },
-        {"hypothesis"      , "confidence"    , "dynamical systems", "time series"  , "survival"     },
-        {"effect sizes"    , "bayesian"      , "multivariate"     , "nonparametric", "miscellaneous"}
+        {"mean"  , "stdev", "stdevp", "variance" , "skewness"   , "kurtosis"},
+        {"median", "mode" , "sort"  , "min"      , "max"        , "range"   },
+        {"nCr"   , "nPr"  , "fact"  , "hyperfact", "multinomial", "rand"    },
     };
-
-    // this is divided into multiple sub categories due to how many functions there are
-    public static final String[][][] statSubLabels = {
-        // descriptive stats
-        {
-            {"mean"  , "stdev", "stdevp", "variance"  , "skewness", "kurtosis" },
-            {"median", "mode" , "sort"  , "percentile", "iqr"     , "mad"      },
-            {"min"   , "max"  , "range" , "midrange"  , "mode"    , "trim"     },
-            {"wmean" , "gmean", "hmean" , "qmean"     , "pmean"   , "quasimean"},
-            {"weigh" , "wgm"  , "whm"   , "wqm"       , "wpm"     , "wqam"     }
-        },
-
-        // correlation
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // regression
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // frequency
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // applied
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // continuous distributions
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // discrete distributions
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // analytic probability
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-
-        // combinatorics
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // stochastic
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // hypothesis
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // confidence
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // dynamical systems
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // time series
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // survival
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // bayesian
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // multivariate
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // nonparametric
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // effect sizes
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-
-        // miscellaneous
-        {
-            {"nCr", "nPr", "!", "", "", ""},
-        },
-    };
-
 
     // number theory
     public static final String[][] numberPopupLabels = {
         {"something...", "primes?", "sequences?"},
     };
-
-    public static final String[][][] numberSubLabels = {
-        {
-            {"...", "...", "..."}
-        },
-
-        {
-            {"...", "...", "..."}
-        },
-
-        {
-            {"...", "...", "..."}
-        }
-    };
-
-
-    // calculus & differential equations
-    public static final String[][] calcPopupLabels = {
-        {"mean", "stdev", "stdevp"},
-        {"erf", "example", "example2"}
-    };
-
 
     // special functions (gamma, bessel, etc.)
     // todo: expand
@@ -235,36 +76,10 @@ public class ButtonPanel extends JPanel {
         {"erf", "example", "example2"}
     };
 
-
     // complex number functions & utilities
     public static final String[][] cmplxPopupLabels = {
         {"imag", "real", "conj"},
     };
-
-
-    // wide variety of constants, divided into a couple of categories for ease of access
-    // e, pi, and i are on the base button panel since they are used so frequently
-    public static final String[][] constantsPopupLabels = {
-        {"trivial", "transcendental", "scientific"}
-    };
-
-    public static final String[][][] constantsSubLabels = {
-        // trivial constants, i.e. those that can be achieved through a finite number of algebraic operations
-        {
-            {"...", "...", "..."}
-        },
-
-        // transcendental constants
-        {
-            {"...", "...", "..."}
-        },
-
-        // constants used outside of math in physics, engineering, etc.
-        {
-            {"...", "...", "..."}
-        }
-    };
-
 
     // fully initializes popup menu for a given button
     // used to avoid code repetition in `stat`, `test`, etc.
@@ -298,76 +113,7 @@ public class ButtonPanel extends JPanel {
         button.addActionListener(e -> {
             popupMenu.show(button, 0, button.getHeight());
         });
-    };
-
-    private void createPopupWithSub(JButton button, String[][] outerLabels, String[][][] innerLabels, List<Integer> include) {
-        int rows = outerLabels.length;
-        int cols = outerLabels[0].length;
-        int index = 0;
-
-        JPopupMenu popupMenu = new JPopupMenu();
-
-        JPanel gridPanel = new JPanel(new GridLayout(rows, cols, 5, 5));
-        gridPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                JButton optionButton = new JButton(outerLabels[row][col]);
-                optionButton.setFont(popupButtonFont);
-                optionButton.setForeground(buttonColor);
-
-                Boolean allSubLabels = include.isEmpty();
-
-                /* code for creating sub popup menu */
-                String[][] subMenuLabels = innerLabels[index];
-                int subrows = subMenuLabels.length;
-                int subcols = subMenuLabels[0].length;
-
-                JPopupMenu subPopupMenu =  new JPopupMenu();
-
-                JPanel subGridPanel = new JPanel(new GridLayout(rows, cols, 5, 5));
-                subGridPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-                int subindex = 0;
-                for (int _r = 0; _r < subrows; _r++) {
-                    for (int _c = 0; _c < subcols; _c++) {
-                        subindex += 1;
-
-                        if (!include.contains(subindex - 1) && !allSubLabels) break;
-
-                        JButton subOptionButton = new JButton(subMenuLabels[_r][_c]);
-                        subOptionButton.setFont(popupButtonFont);
-                        subOptionButton.setForeground(buttonColor);
-
-                        subOptionButton.addActionListener(e -> {
-                            if (listener != null) listener.onButtonClick(subOptionButton.getText());
-                            subPopupMenu.setVisible(false);
-                        });
-
-                        subGridPanel.add(subOptionButton);
-                    }
-                }
-
-                subPopupMenu.add(subGridPanel);
-                /* end */
-
-                optionButton.addActionListener(e -> {
-                    subPopupMenu.show(button, 0, optionButton.getHeight());
-                });
-
-                gridPanel.add(optionButton);
-
-                index += 1;
-            }
-        }
-
-        popupMenu.add(gridPanel);
-
-        button.addActionListener(e -> {
-            popupMenu.show(button, 0, button.getHeight());
-        });
     }
-
 
     public ButtonPanel(ButtonListener listener) {
         this.listener = listener;
@@ -395,7 +141,7 @@ public class ButtonPanel extends JPanel {
                 buttons.put(label, button);
 
                 // merge last two "=" buttons into one wide cell
-                if (row == 8 && col == 4) {
+                if (row == 7 && col == 4) {
                     gbc.gridwidth = 2;
                     add(button, gbc);
                     col++;
@@ -406,19 +152,11 @@ public class ButtonPanel extends JPanel {
 
                 // popup menu for certain buttons
                 // createPopup is used both to create the popup and to pass it along to onButtonClick
-                // createPopupWithSub does the same, but also creates a popup menu for each option within the first popup menu
-                //
-                if (row == 0 && col == 0) createPopup(button, listPopupLabels);
-                else if (row == 0 && col == 1) createPopup(button, matrixPopupLabels);
-                else if (row == 0 && col == 2) createPopup(button, testPopupLabels);
-                else if (row == 0 && col == 3) createPopup(button, solvePopupLabels);
-                else if (row == 0 && col == 4) createPopup(button, graphPopupLabels);
-                else if (row == 1 && col == 0) createPopupWithSub(button, statPopupLabels, statSubLabels, List.<Integer>of());
-                else if (row == 1 && col == 1) createPopupWithSub(button, numberPopupLabels, numberSubLabels, List.<Integer>of());
-                else if (row == 1 && col == 2) createPopup(button, calcPopupLabels);
-                else if (row == 1 && col == 3) createPopup(button, specialPopupLabels);
-                else if (row == 1 && col == 4) createPopup(button, cmplxPopupLabels);
-                else if (row == 1 && col == 5) createPopup(button, constantsPopupLabels);
+                if (row == 0 && col == 0) createPopup(button, statPopupLabels);
+                else if (row == 0 && col == 1) createPopup(button, numberPopupLabels);
+                else if (row == 0 && col == 2) createPopup(button, specialPopupLabels);
+                else if (row == 0 && col == 3) createPopup(button, testPopupLabels);
+                else if (row == 0 && col == 4) createPopup(button, cmplxPopupLabels);
 
                 // listener for button clicks
                 button.addActionListener(e -> {

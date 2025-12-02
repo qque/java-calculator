@@ -163,6 +163,8 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
         } else if (eval.contains("j")) {
             if (Engine.getValue(eval + ".real == " + eval).equals(true)) eval = Engine.getValue(eval + ".real").toString();
             output = new Output(eval.replace("j", "i"), String.class);
+        } else if (eval.contains("[")) {
+            output = new Output(eval, String.class);
         } else {
             if (eval == "NaN") {
                 return new Output(Double.NaN, Double.class);
@@ -214,8 +216,7 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             if (resultDisplayed) {
                 if (label == "+" || label == "-" ||
                     label == "×" || label == "÷" ||
-                    label == "^" || label == "x²" ||
-                    label == "eˣ" || label == "10ˣ") {
+                    label == "^" || label == "x²") {
                     display.setText("ans");
                 } else {
                     display.setText("");

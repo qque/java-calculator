@@ -202,8 +202,18 @@ def dacot(x):
 def end(): import sys; sys.exit(0)
 # start of advanced functions
 
+sort = sorted
+AND = all
+OR = any
+def NOT(x): return not x
+def XOR(*args): return any(args) and not all(args)
+def NAND(*args): return not all(args)
+
 def gamma(x):
     return math.gamma(x)
+
+
+
 
 def fact(x):
     return math.gamma(x+1)
@@ -226,6 +236,7 @@ def stdev(*nums):
 def stdevp(*nums):
     nums = tuple(x for e in nums for x in (e if isinstance(e, list) else [e]))
     return statistics.pstdev(nums)
+
 
 def erf(x):
     return math.erf(x)

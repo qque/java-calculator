@@ -18,7 +18,6 @@ import java.awt.event.KeyListener;
 import calculator.ui.DebugConsole;
 import calculator.ui.HistoryFrame;
 import calculator.ui.NotepadFrame;
-import calculator.ui.SettingsFrame;
 
 public class KeyboardLogic implements KeyListener {
 
@@ -159,10 +158,6 @@ public class KeyboardLogic implements KeyListener {
                 button = "^N";
                 NotepadFrame notepadFrame = new NotepadFrame();
                 notepadFrame.setVisible(true);
-            } else if (ctrl && key == KeyEvent.VK_S) {
-                button = "^S";
-                SettingsFrame settingsFrame = new SettingsFrame();
-                settingsFrame.setVisible(true);
             } else if (ctrl && key == KeyEvent.VK_D) {
                 button = "^D";
                 DebugConsole debugConsole = new DebugConsole();

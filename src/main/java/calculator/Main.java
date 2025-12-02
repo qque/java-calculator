@@ -2,8 +2,6 @@ package calculator;
 
 import javax.swing.SwingUtilities;
 
-import java.io.IOException;
-
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
@@ -11,6 +9,8 @@ import calculator.ui.CalculatorFrame;
 import calculator.ui.DebugConsole;
 
 public class Main {
+
+    public static String text;
 
     static Runnable main = new Runnable() {
         public void run() {
