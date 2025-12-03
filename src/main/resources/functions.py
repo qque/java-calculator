@@ -3,7 +3,7 @@
 ###
 ### In all cases, functions are optimized for preformance.
 ### Typically, this means offloading calculation libraries such as numpy, sympy, or mpmath.
-### Not only is it more convienient
+### Not only is it more convienient, but it also means computation heavy calculations are faster
 ###
 
 import math

@@ -1,3 +1,7 @@
+/*
+ *  Defines the history GUI window
+ */
+
 package calculator.ui;
 
 import javax.swing.*;

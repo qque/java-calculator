@@ -1,3 +1,7 @@
+/*
+ *  Defines the notepad GUI window
+ */
+
 package calculator.ui;
 
 import java.awt.*;

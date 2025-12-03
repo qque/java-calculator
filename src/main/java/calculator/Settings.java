@@ -2,7 +2,7 @@
  *  Defines settings used throughout the calculator, which can be changed in the settings frame, opened with Ctrl + S.
  *  These are divided into three categories: font/display settings, calculation settings, and core program behavior.
  *  
- *  Settings are currently stored in a string array with fixed values.
+ *  Settings of core program behavior are currently stored in a string array with fixed values.
  *  This is not ideal for maintainability, and should possibly be changed in the future, but it is kept now for convenience.
  */
 
