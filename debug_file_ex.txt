@@ -1,6 +1,0 @@
-# comment1
-; comment2
-
-9*9
-sqrt(16)
-e^e^0.5
