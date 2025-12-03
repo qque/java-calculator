@@ -1,13 +1,9 @@
 /*
+ *  NOTE: This feature is in progress, and is not part of the final project submission
+ *  
  *  The debug console is a debugging tool, opened by ctrl + D, that allows you to input code
  *  directly (straight python code) or indirectly (text that gets preprocessed and computed by ButtonLogic)
  *  to test out functions. It is also possible to pass file input for programmatic testing.
- *  
- *  NOTE: For obvious reasons, also mentioned in ButtonLogic, this code is unsafe.
- *        Particularly for direct file input (though this also applies to non-file and indirect input),
- *        any kind of malicious Python can be executed on your computer. So, it should go
- *        without saying, do not run anything here (or in the regular calculator) if you do not know
- *        exactly what it does. There are no safeguards to prevent such an event from occurring
  */
 
 package calculator.ui;
@@ -20,16 +16,10 @@ import java.awt.event.KeyListener;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import calculator.logic.ButtonLogic;
 import calculator.logic.Engine;
 
 import calculator.History;
-import calculator.Logger;
 import calculator.Settings;
 
 public class DebugConsole extends JFrame implements KeyListener {
@@ -37,10 +27,6 @@ public class DebugConsole extends JFrame implements KeyListener {
     private static History history = History.getHistory();
 
     private static Settings settings = Settings.getSettings();
-    private static boolean DEBUG_MODE = settings.isDebugMode();
-
-    private static Logger logger = Logger.getInstance();
-    private static boolean DEBUG_LOG = settings.isDebugLog();
 
     private JTextArea textArea;
 

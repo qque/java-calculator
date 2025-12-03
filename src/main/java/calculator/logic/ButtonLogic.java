@@ -1,8 +1,5 @@
 /*
  *  Defines the parsing and behavior of buttons, including computation for "="
- *  Accepts any generic JTextArea
- *  
- *  NOTE: As this directly passes JS code to ScriptEngine, this code is unsafe.
  */
 
 package calculator.logic;

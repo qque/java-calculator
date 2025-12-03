@@ -2,10 +2,6 @@
  *  Defines the behavior of keyboard input
  *  All operations are run through ButtonLogic.runButton, including keys which are directly input
  *  For keys that are directly input, the label passed to runButton will be "null", and not do anything
- *  Accepts any generic JTextArea
- *  
- *  Though letters, numbers, and most special symbols can be input, everything else has no effect
- *  If you want more direct access 
  */
 
 package calculator.logic;

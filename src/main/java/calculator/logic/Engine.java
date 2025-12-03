@@ -106,7 +106,7 @@ public class Engine {
         }
     }
 
-    // attempts to find python installation
+    // attempts to find python executable
     private static String findPythonExe() {
         String[] possible = {
             System.getenv("PYTHON_HOME"),
