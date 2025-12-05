@@ -42,7 +42,7 @@ public class ButtonPanel extends JPanel {
     
     /* All button label definitions */
     public static final String[][] labels = {
-        {"stat" , "num"  , "special", "test"  , "cmplx" , "->" },
+        {"stat" , "num"  , "special", "test"  , "cplx"  , "->" },
         {"sin⁻¹", "cos⁻¹", "tan⁻¹"  , "(hyp.)", "i"     , "π"  },
         {"sin"  , "cos"  , "tan"    , "(rec.)", "(deg.)", "e"  },
         {"("    , ")"    , ","      , "1/x"   , "|x|"   , "ln" },
@@ -59,26 +59,28 @@ public class ButtonPanel extends JPanel {
     };
 
     public static final String[][] statPopupLabels = {
-        {"mean"  , "stdev", "stdevp", "variance" , "skewness"   , "kurtosis"},
-        {"median", "mode" , "sort"  , "min"      , "max"        , "range"   },
-        {"nCr"   , "nPr"  , "fact"  , "hyperfact", "multinomial", "rand"    },
+        {"mean"  , "stdev", "stdevp", "variance" , "skewness"   , "stdmoment"},
+        {"median", "mode" , "sort"  , "min"      , "max"        , "range"    },
+        {"nCr"   , "nPr"  , "fact"  , "hyperfact", "multinomial", "rand"     },
     };
 
     // number theory
     public static final String[][] numberPopupLabels = {
-        {"something...", "primes?", "sequences?"},
+        {"gcd", "lcm"  , "isprime", "nthprime"},
+        {"phi", "sigma", "mobius" , "mod"     },
     };
 
     // special functions (gamma, bessel, etc.)
     // todo: expand
     public static final String[][] specialPopupLabels = {
-        {"mean", "stdev", "stdevp"},
-        {"erf", "example", "example2"}
+        {"gamma", "lgamma", "beta"    , "digamma"},
+        {"erf"  , "erfc"  , "lambertW", "zeta"   },
     };
 
     // complex number functions & utilities
-    public static final String[][] cmplxPopupLabels = {
-        {"imag", "real", "conj"},
+    public static final String[][] cplxPopupLabels = {
+        {"imag"    , "real"    , "conj"    , "arg"      },
+        {"cplx_log", "cplx_exp", "cplx_pow", "cplx_sqrt"},
     };
 
     // fully initializes popup menu for a given button
@@ -156,7 +158,7 @@ public class ButtonPanel extends JPanel {
                 else if (row == 0 && col == 1) createPopup(button, numberPopupLabels);
                 else if (row == 0 && col == 2) createPopup(button, specialPopupLabels);
                 else if (row == 0 && col == 3) createPopup(button, testPopupLabels);
-                else if (row == 0 && col == 4) createPopup(button, cmplxPopupLabels);
+                else if (row == 0 && col == 4) createPopup(button, cplxPopupLabels);
 
                 // listener for button clicks
                 button.addActionListener(e -> {

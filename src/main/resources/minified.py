@@ -1,4 +1,6 @@
-import math,cmath,statistics,decimal,random,fractions,numpy as np,sympy as sp,mpmath as mp
+import math,cmath,statistics,decimal,random,fractions,random,numpy as np,sympy as sp
+from sympy.functions.combinatorial.numbers import totient,divisor_sigma,mobius
+import mpmath as mp
 def _dbz_wrapper(expr):
 	dividend,_=_split_division(expr);div=int(eval(dividend))
 	if div>0:return float('inf')
@@ -62,18 +64,78 @@ def dacsc(x):return math.asin(1/x)*180/pi
 def dasec(x):return math.acos(1/x)*180/pi
 def dacot(x):return(pi-math.atan(x))*180/pi
 def end():import sys;sys.exit(0)
-sort=sorted
-AND=all
-OR=any
+def AND(*x):return all(x)
+def OR(*x):return any(x)
 def NOT(x):return not x
 def XOR(*args):return any(args)and not all(args)
 def NAND(*args):return not all(args)
-def gamma(x):return math.gamma(x)
-def fact(x):return math.gamma(x+1)
-def nPr(n,k):return math.perm(n,k)
-def nCr(n,k):return math.comb(n,k)
-def mean(*nums):nums=tuple(x for e in nums for x in(e if isinstance(e,list)else[e]));return statistics.mean(nums)
-def stdev(*nums):nums=tuple(x for e in nums for x in(e if isinstance(e,list)else[e]));return statistics.stdev(nums)
-def stdevp(*nums):nums=tuple(x for e in nums for x in(e if isinstance(e,list)else[e]));return statistics.pstdev(nums)
-def erf(x):return math.erf(x)
-def erfc(x):return math.erfc(x)
+def mean(*x):return statistics.mean(x)
+def stdev(*x):return statistics.stdev(x)
+def stdevp(*x):return statistics.pstdev(x)
+def variance(*x):return statistics.variance(x)
+def skewness(*x):return stdmoment(2,x)
+def stdmoment(n,*x):x=np.asarray(x);mean=np.mean(x);std=np.std(x,ddof=0);return np.mean((x-mean)**n)/std**n
+def median(*x):return statistics.median(x)
+def mode(*x):return statistics.mode(x)
+def sort(*x):return sorted(x)
+def min(*x):return min(x)
+def max(*x):return max(x)
+def range(*x):return max(x)-min(x)
+def nCr(n,r):return math.comb(n,r)
+def nPr(n,r):return math.perm(n,r)
+def fact(x):
+	if int(x)==x:return math.factorial(x)
+	else:return gamma(x+1)
+def hyperfact(num):
+	val=1
+	for i in range(1,num+1):val=val*pow(i,i)
+	return val
+def multinomial(*ks):
+	n=sum(ks);result=math.factorial(n)
+	for k in ks:result//=math.factorial(k)
+	return result
+def rand(a,b):return random.randint(a,b)
+def gcd(a,b):return math.gcd(a,b)
+def lcm(*xs):
+	if len(xs)==0:raise ValueError('lcm requires at least one argument')
+	xs=[abs(int(x))for x in xs]
+	if any(x==0 for x in xs):return 0
+	r=1
+	for x in xs:r=abs(r//math.gcd(r,x)*x)
+	return r
+def isprime(n):return sp.isprime(int(n))
+def nthprime(n):
+	count=0;num=1
+	while count<n:
+		num+=1
+		if isprime(num):count+=1
+	return num
+def phi(n):
+	n=int(n)
+	if n==0:raise ValueError('phi(0) undefined')
+	return int(totient(n))
+def sigma(n,k=1):
+	n=int(n);k=int(k)
+	if n==0:raise ValueError('sigma undefined for 0')
+	return int(divisor_sigma(n,k))
+def mobius(n):return int(mobius(int(n)))
+def mod(a,m):return a%m
+from mpmath import mp,gamma,loggamma,beta,digamma,erf,erfc,gammainc,besselj,bessely,besseli,besselk,hyper,zeta,lambertw
+mp.mp.dps=50
+def gamma_fn(z):return gamma(z)
+def lgamma_fn(z):return loggamma(z)
+def beta_fn(x,y):return beta(x,y)
+def digamma_fn(z):return digamma(z)
+def erf_fn(z):return erf(z)
+def erfc_fn(z):return erfc(z)
+def incomplete_gamma_lower(s,x):return gammainc(s,0,x,regularized=False)
+def incomplete_gamma_upper(s,x):return gammainc(s,x,mp.inf,regularized=False)
+def bessel_j(nu,z):return besselj(nu,z)
+def bessel_y(nu,z):return bessely(nu,z)
+def bessel_i(nu,z):return besseli(nu,z)
+def bessel_k(nu,z):return besselk(nu,z)
+def hyper2f1(a,b,c,z):return hyper([a,b],[c],z)
+def riemann_zeta(s):return zeta(s)
+def lambert_w(z,k=0):return lambertw(z,k)
+def real(x):return x.real
+def imag(x):return x.imag

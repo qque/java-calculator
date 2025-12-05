@@ -239,6 +239,9 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
                 display.setForeground(Color.RED);
                 history.add(expression, result);
                 break;
+            case "/=": // literal "=" (achieved by Ctrl + '=')
+                output = "=";
+                break;
             case "clear":
                 display.setText(null);
                 break;
@@ -261,17 +264,11 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
             case "^S":
             case "^D":
             // popup buttons (menu opening is dealt with before coming here)
-            case "list":
-            case "matrix":
+            case "num":
             case "test":
-            case "solve":
-            case "graph":
             case "stat":
-            case "calc":
-            case "signal":
             case "special":
-            case "cmplx":
-            case "const": break;
+            case "cplx": break;
             
             // input modified label
             case "×": output = "*"; break;
@@ -314,7 +311,63 @@ public class ButtonLogic implements ButtonPanel.ButtonListener {
 
             
             // buttons in popup menu
-            //...
+            case "==":
+            case ">":
+            case "<":
+            case ">=":
+            case "<=":
+                output = label;
+                break;
+
+            case "AND":
+            case "OR":
+            case "NOT":
+            case "XOR":
+            case "NAND":
+            case "mean": 
+            case "stdev": 
+            case "stdevp": 
+            case "variance": 
+            case "skewness": 
+            case "kurtosis": 
+            case "median": 
+            case "mode": 
+            case "sort": 
+            case "min": 
+            case "max": 
+            case "range": 
+            case "nCr": 
+            case "nPr": 
+            case "fact": 
+            case "hyperfact": 
+            case "multinomial": 
+            case "rand": 
+            case "gcd": 
+            case "lcm": 
+            case "isprime": 
+            case "nthprime": 
+            case "phi": 
+            case "sigma": 
+            case "mobius": 
+            case "mod": 
+            case "gamma": 
+            case "lgamma": 
+            case "beta": 
+            case "digamma": 
+            case "erf": 
+            case "erfc": 
+            case "lambertW": 
+            case "zeta": 
+            case "imag": 
+            case "real": 
+            case "conj": 
+            case "arg": 
+            case "cplx_log": 
+            case "cplx_exp": 
+            case "cplx_pow": 
+            case "cplx_sqrt":
+                output = label + "(";
+                break;
 
             }
 

@@ -12,10 +12,12 @@ import statistics
 import decimal
 import random
 import fractions
+import random
 
 # if not installed by user, an error will be caught within the Engine class
 import numpy as np
 import sympy as sp
+from sympy.functions.combinatorial.numbers import totient, divisor_sigma, mobius # type: ignore
 import mpmath as mp
 # gmpy2 is detected by mpmath automatically
 
@@ -202,44 +204,123 @@ def dacot(x):
 def end(): import sys; sys.exit(0)
 # start of advanced functions
 
-sort = sorted
-AND = all
-OR = any
+def AND(*x): return all(x)
+def OR(*x): return any(x)
 def NOT(x): return not x
 def XOR(*args): return any(args) and not all(args)
 def NAND(*args): return not all(args)
 
-def gamma(x):
-    return math.gamma(x)
-
-
-
-
+def mean(*x): return statistics.mean(x)
+def stdev(*x): return statistics.stdev(x)
+def stdevp(*x): return statistics.pstdev(x)
+def variance(*x): return statistics.variance(x)
+def skewness(*x): return stdmoment(2, x)
+def stdmoment(n, *x):
+    x = np.asarray(x)
+    mean = np.mean(x)
+    std = np.std(x, ddof=0)
+    return np.mean((x - mean)**n) / (std**n)
+def median(*x): return statistics.median(x)
+def mode(*x): return statistics.mode(x)
+def sort(*x): return sorted(x)
+def min(*x): return min(x)
+def max(*x): return max(x)
+def range(*x): return max(x) - min(x)
+def nCr(n, r): return math.comb(n, r)
+def nPr(n, r): return math.perm(n, r)
 def fact(x):
-    return math.gamma(x+1)
+    if int(x) == x: return math.factorial(x)
+    else: return gamma(x+1)
+def hyperfact(num):
+    val = 1
+    for i in range(1, num + 1):
+        val = val * pow(i, i)
+    return val
+def multinomial(*ks):
+    n = sum(ks)
+    result = math.factorial(n)
+    for k in ks:
+        result //= math.factorial(k)
+    return result
+def rand(a, b): return random.randint(a, b)
 
-def nPr(n,k):
-    return math.perm(n,k)
+def gcd(a: int, b: int) -> int:
+    return math.gcd(a, b)
 
-def nCr(n,k):
-    return math.comb(n,k)
+def lcm(*xs: int) -> int:
+    if len(xs) == 0:
+        raise ValueError("lcm requires at least one argument")
+    xs = [abs(int(x)) for x in xs] # type: ignore
+    if any(x == 0 for x in xs):
+        return 0
+    r = 1
+    for x in xs:
+        r = abs(r // math.gcd(r, x) * x)
+    return r
 
-def mean(*nums):
-    # if lists are passed, flatten them out into nums
-    nums = tuple(x for e in nums for x in (e if isinstance(e, list) else [e]))
-    return statistics.mean(nums)
+def isprime(n: int) -> bool:
+    return sp.isprime(int(n))
 
-def stdev(*nums):
-    nums = tuple(x for e in nums for x in (e if isinstance(e, list) else [e]))
-    return statistics.stdev(nums)
+def nthprime(n):
+    count = 0
+    num = 1
+    while count < n:
+        num += 1
+        if isprime(num):
+            count += 1
+    return num
 
-def stdevp(*nums):
-    nums = tuple(x for e in nums for x in (e if isinstance(e, list) else [e]))
-    return statistics.pstdev(nums)
+def phi(n: int) -> int:
+    n = int(n)
+    if n == 0:
+        raise ValueError("phi(0) undefined")
+    return int(totient(n))
 
+def sigma(n: int, k: int = 1) -> int:
+    n = int(n)
+    k = int(k)
+    if n == 0:
+        raise ValueError("sigma undefined for 0")
+    return int(divisor_sigma(n, k))
 
-def erf(x):
-    return math.erf(x)
+def mobius(n: int) -> int:
+    return int(mobius(int(n)))
 
-def erfc(x):
-    return math.erfc(x)
+def mod(a: int, m: int) -> int:
+    return a % m
+
+from mpmath import mp, gamma, loggamma, beta, digamma, erf, erfc, gammainc, besselj, bessely, besseli, besselk, hyper, zeta, lambertw
+mp.mp.dps = 50
+def gamma_fn(z: complex):
+    return gamma(z)
+def lgamma_fn(z: complex):
+    return loggamma(z)
+def beta_fn(x: complex, y: complex):
+    return beta(x, y)
+def digamma_fn(z: complex):
+    return digamma(z)
+def erf_fn(z: complex):
+    return erf(z)
+def erfc_fn(z: complex):
+    return erfc(z)
+def incomplete_gamma_lower(s: complex, x: complex):
+    return gammainc(s, 0, x, regularized=False)
+def incomplete_gamma_upper(s: complex, x: complex):
+    return gammainc(s, x, mp.inf, regularized=False)
+def bessel_j(nu: complex, z: complex):
+    return besselj(nu, z)
+def bessel_y(nu: complex, z: complex):
+    return bessely(nu, z)
+def bessel_i(nu: complex, z: complex):
+    return besseli(nu, z)
+def bessel_k(nu: complex, z: complex):
+    return besselk(nu, z)
+def hyper2f1(a: complex, b: complex, c: complex, z: complex):
+    return hyper([a, b], [c], z)
+def riemann_zeta(s: complex):
+    return zeta(s)
+def lambert_w(z: complex, k: int = 0):
+    return lambertw(z, k)
+
+def real(x): return x.real
+def imag(x): return x.imag

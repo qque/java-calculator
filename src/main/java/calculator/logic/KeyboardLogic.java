@@ -50,7 +50,7 @@ public class KeyboardLogic implements KeyListener {
             break;
         case KeyEvent.VK_EQUALS:
             if (shift) button = "+";        // '+' -- `+`
-            else if (ctrl) button = "->";   //
+            else if (ctrl) button = "/=";   //
             else button = "=";              // '=' -- `=`
             break;
 

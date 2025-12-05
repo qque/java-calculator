@@ -196,7 +196,12 @@ public class Engine {
     }
 
     public static Object getValue(String expression) {
-        return pyi.getValue(expression);
+        try {
+            return pyi.getValue(expression);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static void close() {
